@@ -1,0 +1,24 @@
+.chat-list{
+    width: 25vw;
+    height: 100vh;
+    background-color: #ffffff;
+}
+
+/* Heading of the chat list */
+.cl-heading{
+    padding-left: 20px;
+}
+
+/* Search bar */
+.cl-search-bar{
+    margin-bottom: 30px;
+}
+
+.cl-search-bar input{
+    width: 80%;
+    height: 40px;
+    background-color: rgb(235, 232, 232);
+    margin-left: 20px;
+    padding-left: 10px;
+    border-radius: 10px;
+}
