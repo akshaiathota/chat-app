@@ -6,37 +6,35 @@
 }
 
 .cw-header{
-    max-height: 8vh;
+    height: 8vh;
     width: 100%;
     background-color: cornflowerblue;
-
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
-.cw-header{
-    height: 100%;
-    width: 100%;
-    font-size: 12px;
-    padding-left: 10px ;
+.cw-header h1{
+    font-size: 18px;
 }
 
 .cw-chat{
-    height:83vh;
+    height:80vh;
     width: 100%;
     background-color: blue;
 }
 
 .cw-input-field{
-   height: 6vh;
+   height: 12vh;
    width: 100%;
-   display: flex;
-   flex-direction: row;
-   align-content: center;
+   text-align: center;
 }
 
 .cw-input-field textarea{
-    height: 100%;
-    width: 100%;
-    border-radius: 5px;
+    height: 50%;
+    width: 90%;
+    border-radius: 10px;
     padding: 10px;
     line-height: 20px;
+    margin-bottom: 10px;
 }

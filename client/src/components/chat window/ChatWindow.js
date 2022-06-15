@@ -5,6 +5,7 @@ function ChatWindow() {
   return (
     <div className='chat-window'>
         <div className='cw-header'>
+            <img alt='grp icon' />
             <h1>Thunder Buddies</h1>
         </div>
         <div className='cw-chat'>
