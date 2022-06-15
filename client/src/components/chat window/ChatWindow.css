@@ -1,0 +1,42 @@
+.chat-window{
+    height: 100vh;
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.cw-header{
+    max-height: 8vh;
+    width: 100%;
+    background-color: cornflowerblue;
+
+}
+
+.cw-header{
+    height: 100%;
+    width: 100%;
+    font-size: 12px;
+    padding-left: 10px ;
+}
+
+.cw-chat{
+    height:83vh;
+    width: 100%;
+    background-color: blue;
+}
+
+.cw-input-field{
+   height: 6vh;
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+   align-content: center;
+}
+
+.cw-input-field textarea{
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    padding: 10px;
+    line-height: 20px;
+}

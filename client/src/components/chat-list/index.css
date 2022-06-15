@@ -22,3 +22,9 @@
     padding-left: 10px;
     border-radius: 10px;
 }
+
+/* Chat holder */
+.cl-chat-holder{
+    overflow-y:scroll;
+    height: 80vh;
+}

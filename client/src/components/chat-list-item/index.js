@@ -1,7 +1,9 @@
 import React from "react";
 import './index.css';
 
-function ChatListItem() {
+function ChatListItem(obj) {
+   // console.log(obj);
+    const {name,messages,lastChatTime}=obj;
     return (
         <div className='chat-list-item'>
             <div className='cli-image-container'>
@@ -10,15 +12,15 @@ function ChatListItem() {
             <div className='cli-chat-details'>
                 <div >
                     <div className='cli-chat-name'>
-                        Surya
+                        {name?name:"Surya"}
                     </div>
                     <div className='cli-chat-last-msg' >
-                        hello world!
+                        {messages?messages[messages.length-1]:"nothing"}
                     </div>
                 </div>
                 <div>
                     <div className='cli-chat-time'>
-                        4:39PM
+                        {lastChatTime?lastChatTime:"00:00"}
                     </div>
                     <div className='cli-chat-new-msg' >
                         <div>

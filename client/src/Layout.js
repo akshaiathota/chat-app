@@ -2,7 +2,7 @@ import React from 'react';
 import './Layout.css';
 import ChatList from './components/chat-list';
 
-function HomePage(){
+function Home(){
   return(
       <div className='home-page'>
          <ChatList />
@@ -18,4 +18,4 @@ function HomePage(){
   );
 }
 
-export default HomePage;
+export default Home;
