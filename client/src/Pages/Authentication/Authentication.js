@@ -5,6 +5,7 @@ import Signup from '../../components/signup/signup';
 
 function Authentication() {
     const [toggleInput, setToggleInput] = useState(true);
+
     function handleClick(event) {
         const val = event.target.childNodes[0].textContent === 'Log In';
         if ((val && toggleInput) || (!val && !toggleInput)) {
@@ -14,8 +15,9 @@ function Authentication() {
             setToggleInput(!toggleInput);
         }
     }
+
     return (
-        <div className='authentication'>
+        <div className={(toggleInput ? 'height-small' : 'height-large') + ' authentication'}>
             <div className='a-title'>
                 <h1>Just An Other Chat Application</h1>
             </div>
