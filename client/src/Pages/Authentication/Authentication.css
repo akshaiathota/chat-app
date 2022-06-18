@@ -1,0 +1,72 @@
+.authentication{
+    width: 35vw;
+    height:80vh;
+    display: flex;
+    flex-direction: column;
+    margin-left:32vw;
+    margin-top:5vh;
+}
+
+.authentication .a-title{
+    width: 90%;
+    height: 15%;
+    margin-left: 5%;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: bisque;
+}
+
+.a-title h1{
+    font-size: 30px;
+    color:black;
+    text-align: center;
+}
+
+.authentication .a-body{
+    width: 90%;
+    height: 80%;
+    margin-left: 5%;
+    border-radius: 5px;
+    background-color: aquamarine;
+}
+
+.a-body .a-headers{
+    width: 100%;
+    height: 10%;
+    margin-top: 5px;
+}
+
+.a-headers ul{
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.a-headers li{
+    width: 40%;
+    height: 70%;
+    border-radius: 15px;
+    padding-top: 5px;
+    text-align: center;
+    color: black;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.a-logInAndSignUp{
+   width: 90%;
+   height: 80%;
+   margin-top: 5px;
+   margin-left: 5%;
+}
+
+.a-headers .highlight{
+    background-color: rgb(107, 246, 105);
+}
