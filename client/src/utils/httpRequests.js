@@ -27,6 +27,7 @@ export const registerUser = async (inputData) => {
         return null;
     }
     try {
+        console.log(inputData);
         const response = await fetch(BASE_URI + 'user/signup',
             {
                 method: 'POST',
@@ -76,4 +77,8 @@ export const loginUser = async (inputData) => {
         console.log('error in fetch request for logging in user');
         console.log(error);
     }
+}
+
+export const uploadProfilePic = async (inputData) => {
+
 }

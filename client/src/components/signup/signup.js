@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import './signup.css';
 import { registerUser } from '../../utils/httpRequests';
 
@@ -8,18 +8,41 @@ function Signup() {
     const password = useRef(null);
     const confirmPassword = useRef(null);
     const mobileNumber = useRef(null);
-    const profilePic = useRef(null);
+    const [profilePic, setProfilePic] = useState(
+        {
+            pic: null,
+            type: null
+        }
+    );
+
+    function handleImage(file) {
+        let reader = new FileReader(file);
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+            setProfilePic((prevValues) => {
+                return {
+                    pic: reader.result,
+                    type: file.type
+                }
+            });
+        }
+    }
 
     async function handleSubmit(event) {
         event.preventDefault();
+        const { type } = profilePic;
+        if (type !== 'image/png' && type !== 'image/jpeg' && type !== 'image/jpg') {
+            console.log('please check your file format and try again');
+            return;
+        }
         const data = {
             name: name.current.value,
             email: email.current.value,
             password: password.current.value,
             confirmPassword: confirmPassword.current.value,
             mobileNumber: mobileNumber.current.value,
-            pic: profilePic.current.value
-        };
+            pic: profilePic
+        }
         const response = await registerUser(data);
         console.log(response);
     }
@@ -49,7 +72,7 @@ function Signup() {
                 </div>
                 <div className='s-input'>
                     <label>Upload your picture</label>
-                    <input type='file' accept='image/*' ref={profilePic} />
+                    <input type='file' accept='image/jpeg, image/png, image/jpg' onChange={(event) => handleImage(event.target.files[0])} />
                 </div>
                 <input type='submit' value='Sign Up' />
             </div>

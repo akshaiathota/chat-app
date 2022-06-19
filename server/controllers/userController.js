@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const generateToken = require('../utils/generateToken');
 const { INVALID_CREDENTIALS, USER_ALREADY_EXISTS, SERVER_ERR, USER_NOT_FOUND, INCORRECT_OTP } = require('../utils/error');
 const { generateOtp, sendMessage } = require('../utils/otp');
+const { uploadImage } = require('../utils/cloudinary');
 
 // Creating a new user
 
@@ -21,6 +22,7 @@ async function userExists(email) {
     return userExists;
 }
 
+
 const registerUser = async (req, res, next) => {
     const { name, email, password, mobileNumber, pic } = req.body;
     if (!checkCredentials(name, email, password, mobileNumber)) {
@@ -30,8 +32,23 @@ const registerUser = async (req, res, next) => {
         });
         return;
     }
+    const imageformat = pic ? pic.type : null;
+    if (imageformat && (imageformat !== 'image/png' && imageformat !== 'image/jpeg' && imageformat !== 'image/jpg')) {
+        next({
+            status: 400,
+            message: INVALID_CREDENTIALS
+        });
+        return;
+    }
+    const url = await uploadImage(pic.pic);
+    if (!url) {
+        next({
+            status: 500,
+            message: SERVER_ERR
+        });
+        return;
+    }
     const result = await userExists(email);
-    //console.log(result);
     if (result) {
         next({
             status: 400,
@@ -45,7 +62,7 @@ const registerUser = async (req, res, next) => {
         email,
         password,
         mobileNumber,
-        pic
+        pic: pic ? url : undefined
     });
 
     if (user) {
