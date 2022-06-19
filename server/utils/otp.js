@@ -11,7 +11,6 @@ function generateOtp(length) {
 }
 
 async function sendMessage({ message, contactNumber }, next) {
-    console.log(message + " " + contactNumber + " " + FAST2SMS);
     try {
         const res = await fast2sms.sendMessage({
             authorization: FAST2SMS,

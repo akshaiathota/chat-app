@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const BASE_URI = 'http://localhost:5000/';
 
 function areRegisterInputsValid({ email, password, confirmPassword, mobileNumber }) {
@@ -23,30 +25,37 @@ export const registerUser = async (inputData) => {
     const inputsValidity = areRegisterInputsValid(inputData);
     const passwordMatch = isPasswordValid(password, confirmPassword);
     if (!inputsValidity || !passwordMatch) {
-        console.log('sign up inputs are invalid')
-        return null;
+        const responseData = {
+            status: 'error',
+            message: 'Invalid Data'
+        }
+        return responseData;
     }
     try {
-        console.log(inputData);
-        const response = await fetch(BASE_URI + 'user/signup',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(inputData)
-            });
-        const { data, message } = await response.json();
+        //console.log(inputData);
+        const { data } = await axios({
+            method: 'POST',
+            url: BASE_URI + 'user/signup',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: inputData
+        });
         const responseData = {
-            status: response.status,
-            data,
-            message
+            status: 'ok',
+            data: data.data,
+            message: data.message
         }
         return responseData;
     }
     catch (error) {
-        console.log('error in register user request');
-        console.log(error);
+        //console.log(error);
+        const { message, type } = error.response.data;
+        const responseData = {
+            status: type,
+            message
+        }
+        return responseData;
     }
 }
 
@@ -54,28 +63,35 @@ export const registerUser = async (inputData) => {
 export const loginUser = async (inputData) => {
     const inputsValidity = areLoginInputsValid(inputData);
     if (!inputsValidity) {
-        console.log('invalid syntax: email or password');
-        return null;
+        const responseData = {
+            status: 'error',
+            message: 'Invalid Credentials'
+        }
+        return responseData;
     }
     try {
-        const response = await fetch(BASE_URI + 'user/', {
+        const { data } = await axios({
             method: 'POST',
+            url: BASE_URI + 'user/',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(inputData)
+            data: inputData
         });
-        const { data, message } = await response.json();
         const responseData = {
-            status: response.status,
-            data,
-            message
+            status: 'ok',
+            data: data.data,
+            message: data.message
         };
         return responseData;
     }
     catch (error) {
-        console.log('error in fetch request for logging in user');
-        console.log(error);
+        const { message, type } = error.response.data;
+        const responseData = {
+            status: type,
+            message
+        }
+        return responseData;
     }
 }
 

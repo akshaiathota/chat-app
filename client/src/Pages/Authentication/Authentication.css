@@ -32,7 +32,7 @@
 
 .a-body .a-headers{
     width: 100%;
-    height: 10%;
+    height: 40px;
     margin-top: 5px;
 }
 
@@ -48,9 +48,9 @@
     align-items: center;
 }
 
-.a-headers li{
+.a-headers ul li{
     width: 40%;
-    height: 70%;
+    height: 80%;
     border-radius: 15px;
     padding-top: 5px;
     text-align: center;

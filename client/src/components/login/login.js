@@ -1,6 +1,8 @@
 import React, { useRef } from 'react'
 import './login.css';
 import { loginUser } from '../../utils/httpRequests';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
     const email = useRef(null);
@@ -14,24 +16,35 @@ function Login() {
         };
         console.log('handling login...');
         const response = await loginUser(inputData);
-        console.log(response);
+        if (response !== null) {
+            const { status, data, message } = response;
+            if (status === 'error') {
+                toast(message);
+            }
+            else {
+                console.log(data);
+            }
+        }
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className='login-page'>
-                <div className='l-email'>
-                    <label>Email<span className='l-red'>*</span></label>
-                    <input type='email' placeholder='Enter your email' ref={email} required />
+        <>
+            <ToastContainer />
+            <form onSubmit={handleSubmit}>
+                <div className='login-page'>
+                    <div className='l-email'>
+                        <label>Email<span className='l-red'>*</span></label>
+                        <input type='email' placeholder='Enter your email' ref={email} required />
+                    </div>
+                    <div className='l-password'>
+                        <label>Password<span className='l-red'>*</span></label>
+                        <input type='password' placeholder='Enter your password' ref={password} required />
+                    </div>
+                    <input className='button' type='submit' value='Login' />
+                    <input className='button' type='button' value='Get Guest User Credentials' />
                 </div>
-                <div className='l-password'>
-                    <label>Password<span className='l-red'>*</span></label>
-                    <input type='password' placeholder='Enter your password' ref={password} required />
-                </div>
-                <input className='button' type='submit' value='Login' />
-                <input className='button' type='button' value='Get Guest User Credentials' />
-            </div>
-        </form>
+            </form>
+        </>
     )
 }
 

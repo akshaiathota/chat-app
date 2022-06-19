@@ -15,9 +15,6 @@ async function uploadImage(file) {
                 'Content-Type': 'application/json'
             }
         });
-        // const { url } = response;
-        // return url.toString();
-        console.log(response.data.url);
         return response.data.url;
     }
     catch (error) {

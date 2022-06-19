@@ -1,10 +1,7 @@
 const User = require('../models/userModel');
 const generateToken = require('../utils/generateToken');
-const { INVALID_CREDENTIALS, USER_ALREADY_EXISTS, SERVER_ERR, USER_NOT_FOUND, INCORRECT_OTP } = require('../utils/error');
-const { generateOtp, sendMessage } = require('../utils/otp');
+const { INVALID_CREDENTIALS, USER_ALREADY_EXISTS, SERVER_ERR, USER_NOT_FOUND } = require('../utils/error');
 const { uploadImage } = require('../utils/cloudinary');
-
-// Creating a new user
 
 function checkCredentials(name, email, password, mobileNumber) {
     if (!name || !mobileNumber || !email || !password) {
@@ -22,7 +19,7 @@ async function userExists(email) {
     return userExists;
 }
 
-
+// Creating a new user
 const registerUser = async (req, res, next) => {
     const { name, email, password, mobileNumber, pic } = req.body;
     if (!checkCredentials(name, email, password, mobileNumber)) {
@@ -32,21 +29,25 @@ const registerUser = async (req, res, next) => {
         });
         return;
     }
-    const imageformat = pic ? pic.type : null;
-    if (imageformat && (imageformat !== 'image/png' && imageformat !== 'image/jpeg' && imageformat !== 'image/jpg')) {
-        next({
-            status: 400,
-            message: INVALID_CREDENTIALS
-        });
-        return;
-    }
-    const url = await uploadImage(pic.pic);
-    if (!url) {
-        next({
-            status: 500,
-            message: SERVER_ERR
-        });
-        return;
+    let url = null;
+    if (!pic) {
+        const imageformat = pic ? pic.type : null;
+        console.log(pic);
+        if (imageformat !== 'image/png' && imageformat !== 'image/jpeg' && imageformat !== 'image/jpg') {
+            next({
+                status: 400,
+                message: INVALID_CREDENTIALS
+            });
+            return;
+        }
+        url = await uploadImage(pic.pic);
+        if (!url) {
+            next({
+                status: 500,
+                message: SERVER_ERR
+            });
+            return;
+        }
     }
     const result = await userExists(email);
     if (result) {
@@ -56,14 +57,24 @@ const registerUser = async (req, res, next) => {
         });
         return;
     }
-
-    const user = await User.create({
-        name,
-        email,
-        password,
-        mobileNumber,
-        pic: pic ? url : undefined
-    });
+    let user = null;
+    if (!url) {
+        user = await User.create({
+            name,
+            email,
+            password,
+            mobileNumber,
+        });
+    }
+    else {
+        user = await User.create({
+            name,
+            email,
+            password,
+            mobileNumber,
+            pic: url
+        });
+    }
 
     if (user) {
         const token = generateToken(user._id);
@@ -93,6 +104,7 @@ const registerUser = async (req, res, next) => {
 async function loginUser(req, res, next) {
     try {
         const { email, password } = req.body;
+        console.log(email + " " + password);
         const user = await userExists(email);
         if (!user) {
             next({
@@ -129,47 +141,7 @@ async function loginUser(req, res, next) {
     }
 }
 
-// //verify Otp 
-// async function verifyOtp(req, res, next) {
-//     try {
-//         const { otp, userId } = req.body;
-//         const user = await User.findById(userId);
-//         if (!user) {
-//             next({
-//                 status: 400,
-//                 message: USER_NOT_FOUND
-//             });
-//             return;
-//         }
-
-//         if (user.otp !== otp) {
-//             next({
-//                 status: 400,
-//                 message: INCORRECT_OTP
-//             });
-//             return;
-//         }
-//         const token = generateToken(userId);
-//         user.otp = '';
-//         await user.save();
-
-//         res.status(201).json({
-//             type: 'success',
-//             message: 'Otp verified successfully',
-//             data: {
-//                 token,
-//                 userId: user._id,
-//             }
-//         });
-//     }
-//     catch (error) {
-//         next(error);
-//     }
-// }
-
-
 module.exports = {
     registerUser,
     loginUser,
-    // verifyOtp
 };
