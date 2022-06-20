@@ -35,12 +35,13 @@ export const registerUser = async (inputData) => {
         //console.log(inputData);
         const { data } = await axios({
             method: 'POST',
-            url: BASE_URI + 'user/signup',
+            url: BASE_URI + 'user/',
             headers: {
                 'Content-Type': 'application/json'
             },
             data: inputData
         });
+
         const responseData = {
             status: 'ok',
             data: data.data,
@@ -49,13 +50,19 @@ export const registerUser = async (inputData) => {
         return responseData;
     }
     catch (error) {
-        //console.log(error);
-        const { message, type } = error.response.data;
-        const responseData = {
-            status: type,
-            message
+        console.log(error);
+        if (error.response.data) {
+            const { message, type } = error.response.data;
+            const responseData = {
+                status: type,
+                message
+            }
+            return responseData;
         }
-        return responseData;
+        return {
+            status: 'error',
+            message: 'server error'
+        };
     }
 }
 
@@ -72,7 +79,7 @@ export const loginUser = async (inputData) => {
     try {
         const { data } = await axios({
             method: 'POST',
-            url: BASE_URI + 'user/',
+            url: BASE_URI + 'user/login',
             headers: {
                 'Content-Type': 'application/json'
             },

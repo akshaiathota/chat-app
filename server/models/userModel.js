@@ -18,6 +18,7 @@ const userSchema = mongoose.Schema({
     mobileNumber: {
         type: String,
         required: true,
+        unique: true
     },
     pic: {
         type: String,

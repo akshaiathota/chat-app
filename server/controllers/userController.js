@@ -14,8 +14,8 @@ function isMobileNumberValid(mobileNumber) {
     return !isNaN(mobileNumber);
 }
 
-async function userExists(email) {
-    const userExists = await User.findOne({ email });
+async function userExists(credential) {
+    const userExists = await User.findOne(credential);
     return userExists;
 }
 
@@ -29,8 +29,18 @@ const registerUser = async (req, res, next) => {
         });
         return;
     }
+    const emailExists = await userExists({ email: email });
+    const mobileNumberExists = await userExists({ mobileNumber: mobileNumber });
+    if (emailExists || mobileNumberExists) {
+        next({
+            status: 400,
+            message: USER_ALREADY_EXISTS
+        });
+        return;
+    }
     let url = null;
-    if (!pic) {
+    if (pic) {
+        console.log('in pic if');
         const imageformat = pic ? pic.type : null;
         console.log(pic);
         if (imageformat !== 'image/png' && imageformat !== 'image/jpeg' && imageformat !== 'image/jpg') {
@@ -49,14 +59,7 @@ const registerUser = async (req, res, next) => {
             return;
         }
     }
-    const result = await userExists(email);
-    if (result) {
-        next({
-            status: 400,
-            message: USER_ALREADY_EXISTS
-        });
-        return;
-    }
+
     let user = null;
     if (!url) {
         user = await User.create({
@@ -104,8 +107,7 @@ const registerUser = async (req, res, next) => {
 async function loginUser(req, res, next) {
     try {
         const { email, password } = req.body;
-        console.log(email + " " + password);
-        const user = await userExists(email);
+        const user = await userExists({ email: email });
         if (!user) {
             next({
                 status: 400,
@@ -141,7 +143,18 @@ async function loginUser(req, res, next) {
     }
 }
 
+async function findUser(req, res) {
+    const searchString = req.query.search;
+    const users = await User.findOne({ mobileNumber: searchString }).find({ _id: { $ne: req.user._id } });
+    res.status(201).json({
+        data: users,
+        message: 'data fetched successfully'
+    });
+    return;
+}
+
 module.exports = {
     registerUser,
     loginUser,
+    findUser
 };
