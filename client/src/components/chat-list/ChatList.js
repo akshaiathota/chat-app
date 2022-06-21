@@ -3,7 +3,7 @@ import './ChatList.css';
 import ChatListItem from '../chat-list-item/ChatListItem';
 import { ChatState } from '../../utils/ChatProvider';
 import { GiHamburgerMenu } from 'react-icons/gi';
-import { searchUser } from '../../utils/httpRequests';
+import { accessChat, searchUser } from '../../utils/httpRequests';
 import { toast, ToastContainer } from 'react-toastify';
 
 
@@ -11,10 +11,10 @@ function ChatList() {
   const { user } = ChatState();
   const search = useRef("");
   const [searchResult, setSearchResult] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [chatSelected, setChatSelected] = useState(null);
+  // const [isLoading, setIsLoading] = useState(false);
 
   async function fetch() {
-    console.log(search.current.value);
     const response = await searchUser(search.current.value, user.token);
     console.log(response);
     if (response.status === 'error') {
@@ -25,13 +25,24 @@ function ChatList() {
     }
   }
 
+  async function handleClick(id) {
+    const response = await accessChat(id, user.token);
+    console.log(response);
+    if (response.status === 'error') {
+      toast(response.message);
+    }
+    else {
+      setChatSelected(response.data);
+    }
+  }
+
+
   useEffect(() => {
     async function handleKeyPress(event) {
       let characterCode = event.code || event.key;
       if (characterCode === 'Enter') {
         await fetch();
       }
-      return;
     }
 
     const searchTag = document.getElementById('search-user');
@@ -50,7 +61,7 @@ function ChatList() {
       </div>
       <div className='cl-chat-holder'>
         {
-          searchResult ? searchResult.map((chat) => <ChatListItem key={chat._id} {...chat} />) : ""
+          searchResult ? searchResult.map((user) => <ChatListItem key={user._id} otherUser={user} onClick={handleClick} />) : ""
         }
       </div>
 

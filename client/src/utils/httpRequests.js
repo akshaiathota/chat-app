@@ -126,9 +126,82 @@ export const searchUser = async (search, token) => {
         return responseData;
     }
     catch (error) {
+        const { message, type } = error.response.data;
+        const responseData = {
+            status: type,
+            message
+        }
+        return responseData;
+    }
+}
+
+export const accessChat = async (userId, token) => {
+    console.log('accessing chat...');
+    if (!userId) {
         return {
             status: 'error',
-            message: 'Search query failed'
+            message: 'invalid userId'
         };
+    }
+    try {
+        const { data } = await axios({
+            method: 'POST',
+            url: BASE_URI + 'chat',
+            headers: {
+                authorization: `Bearer ${token}`
+            },
+            data: {
+                userId
+            }
+        });
+        const responseData = {
+            message: data.message,
+            status: 'ok',
+            data: data.data
+        }
+        return responseData;
+    }
+    catch (error) {
+        const { message, type } = error.response.data;
+        const responseData = {
+            status: type,
+            message
+        }
+        return responseData;
+    }
+}
+
+export const fetchChat = async (token) => {
+    if (!token) {
+        return {
+            status: 'error',
+            message: 'invalid or empty token'
+        };
+    }
+    try {
+        const { data } = await axios({
+            method: 'GET',
+            url: BASE_URI + 'chat',
+            headers: {
+                authorization: `Bearer ${token}`
+            },
+            data: {
+                token
+            }
+        });
+        const responseData = {
+            message: data.message,
+            status: 'ok',
+            data: data.data
+        }
+        return responseData;
+    }
+    catch (error) {
+        const { message, type } = error.response.data;
+        const responseData = {
+            status: type,
+            message
+        }
+        return responseData;
     }
 }

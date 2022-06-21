@@ -3,7 +3,9 @@ const Chat = require('../models/chatModel');
 const User = require("../models/userModel");
 
 async function accessChats(req, res, next) {
+    //console.log(req.body);
     const { userId } = req.body;
+    //console.log(userId);
     if (!userId) {
         next({
             status: 400,
