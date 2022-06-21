@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Authentication.css';
 import Login from '../../components/login/login';
 import Signup from '../../components/signup/signup';
+import { useNavigate } from 'react-router-dom';
 
 function Authentication() {
     const [toggleInput, setToggleInput] = useState(true);
+    const navigate = useNavigate();
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('userData'));
+        if (user) {
+            navigate('/home');
+        }
+    }, [navigate]);
+
 
     function handleClick(event) {
         const val = event.target.childNodes[0].textContent === 'Log In';

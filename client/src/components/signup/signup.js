@@ -3,6 +3,7 @@ import './signup.css';
 import { registerUser } from '../../utils/httpRequests';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
     const name = useRef(null);
@@ -17,10 +18,7 @@ function Signup() {
         }
     );
     const [isLoading, setIsLoading] = useState(false);
-    // const [showToast, setShowToast] = useState({
-    //     status: false,
-    //     message: ""
-    // });
+    const navigate = useNavigate();
 
     function handleImage(file) {
         let reader = new FileReader(file);
@@ -57,7 +55,8 @@ function Signup() {
                 toast(message);
             }
             else {
-                console.log(data);
+                localStorage.setItem('userData', JSON.stringify(data));
+                navigate('/home');
             }
         }
     }

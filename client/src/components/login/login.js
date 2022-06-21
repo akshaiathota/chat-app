@@ -1,4 +1,5 @@
-import React, { useRef } from 'react'
+import React, { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './login.css';
 import { loginUser } from '../../utils/httpRequests';
 import { toast, ToastContainer } from 'react-toastify';
@@ -7,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function Login() {
     const email = useRef(null);
     const password = useRef(null);
+    const navigate = useNavigate();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -14,7 +16,7 @@ function Login() {
             email: email.current.value,
             password: password.current.value
         };
-        console.log('handling login...');
+        // console.log('handling login...');
         const response = await loginUser(inputData);
         if (response !== null) {
             const { status, data, message } = response;
@@ -23,6 +25,8 @@ function Login() {
             }
             else {
                 console.log(data);
+                localStorage.setItem('userData', JSON.stringify(data));
+                navigate('/home');
             }
         }
     }

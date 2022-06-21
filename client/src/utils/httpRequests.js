@@ -66,7 +66,6 @@ export const registerUser = async (inputData) => {
     }
 }
 
-
 export const loginUser = async (inputData) => {
     const inputsValidity = areLoginInputsValid(inputData);
     if (!inputsValidity) {
@@ -102,6 +101,34 @@ export const loginUser = async (inputData) => {
     }
 }
 
-export const uploadProfilePic = async (inputData) => {
-
+export const searchUser = async (search, token) => {
+    console.log('searching user...');
+    if (!search) {
+        return {
+            status: 'error',
+            message: 'Search query empty'
+        };
+    }
+    try {
+        const { data } = await axios({
+            method: 'GET',
+            url: BASE_URI + `user?search=${search}`,
+            headers: {
+                authorization: `Bearer ${token}`
+            },
+            data: search
+        });
+        const responseData = {
+            message: data.message,
+            data: data.data,
+            status: 'ok'
+        };
+        return responseData;
+    }
+    catch (error) {
+        return {
+            status: 'error',
+            message: 'Search query failed'
+        };
+    }
 }

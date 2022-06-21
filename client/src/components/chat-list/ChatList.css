@@ -1,0 +1,38 @@
+.chat-list{
+    width: 35vw;
+    height: 100vh;
+    background-color: #17212b;
+    color: white;
+}
+
+.cl-title{
+    width: 100%;
+    height: 55px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+
+.cl-title input{
+    width: 75%;
+    height: 30px;
+    background-color: #242f3d;
+    padding-left: 10px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    color:white;
+}
+
+.cl-title input:focus{
+    outline: none;
+    border:none;
+}
+
+/* Chat holder */
+.cl-chat-holder{
+   width: 100%;
+   overflow: hidden;
+}

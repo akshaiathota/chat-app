@@ -61,7 +61,7 @@ async function accessChats(req, res, next) {
 
 async function fetchChats(req, res, next) {
     try {
-        console.log('fetch chats');
+        // console.log('fetch chats');
         const chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
             .populate('users', '-password')
             .populate('groupAdmin', '-password')

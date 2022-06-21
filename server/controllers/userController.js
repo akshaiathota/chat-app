@@ -144,6 +144,7 @@ async function loginUser(req, res, next) {
 }
 
 async function findUser(req, res) {
+    console.log(req.query.search);
     const searchString = req.query.search;
     const users = await User.findOne({ mobileNumber: searchString }).find({ _id: { $ne: req.user._id } });
     res.status(201).json({
