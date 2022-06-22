@@ -20,6 +20,38 @@ function isPasswordValid(password, confirmPassword) {
     return password === confirmPassword;
 }
 
+async function serverRequest(url, method, data, headers) {
+    try {
+        const response = await axios({
+            url,
+            method,
+            data,
+            headers
+        });
+        const responseData = {
+            status: 'ok',
+            data: response.data.data,
+            message: response.data.message
+        }
+        return responseData;
+    }
+    catch (error) {
+        console.log(error);
+        if (error.response.data) {
+            const { message, type } = error.response.data;
+            const responseData = {
+                status: 'error',
+                message: message
+            }
+            return responseData;
+        }
+        return {
+            status: 'error',
+            message: 'server error'
+        };
+    }
+}
+
 export const registerUser = async (inputData) => {
     const { password, confirmPassword } = inputData;
     const inputsValidity = areRegisterInputsValid(inputData);
@@ -31,39 +63,13 @@ export const registerUser = async (inputData) => {
         }
         return responseData;
     }
-    try {
-        //console.log(inputData);
-        const { data } = await axios({
-            method: 'POST',
-            url: BASE_URI + 'user/',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: inputData
-        });
-
-        const responseData = {
-            status: 'ok',
-            data: data.data,
-            message: data.message
-        }
-        return responseData;
+    const url = BASE_URI + 'user';
+    const method = 'POST';
+    const headers = {
+        'Content-Type': 'application/json'
     }
-    catch (error) {
-        console.log(error);
-        if (error.response.data) {
-            const { message, type } = error.response.data;
-            const responseData = {
-                status: type,
-                message
-            }
-            return responseData;
-        }
-        return {
-            status: 'error',
-            message: 'server error'
-        };
-    }
+    const response = await serverRequest(url, method, inputData, headers);
+    return response;
 }
 
 export const loginUser = async (inputData) => {
@@ -75,64 +81,30 @@ export const loginUser = async (inputData) => {
         }
         return responseData;
     }
-    try {
-        const { data } = await axios({
-            method: 'POST',
-            url: BASE_URI + 'user/login',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: inputData
-        });
-        const responseData = {
-            status: 'ok',
-            data: data.data,
-            message: data.message
-        };
-        return responseData;
-    }
-    catch (error) {
-        const { message, type } = error.response.data;
-        const responseData = {
-            status: type,
-            message
-        }
-        return responseData;
-    }
+    const method = 'POST';
+    const url = BASE_URI + 'user/login';
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+    const response = await serverRequest(url, method, inputData, headers);
+    return response;
 }
 
 export const searchUser = async (search, token) => {
-    console.log('searching user...');
+    //console.log('searching user...');
     if (!search) {
         return {
             status: 'error',
             message: 'Search query empty'
         };
     }
-    try {
-        const { data } = await axios({
-            method: 'GET',
-            url: BASE_URI + `user?search=${search}`,
-            headers: {
-                authorization: `Bearer ${token}`
-            },
-            data: search
-        });
-        const responseData = {
-            message: data.message,
-            data: data.data,
-            status: 'ok'
-        };
-        return responseData;
-    }
-    catch (error) {
-        const { message, type } = error.response.data;
-        const responseData = {
-            status: type,
-            message
-        }
-        return responseData;
-    }
+    const method = 'GET';
+    const url = BASE_URI + `user?search=${search}`;
+    const headers = {
+        authorization: `Bearer ${token}`
+    };
+    const response = await serverRequest(url, method, search, headers);
+    return response;
 }
 
 export const accessChat = async (userId, token) => {
@@ -143,65 +115,117 @@ export const accessChat = async (userId, token) => {
             message: 'invalid userId'
         };
     }
-    try {
-        const { data } = await axios({
-            method: 'POST',
-            url: BASE_URI + 'chat',
-            headers: {
-                authorization: `Bearer ${token}`
-            },
-            data: {
-                userId
-            }
-        });
-        const responseData = {
-            message: data.message,
-            status: 'ok',
-            data: data.data
-        }
-        return responseData;
-    }
-    catch (error) {
-        const { message, type } = error.response.data;
-        const responseData = {
-            status: type,
-            message
-        }
-        return responseData;
-    }
+    const method = 'POST';
+    const url = BASE_URI + 'chat';
+    const headers = {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${token}`
+    };
+    const data = {
+        userId
+    };
+    const response = await serverRequest(url, method, data, headers);
+    return response;
 }
 
-export const fetchChat = async (token) => {
+export const fetchChats = async (token) => {
     if (!token) {
         return {
             status: 'error',
             message: 'invalid or empty token'
         };
     }
-    try {
-        const { data } = await axios({
-            method: 'GET',
-            url: BASE_URI + 'chat',
-            headers: {
-                authorization: `Bearer ${token}`
-            },
-            data: {
-                token
-            }
-        });
-        const responseData = {
-            message: data.message,
-            status: 'ok',
-            data: data.data
-        }
-        return responseData;
+    const method = 'GET';
+    const url = BASE_URI + 'chat';
+    const headers = {
+        authorization: `Bearer ${token}`
+    };
+    const data = {
+        token
     }
-    catch (error) {
-        const { message, type } = error.response.data;
-        const responseData = {
-            status: type,
-            message
-        }
-        return responseData;
-    }
+    console.log(token);
+    const response = await serverRequest(url, method, data, headers);
+    return response;
 }
+
+export const createGroupChat = async (name, users, token) => {
+    if (!name || !users) {
+        return {
+            status: 'error',
+            message: 'missing or invalid data'
+        };
+    }
+    const method = 'POST';
+    const url = BASE_URI + 'user/group';
+    const headers = {
+        authorization: `Bearer ${token}`
+    };
+    const data = {
+        name,
+        users: JSON.stringify(users)
+    };
+    const response = await serverRequest(url, method, data, headers);
+    return response;
+}
+
+export const renameGroup = async (newGroupName, chatId, token) => {
+    if (!chatId || !newGroupName) {
+        return {
+            status: 'error',
+            message: 'missing or invalid data'
+        };
+    }
+    const method = 'PUT';
+    const url = BASE_URI + 'user/rename';
+    const headers = {
+        authorization: `Bearer ${token}`
+    }
+    const data = {
+        chatId,
+        chatName: newGroupName
+    }
+    const response = await serverRequest(url, method, data, headers);
+    return response;
+}
+
+export const addUser = async (userId, chatId, token) => {
+    if (!chatId || !userId) {
+        return {
+            status: 'error',
+            message: 'missing or invalid data'
+        };
+    }
+    const method = 'PUT';
+    const url = BASE_URI + 'user/groupadd';
+    const headers = {
+        authorization: `Bearer ${token}`
+    }
+    const data = {
+        chatId,
+        userId
+    }
+    const response = await serverRequest(url, method, data, headers);
+    return response;
+}
+
+export const removeUser = async (userId, chatId, token) => {
+    if (!chatId || !userId) {
+        return {
+            status: 'error',
+            message: 'missing or invalid data'
+        };
+    }
+    const method = 'PUT';
+    const url = BASE_URI + 'user/groupremove';
+    const headers = {
+        authorization: `Bearer ${token}`
+    }
+    const data = {
+        chatId,
+        userId
+    }
+    const response = await serverRequest(url, method, data, headers);
+    return response;
+}
+
+

@@ -1,10 +1,11 @@
 import React from "react";
+import { ChatState } from "../../utils/ChatProvider";
 import './ChatListItem.css';
 
 function ChatListItem(obj) {
     const { otherUser, onClick } = obj;
-    const { name, messages, lastChatTime, _id } = otherUser;
-
+    const { user } = ChatState();
+    const { _id } = otherUser;
     return (
         <div className='chat-list-item' onClick={() => onClick(_id)}>
             <div className='cli-image-container'>
@@ -13,15 +14,15 @@ function ChatListItem(obj) {
             <div className='cli-chat-details'>
                 <div >
                     <div className='cli-chat-name'>
-                        {name ? name : ""}
+                        {!otherUser ? (otherUser.isGroupChat ? otherUser.chatName : otherUser.users[0]._id === user._id ? otherUser.users[1].name : otherUser.users[0].name) : 'fake'}
                     </div>
                     <div className='cli-chat-last-msg' >
-                        {messages ? messages[messages.length - 1] : ""}
+                        {/* {messages ? messages[messages.length - 1] : ""} */}
                     </div>
                 </div>
                 <div>
                     <div className='cli-chat-time'>
-                        {lastChatTime ? lastChatTime : ""}
+                        {/* {lastChatTime ? lastChatTime : ""} */}
                     </div>
                     <div className='cli-chat-new-msg' >
                         <div>

@@ -64,6 +64,7 @@ async function accessChats(req, res, next) {
 async function fetchChats(req, res, next) {
     try {
         // console.log('fetch chats');
+        //console.log(req.user);
         const chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
             .populate('users', '-password')
             .populate('groupAdmin', '-password')
@@ -98,7 +99,7 @@ async function createGroupChat(req, res, next) {
         });
         return;
     }
-    let inputUsers = JSON.parse(req.body.users);
+    let inputUsers = JSON.parse(users);
     if (inputUsers < 2) {
         next({
             status: 'error',
