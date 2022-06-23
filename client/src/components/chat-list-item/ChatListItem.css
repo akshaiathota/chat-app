@@ -4,6 +4,7 @@
     display: flex;
     align-items: center;
     margin: 20px 0px;
+    cursor: pointer;
 }
 
 .chat-list-item:hover{

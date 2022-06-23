@@ -35,11 +35,13 @@
 
 .s-input input[type='file']{
     padding: 0px;
+    cursor: pointer;
 }
 
 .signup-page input[type='submit']{
     background-color: rgb(51, 158, 51);
     font-size: 17px;
     font-weight: 500;
-    color:aliceblue
+    color:aliceblue;
+    cursor: pointer;
 }

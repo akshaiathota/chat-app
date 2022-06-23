@@ -48,3 +48,7 @@
 .l-red{
     color:red;
 }
+
+.l-button{
+    cursor: pointer;
+}

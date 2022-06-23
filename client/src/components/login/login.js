@@ -44,8 +44,8 @@ function Login() {
                         <label>Password<span className='l-red'>*</span></label>
                         <input type='password' placeholder='Enter your password' ref={password} required />
                     </div>
-                    <input className='button' type='submit' value='Login' />
-                    <input className='button' type='button' value='Get Guest User Credentials' />
+                    <input className='l-button' type='submit' value='Login' />
+                    <input className='l-button' type='button' value='Get Guest User Credentials' />
                 </div>
             </form>
         </>

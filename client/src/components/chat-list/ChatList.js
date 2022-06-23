@@ -6,6 +6,10 @@ import { GiHamburgerMenu } from 'react-icons/gi';
 import { accessChat, searchUser, fetchChats } from '../../utils/httpRequests';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import NavigationMenu from '../navigation menu/NavigationMenu';
+import MenuItem from '../menu-item/MenuItem';
+import { TiGroup } from 'react-icons/ti';
+import { BiLogOut } from 'react-icons/bi';
 
 
 function ChatList() {
@@ -29,6 +33,7 @@ function ChatList() {
       const { data } = response;
       const doesChatExist = chats ? chats.find((chat) => chat._id === data._id) : true;
       if (!doesChatExist) {
+        console.log('adding to chat');
         setChats([data, ...chats]);
       }
       setSearchResult(data);
@@ -36,7 +41,7 @@ function ChatList() {
   }
 
   async function fetchUserChats() {
-    console.log('fetching searched user');
+    console.log('fetching user chats');
     if (user == null) {
       return;
     }
@@ -71,8 +76,8 @@ function ChatList() {
   }
 
 
-
   useEffect(() => {
+    //console.log(chats);
     async function handleKeyPress(event) {
       let characterCode = event.code || event.key;
       if (characterCode === 'Enter') {
@@ -91,19 +96,20 @@ function ChatList() {
   }, [user]);
 
   return (
-    <div className='chat-list'>
-      <ToastContainer />
-      <div className='cl-title'>
-        <GiHamburgerMenu size={30} style={{ color: 'white' }} />
-        <input type='text' placeholder='Search' title='Search for users to chat' ref={search} id='search-user' />
+    <>
+      <NavigationMenu />
+      <div className='chat-list'>
+        <ToastContainer />
+        <div className='cl-title'>
+          <input type='text' placeholder='Search' title='Search for users to chat' ref={search} id='search-user' />
+        </div>
+        <div className='cl-chat-holder'>
+          {
+            chats ? chats.map((chat) => <ChatListItem key={chat._id} chat={chat} onClick={handleClick} />) : ""
+          }
+        </div>
       </div>
-      <div className='cl-chat-holder'>
-        {
-          chats ? chats.map((user) => <ChatListItem key={user._id} otherUser={user} onClick={handleClick} />) : ""
-        }
-      </div>
-
-    </div>
+    </>
   );
 }
 
