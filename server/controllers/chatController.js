@@ -1,4 +1,4 @@
-const { INVALID_CREDENTIALS, SERVER_ERR } = require("../utils/error");
+const { INVALID_CREDENTIALS, SERVER_ERR, USER_ALREADY_EXISTS } = require("../utils/error");
 const Chat = require('../models/chatModel');
 const User = require("../models/userModel");
 
@@ -101,7 +101,7 @@ async function createGroupChat(req, res, next) {
         return;
     }
     let inputUsers = JSON.parse(users);
-    if (inputUsers < 2) {
+    if (inputUsers.length < 2) {
         next({
             status: 'error',
             message: 'Requires more than 2 people to form group'
@@ -129,7 +129,8 @@ async function createGroupChat(req, res, next) {
         next({
             message: SERVER_ERR,
             status: 500
-        })
+        });
+        return;
     }
 }
 
@@ -184,6 +185,15 @@ async function addToGroup(req, res, next) {
         return;
     }
     try {
+        const doesChatExist = await Chat.findById(chatId).find({ users: { $elemMatch: { $eq: userId } } });
+        console.log(doesChatExist);
+        if (doesChatExist.length > 0) {
+            next({
+                status: 400,
+                message: USER_ALREADY_EXISTS
+            });
+            return;
+        }
         const updation = await Chat.findByIdAndUpdate(chatId, {
             $push: { users: userId }
         }, {
@@ -198,6 +208,7 @@ async function addToGroup(req, res, next) {
         return;
     }
     catch (error) {
+        console.log(error);
         next({
             message: SERVER_ERR,
             status: 500
@@ -223,6 +234,7 @@ async function removeFromGroup(req, res, next) {
         })
             .populate('users', '-password')
             .populate('groupAdmin', '-password')
+        console.log(deletion);
         res.status(200).json({
             message: 'user removed from group',
             data: deletion

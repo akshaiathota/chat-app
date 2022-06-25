@@ -40,7 +40,8 @@ function NavigationMenu() {
             MenuBar();
     }
 
-    function handleNext() {
+    function handleNext(event) {
+        event.preventDefault();
         handleGroupUI();
         setShowAddMembersUI(!showAddMembersUI);
     }

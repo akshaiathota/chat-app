@@ -16,18 +16,12 @@
 }
 
 .cw-header h4 {
-    margin: 6px 0px 5px;
+    margin: 18px 0px 5px;
     padding-left: 10px;
-    font-size: medium;
+    font-size: 18px;
+    text-transform: capitalize;
+    cursor: default;
 }
-
-.cw-header h6 {
-    margin: 5px 0px;
-    padding-left: 10px;
-    font-size: small;
-    color: grey;
-}
-
 
 .cw-chat {
     height: 85vh;
@@ -57,4 +51,15 @@
     outline: none;
     border: none;
     background-color: #1c2835;
+}
+
+.cw-no-user {
+    width: 450px;
+    height: 50px;
+    margin: 25% auto;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    color: white;
+    cursor: default;
 }

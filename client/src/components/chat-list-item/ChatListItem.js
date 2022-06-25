@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { ChatState } from "../../utils/ChatProvider";
 import './ChatListItem.css';
 
-function ChatListItem({ chat, onClick }) {
-    const { user } = ChatState();
+function ChatListItem({ chat }) {
+    const { user, setSelectedChat, selectedChat } = ChatState();
     const { users } = chat;
-    console.log(chat);
+    //console.log(chat);
+    function handleSelectedChat() {
+        setSelectedChat(chat);
+    }
+
     function getOtherUser() {
         if (!user || !users) {
             return null;
         }
         if (users.length == 1) {
-            return 1;
+            return;
         }
         return users[0]._id === user._id ? users[1] : users[0];
     }
@@ -20,7 +24,7 @@ function ChatListItem({ chat, onClick }) {
         <>
             {
                 user && users ?
-                    <div className='chat-list-item' onClick={() => onClick(getOtherUser()._id)}>
+                    <div className={`${chat === selectedChat ? 'cli-selected-chat' : ''} chat-list-item`} onClick={() => handleSelectedChat()}>
                         <div className='cli-image-container'>
                             <img />
                         </div>

@@ -9,7 +9,7 @@ function ChatHolder() {
     return (
         <div className='chat-holder'>
             {
-                chats ? chats.map((chat) => <ChatListItem key={chat._id} chat={chat} />) : ""
+                chats && chats.length > 0 ? chats.map((chat) => <ChatListItem key={chat._id} chat={chat} />) : ""
             }
         </div>
     )
