@@ -74,6 +74,7 @@ async function fetchChats(req, res, next) {
             path: 'latestMessage.sender',
             select: 'name pic email mobileNumber'
         });
+        //console.log(resultData);
         res.status(200).json({
             message: 'fetched chats successfully',
             data: resultData

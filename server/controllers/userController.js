@@ -154,8 +154,27 @@ async function findUser(req, res) {
     return;
 }
 
+async function findUserByName(req, res) {
+    const conditions = req.query.search
+        ? {
+            $or: [
+                { name: { $regex: req.query.search, $options: "i" } },
+                { email: { $regex: req.query.search, $options: "i" } },
+            ],
+        }
+        : {};
+
+    const users = await User.find(conditions).find({ _id: { $ne: req.user._id } });
+    res.status(201).json({
+        data: users,
+        message: 'data fetched successfully'
+    });
+    return;
+}
+
 module.exports = {
     registerUser,
     loginUser,
-    findUser
+    findUser,
+    findUserByName
 };

@@ -1,36 +1,35 @@
-.chat-list{
+.chat-list {
     width: 35vw;
     height: 100vh;
     background-color: #17212b;
     color: white;
 }
 
-.cl-title{
+.cl-title {
     width: 100%;
-    height: 55px;
+    height: 45px;
+    margin-top: 0px;
 }
 
 
-.cl-title input{
+.cl-title h5 {
     width: 75%;
     height: 30px;
-    background-color: #242f3d;
     padding-left: 10px;
     border-radius: 5px;
     outline: none;
     border: none;
-    color:white;
-    margin-left: 75px;
-    margin-top: 22px;
+    color: white;
+    margin: 0px;
+    margin-left: 65px;
+    margin-top: 20px;
+    font-size: 25px;
+    overflow: hidden;
 }
 
-.cl-title input:focus{
+.cl-title input:focus {
     outline: none;
-    border:none;
+    border: none;
 }
 
 /* Chat holder */
-.cl-chat-holder{
-   width: 100%;
-   overflow: hidden;
-}

@@ -5,7 +5,7 @@ import './ChatListItem.css';
 function ChatListItem({ chat, onClick }) {
     const { user } = ChatState();
     const { users } = chat;
-
+    console.log(chat);
     function getOtherUser() {
         if (!user || !users) {
             return null;
@@ -16,12 +16,11 @@ function ChatListItem({ chat, onClick }) {
         return users[0]._id === user._id ? users[1] : users[0];
     }
 
-    console.log(chat);
     return (
         <>
             {
                 user && users ?
-                    <div className='chat-list-item' onClick={() => getOtherUser()._id}>
+                    <div className='chat-list-item' onClick={() => onClick(getOtherUser()._id)}>
                         <div className='cli-image-container'>
                             <img />
                         </div>

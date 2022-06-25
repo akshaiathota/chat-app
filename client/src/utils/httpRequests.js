@@ -38,7 +38,7 @@ async function serverRequest(url, method, data, headers) {
     catch (error) {
         console.log(error);
         if (error.response.data) {
-            const { message, type } = error.response.data;
+            const { message } = error.response.data;
             const responseData = {
                 status: 'error',
                 message: message
@@ -47,7 +47,7 @@ async function serverRequest(url, method, data, headers) {
         }
         return {
             status: 'error',
-            message: 'server error'
+            message: 'connection error'
         };
     }
 }
@@ -107,6 +107,23 @@ export const searchUser = async (search, token) => {
     return response;
 }
 
+export const searchUserByName = async (search, token) => {
+    //console.log('searching user...');
+    if (!search) {
+        return {
+            status: 'error',
+            message: 'Search query empty'
+        };
+    }
+    const method = 'GET';
+    const url = BASE_URI + `user/name?search=${search}`;
+    const headers = {
+        authorization: `Bearer ${token}`
+    };
+    const response = await serverRequest(url, method, search, headers);
+    return response;
+}
+
 export const accessChat = async (userId, token) => {
     console.log('accessing chat...');
     if (!userId) {
@@ -143,12 +160,13 @@ export const fetchChats = async (token) => {
     const data = {
         token
     }
-    console.log(token);
     const response = await serverRequest(url, method, data, headers);
     return response;
 }
 
 export const createGroupChat = async (name, users, token) => {
+    console.log(name);
+    console.log(users);
     if (!name || !users) {
         return {
             status: 'error',
@@ -156,7 +174,7 @@ export const createGroupChat = async (name, users, token) => {
         };
     }
     const method = 'POST';
-    const url = BASE_URI + 'user/group';
+    const url = BASE_URI + 'chat/group';
     const headers = {
         authorization: `Bearer ${token}`
     };
@@ -176,7 +194,7 @@ export const renameGroup = async (newGroupName, chatId, token) => {
         };
     }
     const method = 'PUT';
-    const url = BASE_URI + 'user/rename';
+    const url = BASE_URI + 'chat/rename';
     const headers = {
         authorization: `Bearer ${token}`
     }
@@ -196,7 +214,7 @@ export const addUser = async (userId, chatId, token) => {
         };
     }
     const method = 'PUT';
-    const url = BASE_URI + 'user/groupadd';
+    const url = BASE_URI + 'chat/groupadd';
     const headers = {
         authorization: `Bearer ${token}`
     }
@@ -216,7 +234,7 @@ export const removeUser = async (userId, chatId, token) => {
         };
     }
     const method = 'PUT';
-    const url = BASE_URI + 'user/groupremove';
+    const url = BASE_URI + 'chat/groupremove';
     const headers = {
         authorization: `Bearer ${token}`
     }

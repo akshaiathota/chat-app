@@ -7,12 +7,14 @@ import ChatWindow from '../components/chat window/ChatWindow';
 function HomePage() {
 
     return (
-        <div className='home-page'>
-            <div className='chat-list'>
-                <ChatList />
+        <>
+            <div className='home-page'>
+                <div className='chat-list'>
+                    <ChatList />
+                </div>
+                <ChatWindow />
             </div>
-            <ChatWindow />
-        </div>
+        </>
     );
 }
 

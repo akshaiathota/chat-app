@@ -6,11 +6,22 @@ import { TiGroup } from 'react-icons/ti';
 import { BiLogOut } from 'react-icons/bi';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { useNavigate } from 'react-router-dom';
+import { FcSearch } from 'react-icons/fc';
+import CreateGroup from '../create group /CreateGroup';
+import AddGroupMembers from '../add group members/AddGroupMembers';
+import GlobalSearch from '../global search/GlobalSearch';
 
 function NavigationMenu() {
-    //console.log(props);
     const [menuState, setMenuState] = useState(false);
     const navigate = useNavigate();
+    const [showCreateGroupUI, setShowCreateGroupUI] = useState(false);
+    const [showAddMembersUI, setShowAddMembersUI] = useState(false);
+    const [showGlobalSearchUI, setShowGlobalSearchUI] = useState(false);
+    const [groupName, setGroupName] = useState("");
+
+    function handleInputChange(value) {
+        setGroupName(value);
+    }
 
     function handleLogOut() {
         localStorage.removeItem('userData');
@@ -22,35 +33,88 @@ function NavigationMenu() {
             return !prevValue;
         });
     }
-    return (
-        <>{
-            menuState ?
-                <div className='navigation-menu'>
-                    <div className='nm-exit' >
-                        <ImCross style={{ cursor: 'pointer', position: 'absolute', top: '30px', left: '270px' }} onClick={MenuBar} />
-                    </div>
-                    <div className='nm-user-header'>
-                        <div className='nm-profile-pic'>
-                            <img />
-                        </div>
-                        <ul>
-                            <li>name</li>
-                            <li>12345 67890</li>
-                        </ul>
-                    </div>
-                    <div className='nm-children'>
-                        <MenuItem text={'New Group'}>
-                            <TiGroup style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
-                        </MenuItem>
-                        <MenuItem text={'Log Out'} onClick={handleLogOut}>
-                            <BiLogOut style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
-                        </MenuItem>
-                    </div>
-                </div >
-                : <GiHamburgerMenu size={30} style={{ color: 'white', cursor: 'pointer', position: 'absolute', top: '20px', left: '20px' }} onClick={MenuBar} />
+
+    function handleGroupUI() {
+        setShowCreateGroupUI(!showCreateGroupUI);
+        if (menuState)
+            MenuBar();
+    }
+
+    function handleNext() {
+        handleGroupUI();
+        setShowAddMembersUI(!showAddMembersUI);
+    }
+
+    function handleAddGroupMembersUI() {
+        setShowAddMembersUI((prev) => {
+            return !prev;
+        });
+        if (menuState)
+            MenuBar();
+    }
+
+    function handleGlobalSearchUI() {
+        setShowGlobalSearchUI((prev) => {
+            return !prev;
+        });
+        if (menuState) {
+            MenuBar();
         }
+    }
+
+    return (
+        <>
+            {
+                menuState ?
+                    <>
+                        <div className='navigation-menu'>
+                            <div className='nm-exit' >
+                                <ImCross style={{ cursor: 'pointer', position: 'absolute', top: '30px', left: '270px' }} onClick={MenuBar} />
+                            </div>
+                            <div className='nm-user-header'>
+                                <div className='nm-profile-pic'>
+                                    <img />
+                                </div>
+                                <ul>
+                                    <li>name</li>
+                                    <li>12345 67890</li>
+                                </ul>
+                            </div>
+                            <div className='nm-children'>
+                                <MenuItem text={'New Group'} onClick={handleGroupUI}>
+                                    <TiGroup style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
+                                </MenuItem>
+                                <MenuItem text={'Global Search'} onClick={handleGlobalSearchUI}>
+                                    <FcSearch style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
+                                </MenuItem>
+                                <MenuItem text={'Log Out'} onClick={handleLogOut}>
+                                    <BiLogOut style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
+                                </MenuItem>
+                            </div>
+                        </div >
+                    </>
+                    : <>
+                        <GiHamburgerMenu size={30} style={{ color: 'white', cursor: 'pointer', position: 'absolute', top: '20px', left: '20px' }} onClick={MenuBar} />
+                    </>
+            }
+            <>
+                {
+                    showCreateGroupUI ?
+                        <CreateGroup handleGroupUI={handleGroupUI} handleNext={handleNext} handleInputChange={handleInputChange} />
+                        : (showAddMembersUI ?
+                            <AddGroupMembers handleAddGroupMembersUI={handleAddGroupMembersUI} groupName={groupName} />
+                            : <></>)
+                }
+            </>
+            <>
+                {
+                    showGlobalSearchUI ?
+                        <GlobalSearch handleClose={handleGlobalSearchUI} />
+                        : <></>
+                }
+            </>
         </>
     )
 }
 
-export default NavigationMenu
+export default NavigationMenu;
