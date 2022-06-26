@@ -22,10 +22,12 @@ function ChatWindow() {
       <div className='chat-window'>
         <div className='cw-header'>
           <div >
-            <h4>{selectedChat ? selectedChat.isGroupChat ? selectedChat.chatName : getOtherUser(selectedChat.users).name : ""}</h4>
+            <h4>{selectedChat ?
+              (selectedChat.isGroupChat ? selectedChat.chatName : getOtherUser(selectedChat.users).name)
+              : <></>}</h4>
           </div>
           {
-            selectedChat ? <ChatMenu chat={selectedChat} />
+            selectedChat && selectedChat.isGroupChat ? <ChatMenu chat={selectedChat} />
               : <></>
           }
         </div>

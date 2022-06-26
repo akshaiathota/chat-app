@@ -234,7 +234,7 @@ async function removeFromGroup(req, res, next) {
         })
             .populate('users', '-password')
             .populate('groupAdmin', '-password')
-        console.log(deletion);
+        //console.log(deletion);
         res.status(200).json({
             message: 'user removed from group',
             data: deletion

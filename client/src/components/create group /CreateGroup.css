@@ -1,18 +1,18 @@
-.create-group{
+.create-group {
     width: 365px;
-    height:200px;
+    height: 200px;
     background-color: #17212b;
     position: absolute;
-    top:35vh;
-    left:38vw;
+    top: 35vh;
+    left: 38vw;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    align-items: center ;
+    align-items: center;
 }
 
-.cg-inputs{
+.cg-inputs {
     width: 90%;
     height: 60%;
     display: flex;
@@ -21,7 +21,7 @@
     justify-content: center;
 }
 
-.cg-img-holder{
+.cg-img-holder {
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -30,8 +30,8 @@
     cursor: pointer;
 }
 
-.cg-inputs input{
-    border:none;
+.cg-inputs input {
+    border: none;
     border-bottom: 1px solid black;
     background-color: #17212b;
     color: white;
@@ -41,11 +41,11 @@
     letter-spacing: 0.8px;
 }
 
-.cg-inputs input:focus{
+.cg-inputs input:focus {
     border-bottom: 1px solid #6ab2f2;
 }
 
-.cg-buttons{
+.cg-buttons {
     width: 50%;
     height: 15%;
     align-self: flex-end;
@@ -55,7 +55,11 @@
     margin-top: -20px;
 }
 
-.cg-buttons input{
+.cg-r-buttons {
+    margin-right: 45px;
+}
+
+.cg-buttons input {
     width: 65px;
     background-color: #17212b;
     color: #6ab2f2;
@@ -66,7 +70,6 @@
     border-radius: 8px;
 }
 
-.cg-buttons input:hover{
+.cg-buttons input:hover {
     background-color: #202B36;
 }
-

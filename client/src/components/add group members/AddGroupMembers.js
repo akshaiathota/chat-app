@@ -7,7 +7,7 @@ import MenuItem from '../menu-item/MenuItem';
 import { ImCross } from 'react-icons/im';
 import { toast, ToastContainer } from 'react-toastify';
 
-function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers }) {
+function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
     const { user, chats, setChats, setSelectedChat } = ChatState();
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState("");
@@ -40,7 +40,6 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
         else {
             const userAlreadyExists = selectedUsers.find((usr) => usr._id === user._id);
             if (userAlreadyExists) {
-                // console.log('user Already Added');
                 return;
             }
             setSelectedUsers((prev) => {
@@ -67,6 +66,11 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
         else if (existingUserIds && operation === 'add') {
             if (selectedUsers.length === 1) {
                 console.log('adding user');
+                if (groupAdmin._id !== user._id) {
+                    toast('only admins can add new users');
+                    handleAddGroupMembersUI();
+                    return;
+                }
                 response = await addUser(selectedUsers[0]._id, groupId, user.token);
                 //console.log(response);
                 const remainingChats = chats.filter((chat) => chat._id !== groupId);
@@ -82,6 +86,11 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
         else if (operation === 'remove') {
             if (selectedUsers.length === 1) {
                 console.log('removing user');
+                if (groupAdmin._id !== user._id) {
+                    toast('only admins can add new users');
+                    handleAddGroupMembersUI();
+                    return;
+                }
                 response = await removeUser(selectedUsers[0]._id, groupId, user.token);
                 const remainingChats = chats.filter((chat) => chat._id !== groupId);
                 console.log(remainingChats);
@@ -113,7 +122,7 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
     }
 
     useEffect(() => {
-        if (search && operation === 'add') {
+        if (search && operation !== 'remove') {
             findUsersWithName();
         }
         else if (search && operation === 'remove') {
@@ -169,7 +178,7 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
                 </div>
                 <div className='am-buttons'>
                     <input type='button' value='Cancel' onClick={handleAddGroupMembersUI} />
-                    <input type='submit' value='Create' />
+                    <input type='submit' value={operation ? operation : 'Create'} />
                 </div>
             </div>
         </form>

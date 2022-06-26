@@ -86,3 +86,7 @@
     border-radius: 10px;
     cursor: pointer;
 }
+
+.am-buttons input[type='submit'] {
+    text-transform: capitalize;
+}

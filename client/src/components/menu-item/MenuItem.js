@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './MenuItem.css';
 
 function MenuItem({ children, text, user, onClick, style }) {
