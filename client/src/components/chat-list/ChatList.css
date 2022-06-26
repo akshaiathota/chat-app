@@ -1,6 +1,5 @@
 .chat-list {
     width: 35vw;
-    height: 100vh;
     background-color: #17212b;
     color: white;
 }
@@ -31,5 +30,3 @@
     outline: none;
     border: none;
 }
-
-/* Chat holder */

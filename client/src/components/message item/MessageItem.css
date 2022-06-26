@@ -1,0 +1,54 @@
+.message-item {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    background-color: #6ab2f2;
+    align-items: center;
+    position: relative;
+    margin: 15px;
+    border-radius: 8px;
+}
+
+.mi-img-holder {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.mi-msg-details {
+    padding: 10px;
+}
+
+.mi-msg-details h6 {
+    text-align: end;
+    width: 100%;
+    font-size: 15px;
+    height: 20px;
+    margin: 0px;
+    text-transform: capitalize;
+    font-weight: 500;
+    color: black
+}
+
+.mi-message-holder {
+    height: 80%;
+    width: fit-content;
+    overflow: hidden;
+    color: white;
+    font-size: 15px;
+}
+
+.right {
+    align-self: flex-end;
+    margin-right: 50px;
+}
+
+.left h6 {
+    text-align: start;
+}
+
+.left {
+    margin-left: 50px;
+    background-color: palevioletred;
+}

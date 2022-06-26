@@ -3,7 +3,9 @@
     width: 75vw;
     display: flex;
     flex-direction: column;
-    color: white
+    color: white;
+    overflow: hidden;
+    position: relative;
 }
 
 .cw-header {
@@ -24,42 +26,22 @@
 }
 
 .cw-chat {
-    height: 85vh;
+    height: 92%;
     width: 100%;
     background: #0e1621;
 }
 
-.cw-input-field {
-    width: 100%;
-    max-height: 12vh;
-    overflow: hidden;
-    margin-bottom: -5px;
-}
-
-.cw-input-field textarea {
-    max-height: 100%;
-    width: 100%;
-    padding: 10px;
-    line-height: 20px;
-    border: none;
-    background-color: #0a121b;
-    color: white;
-}
-
-.cw-input-field textarea:focus,
-.cw-input-field textarea:hover {
-    outline: none;
-    border: none;
-    background-color: #1c2835;
-}
-
 .cw-no-user {
-    width: 450px;
-    height: 50px;
-    margin: 25% auto;
+    height: 100vh;
+    width: 75vw;
+    background-color: #0e1621;
     text-align: center;
     font-size: 18px;
     font-weight: 500;
     color: white;
     cursor: default;
+}
+
+.cw-no-user h4 {
+    margin-top: 46vh;
 }

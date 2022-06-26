@@ -1,6 +1,10 @@
 import axios from 'axios';
 
 const BASE_URI = 'http://localhost:5000/';
+const INVALID_DATA = {
+    status: 'error',
+    message: 'missing or invalid data'
+};
 
 function areRegisterInputsValid({ email, password, confirmPassword, mobileNumber }) {
     if (!email || !password || !confirmPassword || !mobileNumber) {
@@ -57,11 +61,7 @@ export const registerUser = async (inputData) => {
     const inputsValidity = areRegisterInputsValid(inputData);
     const passwordMatch = isPasswordValid(password, confirmPassword);
     if (!inputsValidity || !passwordMatch) {
-        const responseData = {
-            status: 'error',
-            message: 'Invalid Data'
-        }
-        return responseData;
+        return INVALID_DATA;
     }
     const url = BASE_URI + 'user';
     const method = 'POST';
@@ -75,11 +75,7 @@ export const registerUser = async (inputData) => {
 export const loginUser = async (inputData) => {
     const inputsValidity = areLoginInputsValid(inputData);
     if (!inputsValidity) {
-        const responseData = {
-            status: 'error',
-            message: 'Invalid Credentials'
-        }
-        return responseData;
+        return INVALID_DATA;
     }
     const method = 'POST';
     const url = BASE_URI + 'user/login';
@@ -93,10 +89,7 @@ export const loginUser = async (inputData) => {
 export const searchUser = async (search, token) => {
     //console.log('searching user...');
     if (!search) {
-        return {
-            status: 'error',
-            message: 'Search query empty'
-        };
+        return INVALID_DATA;
     }
     const method = 'GET';
     const url = BASE_URI + `user?search=${search}`;
@@ -110,10 +103,7 @@ export const searchUser = async (search, token) => {
 export const searchUserByName = async (search, token) => {
     //console.log('searching user...');
     if (!search) {
-        return {
-            status: 'error',
-            message: 'Search query empty'
-        };
+        return INVALID_DATA;
     }
     const method = 'GET';
     const url = BASE_URI + `user/name?search=${search}`;
@@ -125,12 +115,9 @@ export const searchUserByName = async (search, token) => {
 }
 
 export const accessChat = async (userId, token) => {
-    console.log('accessing chat...');
+    //console.log('accessing chat...');
     if (!userId) {
-        return {
-            status: 'error',
-            message: 'invalid userId'
-        };
+        return INVALID_DATA;
     }
     const method = 'POST';
     const url = BASE_URI + 'chat';
@@ -147,10 +134,7 @@ export const accessChat = async (userId, token) => {
 
 export const fetchChats = async (token) => {
     if (!token) {
-        return {
-            status: 'error',
-            message: 'invalid or empty token'
-        };
+        return INVALID_DATA;
     }
     const method = 'GET';
     const url = BASE_URI + 'chat';
@@ -165,13 +149,8 @@ export const fetchChats = async (token) => {
 }
 
 export const createGroupChat = async (name, users, token) => {
-    console.log(name);
-    console.log(users);
     if (!name || !users) {
-        return {
-            status: 'error',
-            message: 'missing or invalid data'
-        };
+        return INVALID_DATA;
     }
     const method = 'POST';
     const url = BASE_URI + 'chat/group';
@@ -188,10 +167,7 @@ export const createGroupChat = async (name, users, token) => {
 
 export const renameGroup = async (newGroupName, chatId, token) => {
     if (!chatId || !newGroupName) {
-        return {
-            status: 'error',
-            message: 'missing or invalid data'
-        };
+        return INVALID_DATA;
     }
     const method = 'PUT';
     const url = BASE_URI + 'chat/rename';
@@ -208,10 +184,7 @@ export const renameGroup = async (newGroupName, chatId, token) => {
 
 export const addUser = async (userId, chatId, token) => {
     if (!chatId || !userId) {
-        return {
-            status: 'error',
-            message: 'missing or invalid data'
-        };
+        return INVALID_DATA;
     }
     const method = 'PUT';
     const url = BASE_URI + 'chat/groupadd';
@@ -228,10 +201,7 @@ export const addUser = async (userId, chatId, token) => {
 
 export const removeUser = async (userId, chatId, token) => {
     if (!chatId || !userId) {
-        return {
-            status: 'error',
-            message: 'missing or invalid data'
-        };
+        return INVALID_DATA;
     }
     const method = 'PUT';
     const url = BASE_URI + 'chat/groupremove';
@@ -242,6 +212,37 @@ export const removeUser = async (userId, chatId, token) => {
         chatId,
         userId
     }
+    const response = await serverRequest(url, method, data, headers);
+    return response;
+}
+
+export const sendMessage = async (message, chatId, token) => {
+    if (!message || !chatId) {
+        return INVALID_DATA;
+    }
+    const method = 'POST';
+    const url = BASE_URI + 'message/';
+    const headers = {
+        authorization: `Bearer ${token}`
+    }
+    const data = {
+        message,
+        chatId
+    };
+    const response = await serverRequest(url, method, data, headers);
+    return response;
+}
+
+export const getAllMessages = async (chatId, token) => {
+    if (!chatId) {
+        return INVALID_DATA;
+    }
+    const method = 'GET';
+    const url = BASE_URI + `message/${chatId}`;
+    const headers = {
+        authorization: `Bearer ${token}`
+    }
+    const data = {}
     const response = await serverRequest(url, method, data, headers);
     return response;
 }
