@@ -2,12 +2,13 @@ const express = require('express');
 
 const connectDB = require('./config/db');
 const userRouter = require('./routes/userRoutes');
+const chatRouter = require('./routes/chatRoutes');
+const messageRouter = require('./routes/messageRoutes');
 const { PORT_NUMBER, ORIGIN } = require('./config/config');
 const { API_ENDPOINT_NOT_FOUND, SERVER_ERR } = require('./utils/error');
 
 const cors = require('cors');
 const morgan = require('morgan');
-const chatRouter = require('./routes/chatRoutes');
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 //middleware routes
 app.use('/user', userRouter);
 app.use('/chat', chatRouter);
+app.use('/message', messageRouter);
 
 app.use('*', (req, res, next) => {
     const error = {
