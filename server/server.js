@@ -1,5 +1,4 @@
 const express = require('express');
-
 const connectDB = require('./config/db');
 const userRouter = require('./routes/userRoutes');
 const chatRouter = require('./routes/chatRoutes');
@@ -10,14 +9,22 @@ const { API_ENDPOINT_NOT_FOUND, SERVER_ERR } = require('./utils/error');
 const cors = require('cors');
 const morgan = require('morgan');
 
-const app = express();
+const app = require('express')();
+var server = require('http').Server(app);
+const io = require('socket.io')(server, {
+    pingTimeOut: 5000,
+    cors: {
+        origin: ORIGIN
+    }
+});
+
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb' }));
 app.use(morgan('combined'));
 app.use(cors({
     origin: ORIGIN
 }));
-
 
 app.get('/', (req, res) => {
     res.send('API IS RUNNING');
@@ -50,16 +57,48 @@ app.use((error, req, res, next) => {
     });
 })
 
+io.on('connection', function (socket) {
+    console.log('A user connected');
+
+    socket.on('setup', (userData) => {
+        if (userData) {
+            socket.join(userData._id);
+            console.log(userData._id);
+            socket.emit('connected');
+        }
+    });
+
+    socket.on('join chat', (room) => {
+        socket.join(room);
+        console.log('User joined room: ' + room);
+    });
+
+    socket.on('new message', (newMessageReceived) => {
+        console.log(newMessageReceived);
+        var chat = newMessageReceived.chat;
+        console.log(chat.users);
+        if (!chat.users) {
+            console.log('no users');
+            return;
+        }
+        socket.to(chat._id).emit('message received', newMessageReceived);
+    })
+
+    socket.on('disconnect', function () {
+        console.log('A user disconnected');
+    });
+});
+
 async function main() {
     try {
         await connectDB();
         //console.log(PORT_NUMBER + " " + ORIGIN);
-        app.listen(PORT_NUMBER, () => {
+        server.listen(PORT_NUMBER, () => {
             console.log(`server listening on port ${PORT_NUMBER}...`);
         })
     }
     catch (error) {
-
+        console.log(error);
     }
 }
 

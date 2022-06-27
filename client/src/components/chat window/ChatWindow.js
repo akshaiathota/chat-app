@@ -4,10 +4,10 @@ import './ChatWindow.css';
 import ChatMenu from '../chat menu/ChatMenu';
 import Messages from '../messages/Messages';
 
-function ChatWindow() {
+function ChatWindow({ socket }) {
   const { user, selectedChat } = ChatState();
   console.log(selectedChat);
-
+  console.log(socket);
   function getOtherUser(users) {
     if (!user || !users) {
       return null;
@@ -37,7 +37,7 @@ function ChatWindow() {
             <div className='cw-chat'>
               {
                 selectedChat ?
-                  <Messages />
+                  <Messages socket={socket} />
                   : <></>
               }
             </div>

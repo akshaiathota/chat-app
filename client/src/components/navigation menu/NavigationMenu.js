@@ -24,7 +24,7 @@ function NavigationMenu() {
     }
 
     function handleLogOut() {
-        localStorage.removeItem('userData');
+        localStorage.clear();
         navigate('/');
     }
 
