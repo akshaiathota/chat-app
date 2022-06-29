@@ -6,9 +6,10 @@ import { ChatState } from '../utils/ChatProvider';
 import socketIo from 'socket.io-client';
 
 function HomePage() {
-    const { user } = ChatState();
+    const { user, selectedChat } = ChatState();
     const ENDPOINT = 'http://localhost:5000';
     const [socket, setSocket] = useState(null);
+    const [smallScreen, setSmallScreen] = useState(false);
 
     useEffect(() => {
         console.log('in home useeffect');
@@ -35,9 +36,7 @@ function HomePage() {
     return (
         <>
             <div className='home-page'>
-                <div className='chat-list'>
-                    <ChatList />
-                </div>
+                <ChatList />
                 <ChatWindow socket={socket} />
             </div>
         </>

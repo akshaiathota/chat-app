@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './CreateGroup.css';
 
 function CreateGroup({ handleGroupUI, handleNext, handleInputChange, placeholder, operation }) {
-
+    console.log('in create group');
     function handleChange(event) {
         handleInputChange(event.target.value);
     }

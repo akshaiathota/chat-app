@@ -6,6 +6,7 @@ import { ChatState } from '../../utils/ChatProvider';
 import { accessChat, searchUserByName } from '../../utils/httpRequests';
 import MenuItem from '../menu-item/MenuItem';
 import './GlobalSearch.css';
+import DP from '../../assets/default dp.jpg';
 
 const GlobalSearch = ({ handleClose }) => {
     const { user, chats, setChats } = ChatState();
@@ -59,8 +60,12 @@ const GlobalSearch = ({ handleClose }) => {
                         searchResult.length > 0 ?
                             searchResult.map((result) =>
                                 <MenuItem key={result._id} text={result.name} user={result} style={{ height: '55px', marginBottom: '0px', borderRadius: '8px' }} onClick={handleFetchChat}>
-                                    <div style={{ width: '40px', height: '40px', margin: '0px 25px 0px', backgroundColor: 'black', borderRadius: '50%' }}>
-
+                                    <div style={{ width: '40px', height: '40px', margin: '0px 25px 0px', backgroundColor: 'black', borderRadius: '50%', overflow: 'hidden' }}>
+                                        <img src={result.pic === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
+                                            DP :
+                                            result.pic}
+                                            style={{ width: '100%', height: '100%' }}
+                                        />
                                     </div>
                                 </MenuItem>
                             )

@@ -18,16 +18,20 @@ async function sendMessage(req, res, next) {
         content: message,
         chat: chatId
     };
+    console.log(newMessage);
     try {
         let response = await Message.create(newMessage);
+        await Chat.findByIdAndUpdate(chatId, {
+            latestMessage: response
+        });
         response = await response.populate('sender', 'name pic');
         response = await response.populate('chat');
         response = await User.populate(response, {
             path: 'chat.users',
             select: 'name pic email mobileNumber'
         });
-        await Chat.findByIdAndUpdate(chatId, {
-            lastMessage: response
+        response = await Chat.populate(response, {
+            path: 'chat.latestMessage',
         });
         res.status(200).json({
             message: 'message sent',

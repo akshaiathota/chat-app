@@ -71,6 +71,7 @@ function Messages({ socket }) {
                             url={message.sender.pic}
                             message={message.content}
                             senderName={message.sender.name}
+                            isLoggedUser={user._id === message.sender._id}
                             leftOrRight={message.sender._id === user._id ? 'right' : 'left'}
                         />)
                         : <></>

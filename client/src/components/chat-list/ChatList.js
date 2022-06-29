@@ -19,6 +19,7 @@ function ChatList() {
       return;
     }
     const response = await fetchChats(user.token);
+    console.log(response);
     if (response.status === 'error') {
       toast(response.message);
       if (response.message === 'Not authorized, token failed') {
@@ -57,7 +58,7 @@ function ChatList() {
   return (
     <>
       <NavigationMenu />
-      <div className='chat-list'>
+      <div className={`chat-list`} >
         <ToastContainer />
         <div className='cl-title'>
           <h5>Just An Other Chat Application</h5>

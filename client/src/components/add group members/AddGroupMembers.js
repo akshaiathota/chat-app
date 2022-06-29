@@ -6,6 +6,7 @@ import { addUser, createGroupChat, removeUser, searchUserByName } from '../../ut
 import MenuItem from '../menu-item/MenuItem';
 import { ImCross } from 'react-icons/im';
 import { toast, ToastContainer } from 'react-toastify';
+import DP from '../../assets/default dp.jpg';
 
 function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
     const { user, chats, setChats, setSelectedChat } = ChatState();
@@ -154,8 +155,12 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
                                 user={result}
                                 style={{ height: '35px', width: 'max-content', margin: '0px 3px', borderRadius: '8px', fontSize: '12px', padding: '3px', cursor: 'default' }}
                             >
-                                <div style={{ width: '25px', height: '25px', marginRight: '5px', backgroundColor: 'black', borderRadius: '50%' }} className='am-selected-list'>
-
+                                <div style={{ width: '25px', height: '25px', marginRight: '5px', backgroundColor: 'black', borderRadius: '50%', overflow: 'hidden' }} className='am-selected-list'>
+                                    <img src={result.pic === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
+                                        DP :
+                                        result.pic}
+                                        style={{ width: '100%', height: '100%' }}
+                                    />
                                 </div>
                                 {result.name}
                                 <ImCross style={{ cursor: 'pointer', width: '10px', padding: '5px' }} onClick={() => handleRemoveUser(result)} />
@@ -168,8 +173,12 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
                     {
                         searchResult.length > 0 ? searchResult.map((result) =>
                             <MenuItem key={result._id} text={result.name} user={result} style={{ height: '55px', marginBottom: '0px', borderRadius: '8px' }} onClick={handleSelectUser} >
-                                <div style={{ width: '40px', height: '40px', margin: '0px 25px 0px', backgroundColor: 'black', borderRadius: '50%' }}>
-
+                                <div style={{ width: '40px', height: '40px', margin: '0px 25px 0px', backgroundColor: 'black', borderRadius: '50%', overflow: 'hidden' }}>
+                                    <img src={result.pic === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
+                                        DP :
+                                        result.pic}
+                                        style={{ width: '100%', height: '100%' }}
+                                    />
                                 </div>
                             </MenuItem>
                         ) :

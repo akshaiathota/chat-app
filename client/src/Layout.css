@@ -1,13 +1,6 @@
-.home-page{
+.home-page {
     margin: 0px;
     display: flex;
     flex-direction: row;
     overflow: hidden;
-}
-
-
-.about-chat-window{
-    width: 25vw;
-    height: 100vh;
-    background-color: blueviolet;
 }

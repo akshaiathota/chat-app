@@ -22,7 +22,7 @@ function ChatWindow({ socket }) {
     <>
       {
         selectedChat ?
-          <div className='chat-window'>
+          <div className={`chat-window`} >
             <div className='cw-header'>
               <div >
                 <h4>{

@@ -1,7 +1,12 @@
 .chat-list {
-    width: 35vw;
+    max-width: 32vw;
+    min-width: 381px;
     background-color: #17212b;
     color: white;
+}
+
+.cl-full-width {
+    width: 100vw;
 }
 
 .cl-title {
@@ -9,7 +14,6 @@
     height: 45px;
     margin-top: 0px;
 }
-
 
 .cl-title h5 {
     width: 75%;

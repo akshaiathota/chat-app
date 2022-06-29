@@ -10,8 +10,10 @@ import { FcSearch } from 'react-icons/fc';
 import CreateGroup from '../create group /CreateGroup';
 import AddGroupMembers from '../add group members/AddGroupMembers';
 import GlobalSearch from '../global search/GlobalSearch';
+import { ChatState } from '../../utils/ChatProvider';
 
 function NavigationMenu() {
+    const { user } = ChatState();
     const [menuState, setMenuState] = useState(false);
     const navigate = useNavigate();
     const [showCreateGroupUI, setShowCreateGroupUI] = useState(false);
@@ -35,6 +37,7 @@ function NavigationMenu() {
     }
 
     function handleGroupUI() {
+        console.log(showCreateGroupUI);
         setShowCreateGroupUI(!showCreateGroupUI);
         if (menuState)
             MenuBar();
@@ -74,11 +77,11 @@ function NavigationMenu() {
                             </div>
                             <div className='nm-user-header'>
                                 <div className='nm-profile-pic'>
-                                    <img />
+                                    <img src={user.pic} />
                                 </div>
                                 <ul>
-                                    <li>name</li>
-                                    <li>12345 67890</li>
+                                    <li>{user.name}</li>
+                                    <li>{user.mobileNumber}</li>
                                 </ul>
                             </div>
                             <div className='nm-children'>

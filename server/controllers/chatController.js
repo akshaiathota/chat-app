@@ -26,7 +26,7 @@ async function accessChats(req, res, next) {
         path: 'latestMessage.sender',
         select: 'name pic email mobileNumber'
     });
-
+    console.log(isChat);
     if (isChat.length > 0) {
         res.status(200).json({
             data: isChat[0],
@@ -38,7 +38,7 @@ async function accessChats(req, res, next) {
         let chatData = {
             chatName: 'sender',
             isGroupChat: false,
-            users: [req.user._id, userId]
+            users: [req.user._id, userId],
         };
         try {
             const newChat = await Chat.create(chatData);
@@ -52,6 +52,7 @@ async function accessChats(req, res, next) {
             });
         }
         catch (error) {
+            console.log(error);
             next({
                 status: 500,
                 message: SERVER_ERR
