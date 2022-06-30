@@ -1,6 +1,5 @@
 .chat-list {
-    max-width: 32vw;
-    min-width: 381px;
+    width: 32vw;
     background-color: #17212b;
     color: white;
 }

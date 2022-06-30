@@ -1,4 +1,4 @@
-.login-page{
+.login-page {
     width: 80%;
     height: 45vh;
     margin-left: 10%;
@@ -9,14 +9,16 @@
     align-items: center;
 }
 
-.l-email, .l-password{
+.l-email,
+.l-password {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.l-email label, .l-password label{
+.l-email label,
+.l-password label {
     font-size: 0.9rem;
     margin-bottom: 3px;
     align-self: flex-start;
@@ -24,31 +26,36 @@
     font-weight: 500;
 }
 
-.login-page input[type='submit']{
-    background-color: rgb(51, 158, 51);
+.login-page input[type='submit'] {
+    background-color: #6ab2f2;
     font-size: 17px;
     font-weight: 500;
 }
 
-.login-page input[type='button']{
-    background-color: rgb(213, 56, 56);
+.login-page input[type='button'] {
+    background-color: #6ab2f2;
     font-size: 17px;
     font-weight: 500;
 }
 
-.login-page input{
+.login-page input {
     width: 90%;
     height: 35px;
     padding-left: 10px;
     box-sizing: border-box;
     border-radius: 5px;
-    border-color: black;
+    border: none;
+    outline: none;
 }
 
-.l-red{
-    color:red;
+.l-red {
+    color: red;
 }
 
-.l-button{
+.l-button {
     cursor: pointer;
+}
+
+.login-page input:focus {
+    border: 3px solid #009AFA;
 }
