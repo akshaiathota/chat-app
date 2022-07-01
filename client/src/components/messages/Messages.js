@@ -20,26 +20,21 @@ function Messages({ socket }) {
     async function handleKeyDown(event) {
         if (event.key === 'Enter' && inputRef.current.value) {
             event.preventDefault();
-            console.log('sending message');
             const response = await sendMessage(inputRef.current.value, selectedChat._id, user.token);
             if (response && response.data) {
                 inputRef.current.value = '';
-                console.log('emitting new message to backend');
                 await socket.emit('new message', response.data);
                 setMessages([...messages, response.data]);
             }
             console.log(response);
-            //console.log(messages);
         }
     }
 
     async function fetchMessages() {
         const response = await getAllMessages(selectedChat._id, user.token);
-        console.log(response);
         if (response && response.data) {
             setMessages(response.data);
             socket.emit('join chat', selectedChat._id)
-            console.log(selectedChat._id);
         }
     }
 
@@ -54,12 +49,22 @@ function Messages({ socket }) {
 
 
     useEffect(() => {
-        socket.on('message received', (msg) => {
-            setMessages((prev) => {
-                return [...prev, msg];
-            })
-        });
-    }, []);
+        const listener = (msg) => {
+            if (msg && msg.chat._id === selectedChat._id) {
+                setMessages((prev) => {
+                    return [...prev, msg];
+                });
+            }
+            else {
+                console.log('in else');
+                return;
+            }
+        }
+        socket.on('message received', listener);
+        return () => {
+            socket.removeListener('message received', listener);
+        }
+    }, [selectedChat]);
 
     return (
         <div className='messages'>

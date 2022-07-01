@@ -163,7 +163,7 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
                                     />
                                 </div>
                                 {result.name}
-                                <ImCross style={{ cursor: 'pointer', width: '10px', padding: '5px' }} onClick={() => handleRemoveUser(result)} />
+                                <ImCross style={{ cursor: 'pointer', width: '10px', padding: '5px', color: 'white' }} onClick={() => handleRemoveUser(result)} />
                             </MenuItem>
                         )
                             : <></>

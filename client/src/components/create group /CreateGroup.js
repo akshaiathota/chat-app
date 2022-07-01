@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './CreateGroup.css';
 
 function CreateGroup({ handleGroupUI, handleNext, handleInputChange, placeholder, operation }) {

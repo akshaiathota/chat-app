@@ -7,8 +7,8 @@ function ChatListItem({ chat }) {
     const { user, setSelectedChat, selectedChat } = ChatState();
     const { users } = chat;
     const url = getOtherUser().pic;
-    const time = new Date(chat.latestMessage.updatedAt);
-    const lastMsgTime = time.getHours() + ":" + time.getMinutes();
+    // const time = new Date(chat.latestMessage.updatedAt);
+    // const lastMsgTime = time.getHours() + ":" + time.getMinutes();
     function handleSelectedChat() {
         setSelectedChat(chat);
     }
@@ -45,9 +45,10 @@ function ChatListItem({ chat }) {
                             </div>
                             <div>
                                 <div className={`${chat === selectedChat ? 'color-black' : ''} cli-chat-time`}>
-                                    {
+                                    {/* {
                                         lastMsgTime
-                                    }
+                                    } */}
+                                    4:00PM
                                 </div>
                                 <div className='cli-chat-new-msg' >
                                     <div>

@@ -73,7 +73,7 @@ function NavigationMenu() {
                     <>
                         <div className='navigation-menu'>
                             <div className='nm-exit' >
-                                <ImCross style={{ cursor: 'pointer', position: 'absolute', top: '30px', left: '270px' }} onClick={MenuBar} />
+                                <ImCross style={{ cursor: 'pointer', position: 'absolute', top: '30px', left: '270px', color: 'white' }} onClick={MenuBar} />
                             </div>
                             <div className='nm-user-header'>
                                 <div className='nm-profile-pic'>
@@ -106,7 +106,7 @@ function NavigationMenu() {
                     showCreateGroupUI ?
                         <CreateGroup handleGroupUI={handleGroupUI} handleNext={handleNext} handleInputChange={handleInputChange} />
                         : (showAddMembersUI ?
-                            <AddGroupMembers handleAddGroupMembersUI={handleAddGroupMembersUI} groupName={groupName} />
+                            <AddGroupMembers handleAddGroupMembersUI={handleAddGroupMembersUI} groupName={groupName} operation={'add'} />
                             : <></>)
                 }
             </>
