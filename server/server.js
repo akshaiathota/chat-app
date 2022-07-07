@@ -84,6 +84,19 @@ io.on('connection', function (socket) {
         socket.to(chat._id).emit('message received', newMessageReceived);
     })
 
+    socket.on('add to group', (chatContent) => {
+        if (!chatContent || !chatContent.users) {
+            return;
+        }
+        console.log(chatContent.users);
+        chatContent.users.forEach((usr) => {
+            if (usr._id !== chatContent.groupAdmin._id) {
+                console.log('notifying ' + usr._id);
+                socket.to(usr._id).emit('add to group', chatContent);
+            }
+        })
+    });
+
     socket.on('disconnect', function () {
         console.log('A user disconnected');
     });

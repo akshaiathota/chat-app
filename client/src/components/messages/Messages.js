@@ -5,7 +5,7 @@ import MessageItem from '../message item/MessageItem';
 import './Messages.css';
 
 function Messages({ socket }) {
-    const { user, selectedChat } = ChatState();
+    const { user, selectedChat, chats, setChats } = ChatState();
     const [messages, setMessages] = useState([]);
     const inputRef = useRef();
 
@@ -25,8 +25,10 @@ function Messages({ socket }) {
                 inputRef.current.value = '';
                 await socket.emit('new message', response.data);
                 setMessages([...messages, response.data]);
+                const otherChats = chats.filter((ct) => ct._id !== response.data.chat._id);
+                setChats([...otherChats, response.data.chat]);
             }
-            console.log(response);
+            //console.log(response);
         }
     }
 
@@ -49,20 +51,21 @@ function Messages({ socket }) {
 
 
     useEffect(() => {
-        const listener = (msg) => {
+        const messageListener = (msg) => {
+            const otherChats = chats.filter((ct) => ct._id !== msg.chat._id);
             if (msg && msg.chat._id === selectedChat._id) {
                 setMessages((prev) => {
                     return [...prev, msg];
                 });
-            }
-            else {
-                console.log('in else');
-                return;
+                setChats(() => {
+                    return [...otherChats, msg.chat];
+                });
             }
         }
-        socket.on('message received', listener);
+
+        socket.on('message received', messageListener);
         return () => {
-            socket.removeListener('message received', listener);
+            socket.removeListener('message received', messageListener);
         }
     }, [selectedChat]);
 

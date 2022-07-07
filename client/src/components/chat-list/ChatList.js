@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import NavigationMenu from '../navigation menu/NavigationMenu';
 import ChatHolder from '../chat holder/ChatHolder';
 
-function ChatList() {
+function ChatList({ socket }) {
   const { user, setChats } = ChatState();
   const search = useRef("");
   const navigate = useNavigate();
@@ -33,22 +33,6 @@ function ChatList() {
     }
   }
 
-  // async function handleClick(id) {
-  //   const response = await accessChat(id, user.token);
-  //   console.log(response);
-  //   if (response.status === 'error') {
-  //     toast(response.message);
-  //     if (response.message === 'Not authorized, token failed') {
-  //       localStorage.removeItem('userData');
-  //       navigate('/');
-  //     }
-  //   }
-  //   else {
-  //     setSelectedChat(response.data);
-  //   }
-  // }
-
-
   useEffect(() => {
     if (user) {
       fetchUserChats();
@@ -57,7 +41,7 @@ function ChatList() {
 
   return (
     <>
-      <NavigationMenu />
+      <NavigationMenu socket={socket} />
       <div className={`chat-list`} >
         <ToastContainer />
         <div className='cl-title'>

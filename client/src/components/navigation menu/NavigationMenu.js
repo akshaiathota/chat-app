@@ -12,7 +12,7 @@ import AddGroupMembers from '../add group members/AddGroupMembers';
 import GlobalSearch from '../global search/GlobalSearch';
 import { ChatState } from '../../utils/ChatProvider';
 
-function NavigationMenu() {
+function NavigationMenu({ socket }) {
     const { user } = ChatState();
     const [menuState, setMenuState] = useState(false);
     const navigate = useNavigate();
@@ -106,7 +106,12 @@ function NavigationMenu() {
                     showCreateGroupUI ?
                         <CreateGroup handleGroupUI={handleGroupUI} handleNext={handleNext} handleInputChange={handleInputChange} />
                         : (showAddMembersUI ?
-                            <AddGroupMembers handleAddGroupMembersUI={handleAddGroupMembersUI} groupName={groupName} operation={'add'} />
+                            <AddGroupMembers
+                                handleAddGroupMembersUI={handleAddGroupMembersUI}
+                                groupName={groupName}
+                                operation={'add'}
+                                socket={socket}
+                            />
                             : <></>)
                 }
             </>

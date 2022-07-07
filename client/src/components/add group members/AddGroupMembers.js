@@ -8,8 +8,8 @@ import { ImCross } from 'react-icons/im';
 import { toast, ToastContainer } from 'react-toastify';
 import DP from '../../assets/default dp.jpg';
 
-function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
-    const { user, chats, setChats, setSelectedChat } = ChatState();
+function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
+    const { user, chats, setChats, setSelectedChat, selectedChat } = ChatState();
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState("");
     const [searchResult, setSearchResult] = useState([]);
@@ -63,6 +63,7 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
             setChats((prev) => {
                 return [response.data, ...prev];
             });
+            await socket.emit('add to group', response.data);
         }
         else if (existingUserIds && operation === 'add') {
             if (selectedUsers.length === 1) {
@@ -134,6 +135,19 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
         }
         //console.log(selectedUsers);
     }, [search]);
+
+    useEffect(() => {
+        const addToGroupListener = (newChat) => {
+            console.log(newChat);
+            setChats((prev) => {
+                return [...prev, newChat]
+            });
+        }
+        socket.on('add to group', addToGroupListener);
+        return () => {
+            socket.removeListener('add to group', addToGroupListener);
+        }
+    }, [selectedChat])
 
     return (
         <form onSubmit={handleOnSubmit}>

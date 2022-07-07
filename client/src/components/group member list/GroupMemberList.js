@@ -15,7 +15,7 @@ function GroupMemberList({ users, handleUI }) {
             return;
         }
         const chat = chats.find((ct) => !ct.isGroupChat && (ct.users ? ct.users[0]._id === usr._id || ct.users[1]._id === usr._id : false));
-        console.log(chat);
+        //console.log(chat);
         setSelectedChat(chat);
         handleUI();
     }
