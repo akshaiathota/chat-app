@@ -4,20 +4,20 @@ import { useNavigate } from 'react-router-dom';
 const ChatContext = createContext({});
 
 const ChatProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
     const [selectedChat, setSelectedChat] = useState(null);
     const [chats, setChats] = useState([]);
     // const [socket, setSocket] = useState(null);
 
-    const navigate = useNavigate();
-    useEffect(() => {
-        const data = JSON.parse(localStorage.getItem('userData'));
-        setUser(data);
-        if (!data) {
-            navigate('/');
-        }
+    // const navigate = useNavigate();
+    // useEffect(() => {
+    //     const data = JSON.parse(localStorage.getItem('userData'));
+    //     setUser(data);
+    //     if (!data) {
+    //         navigate('/');
+    //     }
 
-    }, [navigate]);
+    // }, [navigate]);
 
     // useEffect(() => {
     //     const newSocket = io(ENDPOINT);
@@ -29,7 +29,6 @@ const ChatProvider = ({ children }) => {
     // }, [setSocket]);
 
     return <ChatContext.Provider value={{
-        user, setUser,
         selectedChat, setSelectedChat,
         chats, setChats,
         // socket, setSocket

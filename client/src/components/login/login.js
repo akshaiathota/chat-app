@@ -5,10 +5,14 @@ import { loginUser } from '../../utils/httpRequests';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { useDispatch } from 'react-redux';
+import userActionTypes from '../../redux/user/userActionTypes';
+
 function Login() {
     const email = useRef(null);
     const password = useRef(null);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -17,18 +21,19 @@ function Login() {
             password: password.current.value
         };
         // console.log('handling login...');
-        const response = await loginUser(inputData);
-        if (response !== null) {
-            const { status, data, message } = response;
-            if (status === 'error') {
-                toast(message);
-            }
-            else {
-                console.log(data);
-                localStorage.setItem('userData', JSON.stringify(data));
-                navigate('/home');
-            }
-        }
+        // const response = await loginUser(inputData);
+        // if (response !== null) {
+        //     const { status, data, message } = response;
+        //     if (status === 'error') {
+        //         toast(message);
+        //     }
+        //     else {
+        //         console.log(data);
+        //         localStorage.setItem('userData', JSON.stringify(data));
+        //         navigate('/home');
+        //     }
+        // }
+        dispatch({ type: userActionTypes.SIGN_IN_START, payload: inputData });
     }
 
     return (
@@ -52,4 +57,4 @@ function Login() {
     )
 }
 
-export default Login
+export default Login;
