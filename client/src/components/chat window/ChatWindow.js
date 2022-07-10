@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ChatState } from '../../utils/ChatProvider';
 import './ChatWindow.css';
 import ChatMenu from '../chat menu/ChatMenu';
 import Messages from '../messages/Messages';
+import { useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 
 function ChatWindow({ socket }) {
-  const { user, selectedChat } = ChatState();
+  const { selectedChat } = ChatState();
+  const user = useSelector(getLoggedUser);
   console.log(selectedChat);
   console.log(socket);
   function getOtherUser(users) {
@@ -17,6 +20,10 @@ function ChatWindow({ socket }) {
     }
     return users[0]._id === user._id ? users[1] : users[0];
   }
+
+  useEffect(() => {
+
+  }, [user]);
 
   return (
     <>

@@ -7,9 +7,12 @@ import MenuItem from '../menu-item/MenuItem';
 import { ImCross } from 'react-icons/im';
 import { toast, ToastContainer } from 'react-toastify';
 import DP from '../../assets/default dp.jpg';
+import { useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 
 function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
-    const { user, chats, setChats, setSelectedChat, selectedChat } = ChatState();
+    const { chats, setChats, setSelectedChat, selectedChat } = ChatState();
+    const user = useSelector(getLoggedUser);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState("");
     const [searchResult, setSearchResult] = useState([]);
@@ -133,7 +136,6 @@ function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, 
         else {
             setSearchResult([]);
         }
-        //console.log(selectedUsers);
     }, [search]);
 
     useEffect(() => {
@@ -147,7 +149,11 @@ function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, 
         return () => {
             socket.removeListener('add to group', addToGroupListener);
         }
-    }, [selectedChat])
+    }, [selectedChat]);
+
+    useEffect(() => {
+
+    }, [user]);
 
     return (
         <form onSubmit={handleOnSubmit}>

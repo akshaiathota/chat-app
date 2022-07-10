@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 import { ChatState } from '../../utils/ChatProvider';
 import { getAllMessages, sendMessage } from '../../utils/httpRequests';
 import MessageItem from '../message item/MessageItem';
 import './Messages.css';
 
 function Messages({ socket }) {
-    const { user, selectedChat, chats, setChats } = ChatState();
+    const { selectedChat, chats, setChats } = ChatState();
+    const user = useSelector(getLoggedUser);
     const [messages, setMessages] = useState([]);
     const inputRef = useRef();
 
@@ -39,6 +42,10 @@ function Messages({ socket }) {
             socket.emit('join chat', selectedChat._id)
         }
     }
+
+    useEffect(() => {
+
+    }, [user]);
 
     useEffect(() => {
         fetchMessages();

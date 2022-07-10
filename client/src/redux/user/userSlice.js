@@ -1,21 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit';
+import userActionTypes from './userActionTypes';
 
 export const userSlice = createSlice({
     name: 'user',
     initialState: null,
     extraReducers: {
-        SIGN_IN_SUCCESS: (state, action) => {
-            console.log(state);
+        [userActionTypes.SIGN_IN_SUCCESS]: (state, action) => {
             return {
-                ...state,
                 ...action.payload
             }
         },
-        SIGN_UP_SUCCESS: (state, action) => {
+        [userActionTypes.SIGN_IN_FAILURE]: (state, action) => {
+            return null;
+        },
+        [userActionTypes.SIGN_UP_SUCCESS]: (state, action) => {
             return {
-                ...state,
                 ...action.payload
             }
+        },
+        [userActionTypes.SIGN_UP_FAILURE]: (state, action) => {
+            return null;
+        },
+        [userActionTypes.SIGN_OUT]: (state, action) => {
+            return null;
         },
     }
 });

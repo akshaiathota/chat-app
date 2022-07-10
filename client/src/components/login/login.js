@@ -1,17 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
-import { loginUser } from '../../utils/httpRequests';
-import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import userActionTypes from '../../redux/user/userActionTypes';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 
 function Login() {
     const email = useRef(null);
     const password = useRef(null);
     const navigate = useNavigate();
+    const user = useSelector(getLoggedUser);
     const dispatch = useDispatch();
 
     async function handleSubmit(event) {
@@ -20,25 +20,17 @@ function Login() {
             email: email.current.value,
             password: password.current.value
         };
-        // console.log('handling login...');
-        // const response = await loginUser(inputData);
-        // if (response !== null) {
-        //     const { status, data, message } = response;
-        //     if (status === 'error') {
-        //         toast(message);
-        //     }
-        //     else {
-        //         console.log(data);
-        //         localStorage.setItem('userData', JSON.stringify(data));
-        //         navigate('/home');
-        //     }
-        // }
         dispatch({ type: userActionTypes.SIGN_IN_START, payload: inputData });
     }
 
+    useEffect(() => {
+        if (user) {
+            navigate('/home');
+        }
+    }, [user])
+
     return (
         <>
-            <ToastContainer />
             <form onSubmit={handleSubmit}>
                 <div className='login-page'>
                     <div className='l-email'>

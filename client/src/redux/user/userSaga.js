@@ -1,37 +1,42 @@
-import { all, call, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
 import userActionTypes from './userActionTypes';
 
 const BASE_URI = 'http://localhost:5000/';
 
-function* signIn({ payload: { inputData } }) {
-    console.log(inputData);
+function* serverRequest(method, url, headers, data) {
     try {
-        const method = 'POST';
-        const url = BASE_URI + 'user/login';
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-        const { response } = yield axios({
+
+        const response = yield axios({
             method,
             url,
             headers,
-            inputData
+            data
         });
-        console.log(response);
+        if (response.status === 201) {
+            yield put({ type: userActionTypes.SIGN_IN_SUCCESS, payload: response.data.data });
+        }
     }
     catch (error) {
-        console.log(error);
+        yield put({ type: userActionTypes.SIGN_IN_FAILURE });
     }
 }
 
-function* signInWithEmail() {
-    console.log('in function');
-    takeLatest(userActionTypes.SIGN_IN_SUCCESS, signIn);
+function* signIn({ payload }) {
+    const method = 'POST';
+    const url = BASE_URI + 'user/login';
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+    yield serverRequest(method, url, headers, payload);
+}
+
+export function* signInWithEmail() {
+    yield takeLatest(userActionTypes.SIGN_IN_START, signIn);
 }
 
 export default function* userSaga() {
     yield all([
-        call(signInWithEmail)
+        call(signInWithEmail),
     ]);
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './NavigationMenu.css';
 import { ImCross } from 'react-icons/im';
 import MenuItem from '../menu-item/MenuItem';
@@ -10,23 +10,26 @@ import { FcSearch } from 'react-icons/fc';
 import CreateGroup from '../create group /CreateGroup';
 import AddGroupMembers from '../add group members/AddGroupMembers';
 import GlobalSearch from '../global search/GlobalSearch';
-import { ChatState } from '../../utils/ChatProvider';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
+import userActionTypes from '../../redux/user/userActionTypes';
 
 function NavigationMenu({ socket }) {
-    const { user } = ChatState();
+    const user = useSelector(getLoggedUser);
     const [menuState, setMenuState] = useState(false);
     const navigate = useNavigate();
     const [showCreateGroupUI, setShowCreateGroupUI] = useState(false);
     const [showAddMembersUI, setShowAddMembersUI] = useState(false);
     const [showGlobalSearchUI, setShowGlobalSearchUI] = useState(false);
     const [groupName, setGroupName] = useState("");
+    const dispatch = useDispatch();
 
     function handleInputChange(value) {
         setGroupName(value);
     }
 
     function handleLogOut() {
-        localStorage.clear();
+        dispatch({ type: userActionTypes.SIGN_OUT });
         navigate('/');
     }
 
@@ -66,10 +69,14 @@ function NavigationMenu({ socket }) {
         }
     }
 
+    useEffect(() => {
+
+    }, [user]);
+
     return (
         <>
             {
-                menuState ?
+                menuState && user ?
                     <>
                         <div className='navigation-menu'>
                             <div className='nm-exit' >

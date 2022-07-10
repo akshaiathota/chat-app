@@ -106,6 +106,7 @@ const registerUser = async (req, res, next) => {
 //login
 async function loginUser(req, res, next) {
     try {
+        console.log(req.body);
         const { email, password } = req.body;
         const user = await userExists({ email: email });
         if (!user) {

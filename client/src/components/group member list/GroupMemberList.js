@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ImCross } from 'react-icons/im';
 import { ChatState } from '../../utils/ChatProvider';
 import MenuItem from '../menu-item/MenuItem';
 import './GroupMemberList.css';
 import DP from '../../assets/default dp.jpg';
+import { useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 
 function GroupMemberList({ users, handleUI }) {
     console.log(users);
-    const { user, chats, setSelectedChat } = ChatState();
+    const { chats, setSelectedChat } = ChatState();
+    const user = useSelector(getLoggedUser);
 
     function handleChatSelect(usr) {
         if (usr._id === user._id) {
@@ -15,10 +18,13 @@ function GroupMemberList({ users, handleUI }) {
             return;
         }
         const chat = chats.find((ct) => !ct.isGroupChat && (ct.users ? ct.users[0]._id === usr._id || ct.users[1]._id === usr._id : false));
-        //console.log(chat);
         setSelectedChat(chat);
         handleUI();
     }
+
+    useEffect(() => {
+
+    }, [user]);
 
     return (
         <div className='gml-container'>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './ChatList.css';
 import { ChatState } from '../../utils/ChatProvider';
 import { fetchChats } from '../../utils/httpRequests';
@@ -6,9 +6,12 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import NavigationMenu from '../navigation menu/NavigationMenu';
 import ChatHolder from '../chat holder/ChatHolder';
+import { useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 
 function ChatList({ socket }) {
-  const { user, setChats } = ChatState();
+  const { setChats } = ChatState();
+  const user = useSelector(getLoggedUser);
   const search = useRef("");
   const navigate = useNavigate();
   // const [searchLocal,setSearchLocal] = useState(f)

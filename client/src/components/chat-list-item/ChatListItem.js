@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ChatState } from "../../utils/ChatProvider";
 import './ChatListItem.css';
 import DP from '../../assets/default dp.jpg';
+import { useSelector } from "react-redux";
+import { getLoggedUser } from "../../redux/user/userSelectors";
 
 function ChatListItem({ chat }) {
-    const { user, setSelectedChat, selectedChat } = ChatState();
+    const { setSelectedChat, selectedChat } = ChatState();
+    const user = useSelector(getLoggedUser);
     const { users } = chat;
 
     const url = getOtherUser().pic;
@@ -26,6 +29,10 @@ function ChatListItem({ chat }) {
         }
         return users[0]._id === user._id ? users[1] : users[0];
     }
+
+    useEffect(() => {
+
+    }, [user]);
 
     return (
         <>

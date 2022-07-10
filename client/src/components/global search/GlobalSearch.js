@@ -7,12 +7,19 @@ import { accessChat, searchUserByName } from '../../utils/httpRequests';
 import MenuItem from '../menu-item/MenuItem';
 import './GlobalSearch.css';
 import DP from '../../assets/default dp.jpg';
+import { useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 
 const GlobalSearch = ({ handleClose }) => {
-    const { user, chats, setChats } = ChatState();
+    const { chats, setChats } = ChatState();
+    const user = useSelector(getLoggedUser);
     const search = useRef();
     const [searchResult, setSearchResult] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+
+    }, [user]);
 
     async function fetchSearchedUser() {
         console.log('fetching searched user');

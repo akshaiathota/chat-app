@@ -1,5 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 import { ChatState } from '../../utils/ChatProvider';
 import { renameGroup } from '../../utils/httpRequests';
 import AddGroupMembers from '../add group members/AddGroupMembers';
@@ -15,7 +17,8 @@ function ChatMenu(chat) {
     const [groupMembersUI, setGroupMembersUI] = useState(false);
     const [renameGroupUI, setRenameGroupUI] = useState(false);
     const [newGroupName, setNewGroupName] = useState(false);
-    const { chats, setChats, user, setSelectedChat } = ChatState();
+    const { chats, setChats, setSelectedChat } = ChatState();
+    const user = useSelector(getLoggedUser);
     const ids = chat.chat.users.map((usr) => usr._id);
 
     function handleAddUserUI() {
@@ -64,6 +67,10 @@ function ChatMenu(chat) {
     function handleDropDown() {
         setDropDownMenu(!dropDownMenu);
     }
+
+    useEffect(() => {
+
+    }, [user]);
 
     return (
         <>

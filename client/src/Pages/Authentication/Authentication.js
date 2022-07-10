@@ -3,16 +3,18 @@ import './Authentication.css';
 import Login from '../../components/login/login';
 import Signup from '../../components/signup/signup';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 
 function Authentication() {
     const [toggleInput, setToggleInput] = useState(true);
     const navigate = useNavigate();
+    const user = useSelector(getLoggedUser);
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('userData'));
         if (user) {
             navigate('/home');
         }
-    }, [navigate]);
+    }, [navigate, user]);
 
 
     function handleClick(event) {
