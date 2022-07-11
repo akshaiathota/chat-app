@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
-import { ChatState } from "../../utils/ChatProvider";
 import './ChatListItem.css';
 import DP from '../../assets/default dp.jpg';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getLoggedUser } from "../../redux/user/userSelectors";
+import getSelectedChat from "../../redux/selectedChat/selectedChatSelector";
+import selectedChatActionTypes from "../../redux/selectedChat/selectedChatActionTypes";
 
 function ChatListItem({ chat }) {
-    const { setSelectedChat, selectedChat } = ChatState();
+    const selectedChat = useSelector(getSelectedChat);
+    const dispatch = useDispatch();
     const user = useSelector(getLoggedUser);
     const { users } = chat;
 
@@ -17,7 +19,7 @@ function ChatListItem({ chat }) {
         lastMsgTime = time.getHours() + ":" + time.getMinutes();
     }
     function handleSelectedChat() {
-        setSelectedChat(chat);
+        dispatch({ type: selectedChatActionTypes.SELECT_CHAT, payload: chat });
     }
 
     function getOtherUser() {

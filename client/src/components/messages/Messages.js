@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
 import { getLoggedUser } from '../../redux/user/userSelectors';
 import { ChatState } from '../../utils/ChatProvider';
 import { getAllMessages, sendMessage } from '../../utils/httpRequests';
@@ -7,7 +8,8 @@ import MessageItem from '../message item/MessageItem';
 import './Messages.css';
 
 function Messages({ socket }) {
-    const { selectedChat, chats, setChats } = ChatState();
+    const { chats, setChats } = ChatState();
+    const selectedChat = useSelector(getSelectedChat);
     const user = useSelector(getLoggedUser);
     const [messages, setMessages] = useState([]);
     const inputRef = useRef();

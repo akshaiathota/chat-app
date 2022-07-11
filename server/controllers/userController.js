@@ -39,10 +39,8 @@ const registerUser = async (req, res, next) => {
         return;
     }
     let url = null;
-    if (pic) {
-        console.log('in pic if');
+    if (pic.pic) {
         const imageformat = pic ? pic.type : null;
-        console.log(pic);
         if (imageformat !== 'image/png' && imageformat !== 'image/jpeg' && imageformat !== 'image/jpg') {
             next({
                 status: 400,

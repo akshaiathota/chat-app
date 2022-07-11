@@ -4,13 +4,14 @@ import { ChatState } from '../../utils/ChatProvider';
 import MenuItem from '../menu-item/MenuItem';
 import './GroupMemberList.css';
 import DP from '../../assets/default dp.jpg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getLoggedUser } from '../../redux/user/userSelectors';
+import selectedChatActionTypes from '../../redux/selectedChat/selectedChatActionTypes';
 
 function GroupMemberList({ users, handleUI }) {
-    console.log(users);
-    const { chats, setSelectedChat } = ChatState();
+    const { chats } = ChatState();
     const user = useSelector(getLoggedUser);
+    const dispatch = useDispatch();
 
     function handleChatSelect(usr) {
         if (usr._id === user._id) {
@@ -18,7 +19,7 @@ function GroupMemberList({ users, handleUI }) {
             return;
         }
         const chat = chats.find((ct) => !ct.isGroupChat && (ct.users ? ct.users[0]._id === usr._id || ct.users[1]._id === usr._id : false));
-        setSelectedChat(chat);
+        dispatch({ type: selectedChatActionTypes.SELECT_CHAT, payload: chat });
         handleUI();
     }
 

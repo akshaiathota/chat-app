@@ -7,15 +7,19 @@ import MenuItem from '../menu-item/MenuItem';
 import { ImCross } from 'react-icons/im';
 import { toast, ToastContainer } from 'react-toastify';
 import DP from '../../assets/default dp.jpg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getLoggedUser } from '../../redux/user/userSelectors';
+import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
+import selectedChatActionTypes from '../../redux/selectedChat/selectedChatActionTypes';
 
 function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
-    const { chats, setChats, setSelectedChat, selectedChat } = ChatState();
+    const { chats, setChats } = ChatState();
     const user = useSelector(getLoggedUser);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState("");
     const [searchResult, setSearchResult] = useState([]);
+    const selectedChat = useSelector(getSelectedChat);
+    const dispatch = useDispatch();
 
     function handleInputChange(event) {
         //console.log('handling input change');
@@ -80,7 +84,7 @@ function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, 
                 //console.log(response);
                 const remainingChats = chats.filter((chat) => chat._id !== groupId);
                 setChats([response.data, ...remainingChats]);
-                setSelectedChat(response.data);
+                dispatch({ type: selectedChatActionTypes.SELECT_CHAT, payload: response.data });
                 //console.log(response.data);
             }
             else {
@@ -101,7 +105,7 @@ function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, 
                 console.log(remainingChats);
                 console.log(response.data);
                 setChats([response.data, ...remainingChats]);
-                setSelectedChat(response.data);
+                dispatch({ type: selectedChatActionTypes.SELECT_CHAT, payload: response.data });
                 //console.log(response.data);
             }
             else {

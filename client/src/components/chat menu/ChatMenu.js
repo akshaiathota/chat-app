@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import selectedChatActionTypes from '../../redux/selectedChat/selectedChatActionTypes';
 import { getLoggedUser } from '../../redux/user/userSelectors';
 import { ChatState } from '../../utils/ChatProvider';
 import { renameGroup } from '../../utils/httpRequests';
@@ -17,9 +18,10 @@ function ChatMenu(chat) {
     const [groupMembersUI, setGroupMembersUI] = useState(false);
     const [renameGroupUI, setRenameGroupUI] = useState(false);
     const [newGroupName, setNewGroupName] = useState(false);
-    const { chats, setChats, setSelectedChat } = ChatState();
+    const { chats, setChats } = ChatState();
     const user = useSelector(getLoggedUser);
     const ids = chat.chat.users.map((usr) => usr._id);
+    const dispatch = useDispatch();
 
     function handleAddUserUI() {
         if (dropDownMenu) {
@@ -60,7 +62,7 @@ function ChatMenu(chat) {
         const remainingChats = chats.filter((ct) => ct._id !== chat.chat._id);
         setChats([response.data, ...remainingChats]);
         console.log(remainingChats);
-        setSelectedChat(response.data);
+        dispatch({ type: selectedChatActionTypes.SELECT_CHAT });
         handleRenameGroupUI();
     }
 

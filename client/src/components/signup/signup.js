@@ -1,9 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './signup.css';
 import { registerUser } from '../../utils/httpRequests';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
+import userActionTypes from '../../redux/user/userActionTypes';
 
 function Signup() {
     const name = useRef(null);
@@ -17,8 +20,15 @@ function Signup() {
             type: null
         }
     );
-    const [isLoading, setIsLoading] = useState(false);
+    const user = useSelector(getLoggedUser);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (user) {
+            navigate('/home');
+        }
+    }, [user]);
 
     function handleImage(file) {
         let reader = new FileReader(file);
@@ -48,17 +58,7 @@ function Signup() {
             mobileNumber: mobileNumber.current.value,
             pic: profilePic
         }
-        const response = await registerUser(inputData);
-        if (response !== null) {
-            const { status, data, message } = response;
-            if (status === 'error') {
-                toast(message);
-            }
-            else {
-                localStorage.setItem('userData', JSON.stringify(data));
-                navigate('/home');
-            }
-        }
+        dispatch({ type: userActionTypes.SIGN_UP_START, payload: inputData });
     }
 
     return (

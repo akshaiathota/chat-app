@@ -10,7 +10,7 @@ export const userSlice = createSlice({
                 ...action.payload
             }
         },
-        [userActionTypes.SIGN_IN_FAILURE]: (state, action) => {
+        [userActionTypes.FAILURE]: (state, action) => {
             return null;
         },
         [userActionTypes.SIGN_UP_SUCCESS]: (state, action) => {
@@ -18,15 +18,12 @@ export const userSlice = createSlice({
                 ...action.payload
             }
         },
-        [userActionTypes.SIGN_UP_FAILURE]: (state, action) => {
-            return null;
-        },
         [userActionTypes.SIGN_OUT]: (state, action) => {
             return null;
         },
     }
 });
 
-export const { SIGN_IN_SUCCESS, SIGN_UP_SUCCESS } = userSlice.actions;
+export const { SIGN_IN_SUCCESS, SIGN_UP_SUCCESS, FAILURE, SIGN_OUT } = userSlice.actions;
 
 export default userSlice.reducer;
