@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './user/userSlice';
 import selectedChat from './selectedChat/selectedChatSlice';
+import chatReducer from './chats/chatSlice';
 import logger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './rootSaga';
@@ -12,6 +13,7 @@ const sagaMiddleware = createSagaMiddleware();
 const rootReducer = combineReducers({
     user: userReducer,
     selectedChat: selectedChat,
+    chats: chatReducer
 });
 
 const persistConfig = {

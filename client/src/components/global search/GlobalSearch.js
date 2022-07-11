@@ -7,15 +7,16 @@ import { accessChat, searchUserByName } from '../../utils/httpRequests';
 import MenuItem from '../menu-item/MenuItem';
 import './GlobalSearch.css';
 import DP from '../../assets/default dp.jpg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getLoggedUser } from '../../redux/user/userSelectors';
+import chatActionTypes from '../../redux/chats/chatActionTypes';
 
 const GlobalSearch = ({ handleClose }) => {
-    const { chats, setChats } = ChatState();
     const user = useSelector(getLoggedUser);
     const search = useRef();
     const [searchResult, setSearchResult] = useState([]);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
 
@@ -39,16 +40,11 @@ const GlobalSearch = ({ handleClose }) => {
     }
 
     async function handleFetchChat(usr) {
-        console.log(usr);
-        const { data } = await accessChat(usr._id, user.token);
-        console.log(data);
-        const doesChatExists = chats.find((chat) => chat._id === data._id);
-        console.log(doesChatExists);
-        if (!doesChatExists) {
-            setChats((prev) => {
-                return [data, ...prev];
-            });
-        }
+        const data = {
+            id: usr._id,
+            token: user.token
+        };
+        dispatch({ type: chatActionTypes.ACCESS_CHAT, payload: data })
         setSearchResult([]);
         handleClose();
     }

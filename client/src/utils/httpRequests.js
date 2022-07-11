@@ -115,7 +115,6 @@ export const searchUserByName = async (search, token) => {
 }
 
 export const accessChat = async (userId, token) => {
-    //console.log('accessing chat...');
     if (!userId) {
         return INVALID_DATA;
     }
