@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ChatState } from '../../utils/ChatProvider';
 import './AddGroupMembers.css';
 import { FcSearch } from 'react-icons/fc';
-import { addUser, createGroupChat, removeUser, searchUserByName } from '../../utils/httpRequests';
+import { searchUserByName } from '../../utils/httpRequests';
 import MenuItem from '../menu-item/MenuItem';
 import { ImCross } from 'react-icons/im';
 import { toast, ToastContainer } from 'react-toastify';
@@ -10,10 +9,9 @@ import DP from '../../assets/default dp.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLoggedUser } from '../../redux/user/userSelectors';
 import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
-import selectedChatActionTypes from '../../redux/selectedChat/selectedChatActionTypes';
+import chatActionTypes from '../../redux/chats/chatActionTypes';
 
 function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
-    const { chats, setChats } = ChatState();
     const user = useSelector(getLoggedUser);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState("");
@@ -60,17 +58,17 @@ function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, 
 
     async function handleOnSubmit(event) {
         event.preventDefault();
-        let response = null;
         if (!existingUserIds && operation === 'add') {
             if (selectedUsers.length < 2) {
                 toast('minimum of 2 other users required');
                 return;
             }
-            response = await createGroupChat(groupName, selectedUsers, user.token);
-            setChats((prev) => {
-                return [response.data, ...prev];
-            });
-            await socket.emit('add to group', response.data);
+            const payload = {
+                name: groupName,
+                token: user.token,
+                users: selectedUsers
+            };
+            dispatch({ type: chatActionTypes.CREATE_GROUP_CHAT, payload: payload });
         }
         else if (existingUserIds && operation === 'add') {
             if (selectedUsers.length === 1) {
@@ -80,12 +78,12 @@ function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, 
                     handleAddGroupMembersUI();
                     return;
                 }
-                response = await addUser(selectedUsers[0]._id, groupId, user.token);
-                //console.log(response);
-                const remainingChats = chats.filter((chat) => chat._id !== groupId);
-                setChats([response.data, ...remainingChats]);
-                dispatch({ type: selectedChatActionTypes.SELECT_CHAT, payload: response.data });
-                //console.log(response.data);
+                const payload = {
+                    userId: selectedUsers[0]._id,
+                    chatId: groupId,
+                    token: user.token
+                }
+                dispatch({ type: chatActionTypes.ADD_USER, payload: payload });
             }
             else {
                 toast('only 1 user can added at a time');
@@ -100,25 +98,17 @@ function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, 
                     handleAddGroupMembersUI();
                     return;
                 }
-                response = await removeUser(selectedUsers[0]._id, groupId, user.token);
-                const remainingChats = chats.filter((chat) => chat._id !== groupId);
-                console.log(remainingChats);
-                console.log(response.data);
-                setChats([response.data, ...remainingChats]);
-                dispatch({ type: selectedChatActionTypes.SELECT_CHAT, payload: response.data });
-                //console.log(response.data);
+                const payload = {
+                    userId: selectedUsers[0]._id,
+                    chatId: groupId,
+                    token: user.token
+                }
+                dispatch({ type: chatActionTypes.REMOVE_USER, payload: payload });
             }
             else {
                 toast('only 1 user can added at a time');
                 return;
             }
-        }
-        // console.log(response);
-        if (response && response.data) {
-            handleAddGroupMembersUI();
-        }
-        else {
-            console.log(response);
         }
     }
 
@@ -145,9 +135,7 @@ function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, 
     useEffect(() => {
         const addToGroupListener = (newChat) => {
             console.log(newChat);
-            setChats((prev) => {
-                return [...prev, newChat]
-            });
+            dispatch({ type: chatActionTypes.ADD_NEW_CHAT, payload: newChat });
         }
         socket.on('add to group', addToGroupListener);
         return () => {

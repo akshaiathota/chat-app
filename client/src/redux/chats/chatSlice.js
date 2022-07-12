@@ -3,23 +3,18 @@ import chatActionTypes from './chatActionTypes';
 
 const chatSlice = createSlice({
     name: 'chats',
-    initialState: null,
+    initialState: [],
     extraReducers: {
         [chatActionTypes.ADD_NEW_CHAT]: (state, action) => {
             const payload = action.payload;
-            return {
-                ...state,
-                payload
-            };
+            return [...state, payload];
         },
         [chatActionTypes.UPDATE_CHAT]: (state, action) => {
-            const { newChat } = action.payload;
-            console.log(state);
-            const otherchats = state.filter((ct) => ct._id !== newChat._id);
-            return {
-                newChat,
-                ...otherchats
-            };
+            const { otherchats, newChat } = action.payload;
+            return [newChat, ...otherchats];
+        },
+        [chatActionTypes.SET_CHATS]: (state, action) => {
+            return [...action.payload]
         }
     }
 });

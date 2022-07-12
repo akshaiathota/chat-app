@@ -1,4 +1,5 @@
 const chatActionTypes = {
+    'SET_CHATS': 'SET_CHATS',
     'ADD_NEW_CHAT': 'ADD_NEW_CHAT',
     'UPDATE_CHAT': 'UPDATE_CHAT',
     'ACCESS_CHAT': 'ACCESS_CHAT',

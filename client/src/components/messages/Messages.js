@@ -71,10 +71,11 @@ function Messages({ socket }) {
                 });
             }
         }
-
-        socket.on('message received', messageListener);
+        if (socket)
+            socket.on('message received', messageListener);
         return () => {
-            socket.removeListener('message received', messageListener);
+            if (socket)
+                socket.removeListener('message received', messageListener);
         }
     }, [selectedChat]);
 
