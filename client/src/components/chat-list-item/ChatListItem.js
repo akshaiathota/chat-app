@@ -18,6 +18,7 @@ function ChatListItem({ chat }) {
         time = new Date(chat.latestMessage.updatedAt);
         lastMsgTime = time.getHours() + ":" + time.getMinutes();
     }
+
     function handleSelectedChat() {
         dispatch({ type: selectedChatActionTypes.SELECT_CHAT, payload: chat });
     }
@@ -74,7 +75,7 @@ function ChatListItem({ chat }) {
                             </div>
                         </div>
                     </div>
-                    : ""
+                    : <></>
             }
         </>
     );

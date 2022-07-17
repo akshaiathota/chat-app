@@ -92,7 +92,7 @@ io.on('connection', function (socket) {
         chatContent.users.forEach((usr) => {
             if (usr._id !== chatContent.groupAdmin._id) {
                 console.log('notifying ' + usr._id);
-                socket.to(usr._id).emit('add to group', chatContent);
+                socket.to(usr._id).emit('added to group', chatContent);
             }
         })
     });

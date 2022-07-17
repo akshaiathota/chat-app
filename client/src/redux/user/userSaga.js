@@ -14,7 +14,6 @@ function* signIn({ payload }) {
 }
 
 function* signUp({ payload }) {
-    console.log(payload);
     const response = yield registerUser(payload);
     if (response.status === 'ok') {
         yield put({ type: userActionTypes.SIGN_UP_SUCCESS, payload: response.data });

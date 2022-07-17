@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import getChats from '../../redux/chats/chatSelector';
 import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
 import { getLoggedUser } from '../../redux/user/userSelectors';
 import { ChatState } from '../../utils/ChatProvider';
@@ -8,7 +9,8 @@ import MessageItem from '../message item/MessageItem';
 import './Messages.css';
 
 function Messages({ socket }) {
-    const { chats, setChats } = ChatState();
+    const chats = useSelector(getChats);
+    const { setChats } = ChatState();
     const selectedChat = useSelector(getSelectedChat);
     const user = useSelector(getLoggedUser);
     const [messages, setMessages] = useState([]);
@@ -33,7 +35,6 @@ function Messages({ socket }) {
                 const otherChats = chats.filter((ct) => ct._id !== response.data.chat._id);
                 setChats([...otherChats, response.data.chat]);
             }
-            //console.log(response);
         }
     }
 
@@ -57,27 +58,6 @@ function Messages({ socket }) {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
-
-    useEffect(() => {
-        const messageListener = (msg) => {
-            const otherChats = chats.filter((ct) => ct._id !== msg.chat._id);
-            if (msg && msg.chat._id === selectedChat._id) {
-                setMessages((prev) => {
-                    return [...prev, msg];
-                });
-                setChats(() => {
-                    return [...otherChats, msg.chat];
-                });
-            }
-        }
-        if (socket)
-            socket.on('message received', messageListener);
-        return () => {
-            if (socket)
-                socket.removeListener('message received', messageListener);
-        }
-    }, [selectedChat]);
 
     return (
         <div className='messages'>

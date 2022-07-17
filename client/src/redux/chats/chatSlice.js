@@ -10,15 +10,13 @@ const chatSlice = createSlice({
             return [...state, payload];
         },
         [chatActionTypes.UPDATE_CHAT]: (state, action) => {
-            const { otherchats, newChat } = action.payload;
-            return [newChat, ...otherchats];
+            const { otherChats, newChat } = action.payload;
+            return [newChat, ...otherChats];
         },
         [chatActionTypes.SET_CHATS]: (state, action) => {
             return [...action.payload]
         }
     }
 });
-
-export const { ADD_NEW_CHAT, UPDATE_CHAT } = chatSlice.actions;
 
 export default chatSlice.reducer;

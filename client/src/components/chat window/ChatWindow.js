@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { ChatState } from '../../utils/ChatProvider';
 import './ChatWindow.css';
 import ChatMenu from '../chat menu/ChatMenu';
 import Messages from '../messages/Messages';

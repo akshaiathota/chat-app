@@ -1,4 +1,4 @@
-import { takeLatest, put, call, all, select, take } from "redux-saga/effects";
+import { takeLatest, put, call, all, select } from "redux-saga/effects";
 import chatActionTypes from "./chatActionTypes";
 import { accessChat, fetchChats, createGroupChat, renameGroup, addUser, removeUser } from '../../utils/httpRequests';
 import getChats from "./chatSelector";
@@ -20,6 +20,7 @@ function* getChat({ payload: { id, token } }) {
 
 function* getAllChats({ payload: { token } }) {
     const response = yield fetchChats(token);
+    console.log(response);
     if (response.status === 'ok') {
         const { data } = response;
         yield put({ type: chatActionTypes.SET_CHATS, payload: data });
@@ -105,12 +106,12 @@ function* removeUserById() {
 }
 
 export default function* chatSaga() {
-    yield all[
+    yield all([
         call(accessUserChat),
         call(fetchUserChats),
         call(createUserGroupChat),
         call(renameUserGroup),
         call(addNewUser),
         call(removeUserById)
-    ]
+    ]);
 }

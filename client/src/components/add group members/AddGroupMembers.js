@@ -133,17 +133,6 @@ function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, 
     }, [search]);
 
     useEffect(() => {
-        const addToGroupListener = (newChat) => {
-            console.log(newChat);
-            dispatch({ type: chatActionTypes.ADD_NEW_CHAT, payload: newChat });
-        }
-        socket.on('add to group', addToGroupListener);
-        return () => {
-            socket.removeListener('add to group', addToGroupListener);
-        }
-    }, [selectedChat]);
-
-    useEffect(() => {
 
     }, [user]);
 
