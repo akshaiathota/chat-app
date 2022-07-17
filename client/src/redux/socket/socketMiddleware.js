@@ -1,7 +1,8 @@
 import io from 'socket.io-client';
-import chatActionTypes from './chats/chatActionTypes';
-import socketActionTypes from './socket/socketActionTypes';
-import userActionTypes from './user/userActionTypes';
+import chatActionTypes from '../chats/chatActionTypes';
+import messageActionTypes from '../messages/messageActionTypes';
+import socketActionTypes from './socketActionTypes';
+import userActionTypes from '../user/userActionTypes';
 
 export default function socketMiddleware() {
     let socket = null;
@@ -42,7 +43,14 @@ export default function socketMiddleware() {
             case userActionTypes.SIGN_OUT:
                 socket.disconnect();
                 break;
-
+            case messageActionTypes.MESSAGE_SENT_SUCCESSFULLY:
+                socket.emit('new message', action.payload);
+                break;
+            case messageActionTypes.MESSAGES_FETCHED_SUCCESSFULLY:
+                socket.emit('join chat', action.payload);
+                break;
+            default:
+                break;
         }
         return next(action);
     };

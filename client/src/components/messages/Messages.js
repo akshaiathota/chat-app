@@ -1,20 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import getChats from '../../redux/chats/chatSelector';
+import messageActionTypes from '../../redux/messages/messageActionTypes';
+import getUserChat from '../../redux/messages/messageSelector';
 import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
 import { getLoggedUser } from '../../redux/user/userSelectors';
-import { ChatState } from '../../utils/ChatProvider';
-import { getAllMessages, sendMessage } from '../../utils/httpRequests';
 import MessageItem from '../message item/MessageItem';
 import './Messages.css';
 
-function Messages({ socket }) {
+function Messages() {
     const chats = useSelector(getChats);
-    const { setChats } = ChatState();
     const selectedChat = useSelector(getSelectedChat);
     const user = useSelector(getLoggedUser);
-    const [messages, setMessages] = useState([]);
+    const messages = useSelector(getUserChat);
     const inputRef = useRef();
+    const dispatch = useDispatch();
 
     function scrollToBottom() {
         let target = document.getElementsByClassName('m-ref-block');
@@ -24,26 +24,24 @@ function Messages({ socket }) {
         })
     }
 
-    async function handleKeyDown(event) {
+    function handleKeyDown(event) {
         if (event.key === 'Enter' && inputRef.current.value) {
             event.preventDefault();
-            const response = await sendMessage(inputRef.current.value, selectedChat._id, user.token);
-            if (response && response.data) {
-                inputRef.current.value = '';
-                await socket.emit('new message', response.data);
-                setMessages([...messages, response.data]);
-                const otherChats = chats.filter((ct) => ct._id !== response.data.chat._id);
-                setChats([...otherChats, response.data.chat]);
-            }
+            const payload = {
+                text: inputRef.current.value,
+                chatId: selectedChat._id,
+                token: user.token
+            };
+            dispatch({ type: messageActionTypes.SEND_MESSAGE, payload: payload });
         }
     }
 
-    async function fetchMessages() {
-        const response = await getAllMessages(selectedChat._id, user.token);
-        if (response && response.data) {
-            setMessages(response.data);
-            socket.emit('join chat', selectedChat._id)
-        }
+    function fetchMessages() {
+        const payload = {
+            chatId: selectedChat._id,
+            token: user.token
+        };
+        dispatch({ type: messageActionTypes.GET_ALL_MESSAGES, payload: payload });
     }
 
     useEffect(() => {

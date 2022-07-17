@@ -11,7 +11,7 @@ import { getLoggedUser } from '../../redux/user/userSelectors';
 import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
 import chatActionTypes from '../../redux/chats/chatActionTypes';
 
-function AddGroupMembers({ socket, handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
+function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
     const user = useSelector(getLoggedUser);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState("");

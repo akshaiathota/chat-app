@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getLoggedUser } from '../../redux/user/userSelectors';
 import userActionTypes from '../../redux/user/userActionTypes';
 
-function NavigationMenu({ socket }) {
+function NavigationMenu() {
     const user = useSelector(getLoggedUser);
     const [menuState, setMenuState] = useState(false);
     const navigate = useNavigate();
@@ -117,7 +117,6 @@ function NavigationMenu({ socket }) {
                                 handleAddGroupMembersUI={handleAddGroupMembersUI}
                                 groupName={groupName}
                                 operation={'add'}
-                                socket={socket}
                             />
                             : <></>)
                 }

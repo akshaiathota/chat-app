@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { getLoggedUser } from '../../redux/user/userSelectors';
 import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
 
-function ChatWindow({ socket }) {
+function ChatWindow() {
   const selectedChat = useSelector(getSelectedChat);
   const user = useSelector(getLoggedUser);
   function getOtherUser(users) {
@@ -42,7 +42,7 @@ function ChatWindow({ socket }) {
             <div className='cw-chat'>
               {
                 selectedChat ?
-                  <Messages socket={socket} />
+                  <Messages />
                   : <></>
               }
             </div>

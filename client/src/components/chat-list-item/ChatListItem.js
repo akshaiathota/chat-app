@@ -35,13 +35,13 @@ function ChatListItem({ chat }) {
 
     useEffect(() => {
 
-    }, [user]);
+    }, [user, selectedChat]);
 
     return (
         <>
             {
                 user && users ?
-                    <div className={`${chat === selectedChat ? 'cli-selected-chat' : ''} chat-list-item`} onClick={() => handleSelectedChat()}>
+                    <div className={`${chat._id === selectedChat._id ? 'cli-selected-chat' : ''} chat-list-item`} onClick={() => handleSelectedChat()}>
                         <div className='cli-image-container'>
                             <img src={url === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
                                 DP : url} />
@@ -53,12 +53,12 @@ function ChatListItem({ chat }) {
                                         !chat.isGroupChat ? getOtherUser().name : chat.chatName
                                     }
                                 </div>
-                                <div className={`${chat === selectedChat ? 'color-black' : ''} cli-chat-last-msg`} >
+                                <div className={`${chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-last-msg`} >
                                     {chat.latestMessage ? chat.latestMessage.content : <></>}
                                 </div>
                             </div>
                             <div>
-                                <div className={`${chat === selectedChat ? 'color-black' : ''} cli-chat-time`}>
+                                <div className={`${chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-time`}>
                                     {
                                         lastMsgTime ? lastMsgTime : <></>
                                     }

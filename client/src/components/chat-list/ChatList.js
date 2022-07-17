@@ -1,14 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import './ChatList.css';
 import { toast, ToastContainer } from 'react-toastify';
 import NavigationMenu from '../navigation menu/NavigationMenu';
 import ChatHolder from '../chat holder/ChatHolder';
 
-function ChatList({ socket }) {
+function ChatList() {
 
   return (
     <>
-      <NavigationMenu socket={socket} />
+      <NavigationMenu />
       <div className={`chat-list`} >
         <ToastContainer />
         <div className='cl-title'>
