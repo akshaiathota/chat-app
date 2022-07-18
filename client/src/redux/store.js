@@ -5,6 +5,10 @@ import userReducer from './user/userSlice';
 import selectedChat from './selectedChat/selectedChatSlice';
 import chatReducer from './chats/chatSlice';
 import messageReducer from './messages/messageSlice';
+import navMenuReducer from './UI state/NavigationMenuSlice';
+import globalSearchReducer from './UI state/globalSearchSlice';
+import addMembersReducer from './UI state/addMembersSlice';
+import createGroupReducer from './UI state/createGroupSlice';
 import logger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './rootSaga';
@@ -16,7 +20,11 @@ const rootReducer = combineReducers({
     user: userReducer,
     selectedChat: selectedChat,
     chats: chatReducer,
-    messages: messageReducer
+    messages: messageReducer,
+    navMenu: navMenuReducer,
+    globalSearch: globalSearchReducer,
+    addMembers: addMembersReducer,
+    createGroup: createGroupReducer
 });
 
 const persistConfig = {

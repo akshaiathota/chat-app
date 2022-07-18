@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import getChats from '../../redux/chats/chatSelector';
 import messageActionTypes from '../../redux/messages/messageActionTypes';
 import getUserChat from '../../redux/messages/messageSelector';
 import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
@@ -9,7 +8,6 @@ import MessageItem from '../message item/MessageItem';
 import './Messages.css';
 
 function Messages() {
-    const chats = useSelector(getChats);
     const selectedChat = useSelector(getSelectedChat);
     const user = useSelector(getLoggedUser);
     const messages = useSelector(getUserChat);
@@ -78,7 +76,7 @@ function Messages() {
             </div>
             <form onKeyDown={handleKeyDown}>
                 <div className='m-input-field'>
-                    <textarea ref={inputRef} />
+                    <textarea ref={inputRef} id='message-txt-area' />
                 </div>
             </form>
 

@@ -11,8 +11,11 @@ function ChatListItem({ chat }) {
     const dispatch = useDispatch();
     const user = useSelector(getLoggedUser);
     const { users } = chat;
-
-    const url = getOtherUser().pic;
+    let url = null;
+    const otherUser = getOtherUser();
+    if (otherUser) {
+        url = otherUser.pic;
+    }
     let time = null, lastMsgTime = null;
     if (chat && chat.latestMessage) {
         time = new Date(chat.latestMessage.updatedAt);
@@ -40,10 +43,10 @@ function ChatListItem({ chat }) {
     return (
         <>
             {
-                user && users ?
-                    <div className={`${chat._id === selectedChat._id ? 'cli-selected-chat' : ''} chat-list-item`} onClick={() => handleSelectedChat()}>
+                user && users && chat ?
+                    <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'cli-selected-chat' : ''} chat-list-item`} onClick={() => handleSelectedChat()}>
                         <div className='cli-image-container'>
-                            <img src={url === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
+                            <img src={url && url === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
                                 DP : url} />
                         </div>
                         <div className='cli-chat-details'>
@@ -53,12 +56,12 @@ function ChatListItem({ chat }) {
                                         !chat.isGroupChat ? getOtherUser().name : chat.chatName
                                     }
                                 </div>
-                                <div className={`${chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-last-msg`} >
+                                <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-last-msg`} >
                                     {chat.latestMessage ? chat.latestMessage.content : <></>}
                                 </div>
                             </div>
                             <div>
-                                <div className={`${chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-time`}>
+                                <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-time`}>
                                     {
                                         lastMsgTime ? lastMsgTime : <></>
                                     }

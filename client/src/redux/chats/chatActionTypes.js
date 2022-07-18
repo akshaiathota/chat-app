@@ -7,7 +7,7 @@ const chatActionTypes = {
     'CREATE_GROUP_CHAT': 'CREATE_GROUP_CHAT',
     'RENAME_GROUP': 'RENAME_GROUP',
     'ADD_USER': 'ADD_USER',
-    'REMOVE_USER': 'REMOVE_USER'
+    'REMOVE_USER': 'REMOVE_USER',
 }
 
 export default chatActionTypes;

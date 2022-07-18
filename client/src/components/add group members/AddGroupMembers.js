@@ -8,25 +8,29 @@ import { toast, ToastContainer } from 'react-toastify';
 import DP from '../../assets/default dp.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLoggedUser } from '../../redux/user/userSelectors';
-import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
 import chatActionTypes from '../../redux/chats/chatActionTypes';
 
-function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
+function AddGroupMembers({ groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
     const user = useSelector(getLoggedUser);
+    const addMembers = useSelector((state) => state.addMembers);
+    const menuState = useSelector((state) => state.navMenu);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState("");
     const [searchResult, setSearchResult] = useState([]);
-    const selectedChat = useSelector(getSelectedChat);
     const dispatch = useDispatch();
 
     function handleInputChange(event) {
-        //console.log('handling input change');
         setSearch(event.target.value);
+    }
+
+    function handleAddGroupMembersUI() {
+        dispatch({ type: 'ADD_MEMBERS_TOGGLE' });
+        if (menuState)
+            dispatch({ type: 'NAV_MENU_TOGGLE' });
     }
 
     async function findUsersWithName() {
         const response = await searchUserByName(search, user.token);
-        // console.log(existingUsers);
         if (existingUserIds) {
             const allUsers = response.data;
             const existIdsSet = new Set(existingUserIds);
@@ -134,64 +138,66 @@ function AddGroupMembers({ handleAddGroupMembersUI, groupName, heading, operatio
 
     useEffect(() => {
 
-    }, [user]);
+    }, [user, addMembers]);
 
     return (
-        <form onSubmit={handleOnSubmit}>
-            <ToastContainer />
-            <div className='add-members'>
-                <div className='am-header'>
-                    {
-                        heading ? heading : (<>Add Members <span>1/20000</span></>)
-                    }
+        addMembers ?
+            <form onSubmit={handleOnSubmit}>
+                <ToastContainer />
+                <div className='add-members'>
+                    <div className='am-header'>
+                        {
+                            heading ? heading : (<>Add Members <span>1/20000</span></>)
+                        }
+                    </div>
+                    <div className='am-search-bar'>
+                        <FcSearch style={{ width: '20px', paddingRight: '8px' }} />
+                        <input type='text' placeholder='Search' onChange={handleInputChange} />
+                    </div>
+                    <div className='am-added-list'>
+                        {
+                            selectedUsers.length > 0 ? selectedUsers.map((result) =>
+                                <MenuItem key={result._id}
+                                    user={result}
+                                    style={{ height: '35px', width: 'max-content', margin: '0px 3px', borderRadius: '8px', fontSize: '12px', padding: '3px', cursor: 'default' }}
+                                >
+                                    <div style={{ width: '25px', height: '25px', marginRight: '5px', backgroundColor: 'black', borderRadius: '50%', overflow: 'hidden' }} className='am-selected-list'>
+                                        <img src={result.pic === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
+                                            DP :
+                                            result.pic}
+                                            style={{ width: '100%', height: '100%' }}
+                                        />
+                                    </div>
+                                    {result.name}
+                                    <ImCross style={{ cursor: 'pointer', width: '10px', padding: '5px', color: 'white' }} onClick={() => handleRemoveUser(result)} />
+                                </MenuItem>
+                            )
+                                : <></>
+                        }
+                    </div>
+                    <div className='am-contact-list'>
+                        {
+                            searchResult.length > 0 ? searchResult.map((result) =>
+                                <MenuItem key={result._id} text={result.name} user={result} style={{ height: '55px', marginBottom: '0px', borderRadius: '8px' }} onClick={handleSelectUser} >
+                                    <div style={{ width: '40px', height: '40px', margin: '0px 25px 0px', backgroundColor: 'black', borderRadius: '50%', overflow: 'hidden' }}>
+                                        <img src={result.pic === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
+                                            DP :
+                                            result.pic}
+                                            style={{ width: '100%', height: '100%' }}
+                                        />
+                                    </div>
+                                </MenuItem>
+                            ) :
+                                <></>
+                        }
+                    </div>
+                    <div className='am-buttons'>
+                        <input type='button' value='Cancel' onClick={handleAddGroupMembersUI} />
+                        <input type='submit' value={operation ? operation : 'Create'} />
+                    </div>
                 </div>
-                <div className='am-search-bar'>
-                    <FcSearch style={{ width: '20px', paddingRight: '8px' }} />
-                    <input type='text' placeholder='Search' onChange={handleInputChange} />
-                </div>
-                <div className='am-added-list'>
-                    {
-                        selectedUsers.length > 0 ? selectedUsers.map((result) =>
-                            <MenuItem key={result._id}
-                                user={result}
-                                style={{ height: '35px', width: 'max-content', margin: '0px 3px', borderRadius: '8px', fontSize: '12px', padding: '3px', cursor: 'default' }}
-                            >
-                                <div style={{ width: '25px', height: '25px', marginRight: '5px', backgroundColor: 'black', borderRadius: '50%', overflow: 'hidden' }} className='am-selected-list'>
-                                    <img src={result.pic === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
-                                        DP :
-                                        result.pic}
-                                        style={{ width: '100%', height: '100%' }}
-                                    />
-                                </div>
-                                {result.name}
-                                <ImCross style={{ cursor: 'pointer', width: '10px', padding: '5px', color: 'white' }} onClick={() => handleRemoveUser(result)} />
-                            </MenuItem>
-                        )
-                            : <></>
-                    }
-                </div>
-                <div className='am-contact-list'>
-                    {
-                        searchResult.length > 0 ? searchResult.map((result) =>
-                            <MenuItem key={result._id} text={result.name} user={result} style={{ height: '55px', marginBottom: '0px', borderRadius: '8px' }} onClick={handleSelectUser} >
-                                <div style={{ width: '40px', height: '40px', margin: '0px 25px 0px', backgroundColor: 'black', borderRadius: '50%', overflow: 'hidden' }}>
-                                    <img src={result.pic === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
-                                        DP :
-                                        result.pic}
-                                        style={{ width: '100%', height: '100%' }}
-                                    />
-                                </div>
-                            </MenuItem>
-                        ) :
-                            <></>
-                    }
-                </div>
-                <div className='am-buttons'>
-                    <input type='button' value='Cancel' onClick={handleAddGroupMembersUI} />
-                    <input type='submit' value={operation ? operation : 'Create'} />
-                </div>
-            </div>
-        </form>
+            </form>
+            : <></>
     )
 }
 

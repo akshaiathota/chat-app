@@ -24,6 +24,7 @@ export default function socketMiddleware() {
                     console.log('connected to socket');
                 });
                 socket.on('added to group', (newChat) => {
+                    console.log(newChat);
                     store.dispatch({ type: chatActionTypes.ADD_NEW_CHAT, payload: newChat });
                 });
                 socket.on('message received', (msg) => {
@@ -36,7 +37,7 @@ export default function socketMiddleware() {
                             newChat: msg.chat
                         }
                         store.dispatch({ type: chatActionTypes.UPDATE_CHAT, payload: payload });
-                        console.log(msg);
+                        store.dispatch({ type: messageActionTypes.ADD_NEW_MESSAGE, payload: msg });
                     }
                 });
                 break;
@@ -45,6 +46,9 @@ export default function socketMiddleware() {
                 break;
             case messageActionTypes.MESSAGE_SENT_SUCCESSFULLY:
                 socket.emit('new message', action.payload);
+                const element = document.getElementById('message-txt-area');
+                console.log(element);
+                element.value = '';
                 break;
             case messageActionTypes.MESSAGES_FETCHED_SUCCESSFULLY:
                 socket.emit('join chat', action.payload);

@@ -16,13 +16,11 @@ import userActionTypes from '../../redux/user/userActionTypes';
 
 function NavigationMenu() {
     const user = useSelector(getLoggedUser);
-    const [menuState, setMenuState] = useState(false);
+    const menuState = useSelector((state) => state.navMenu);
     const navigate = useNavigate();
-    const [showCreateGroupUI, setShowCreateGroupUI] = useState(false);
-    const [showAddMembersUI, setShowAddMembersUI] = useState(false);
-    const [showGlobalSearchUI, setShowGlobalSearchUI] = useState(false);
     const [groupName, setGroupName] = useState("");
     const dispatch = useDispatch();
+
 
     function handleInputChange(value) {
         setGroupName(value);
@@ -34,36 +32,18 @@ function NavigationMenu() {
     }
 
     function MenuBar() {
-        setMenuState((prevValue) => {
-            return !prevValue;
-        });
+        dispatch({ type: 'NAV_MENU_TOGGLE' });
     }
 
     function handleGroupUI() {
-        console.log(showCreateGroupUI);
-        setShowCreateGroupUI(!showCreateGroupUI);
-        if (menuState)
+        dispatch({ type: 'CREATE_GROUP_TOGGLE' });
+        if (menuState) {
             MenuBar();
-    }
-
-    function handleNext(event) {
-        event.preventDefault();
-        handleGroupUI();
-        setShowAddMembersUI(!showAddMembersUI);
-    }
-
-    function handleAddGroupMembersUI() {
-        setShowAddMembersUI((prev) => {
-            return !prev;
-        });
-        if (menuState)
-            MenuBar();
+        }
     }
 
     function handleGlobalSearchUI() {
-        setShowGlobalSearchUI((prev) => {
-            return !prev;
-        });
+        dispatch({ type: 'GLOBAL_SEARCH_TOGGLE' });
         if (menuState) {
             MenuBar();
         }
@@ -71,7 +51,7 @@ function NavigationMenu() {
 
     useEffect(() => {
 
-    }, [user]);
+    }, [user, menuState]);
 
     return (
         <>
@@ -109,24 +89,12 @@ function NavigationMenu() {
                     </>
             }
             <>
-                {
-                    showCreateGroupUI ?
-                        <CreateGroup handleGroupUI={handleGroupUI} handleNext={handleNext} handleInputChange={handleInputChange} />
-                        : (showAddMembersUI ?
-                            <AddGroupMembers
-                                handleAddGroupMembersUI={handleAddGroupMembersUI}
-                                groupName={groupName}
-                                operation={'add'}
-                            />
-                            : <></>)
-                }
-            </>
-            <>
-                {
-                    showGlobalSearchUI ?
-                        <GlobalSearch handleClose={handleGlobalSearchUI} />
-                        : <></>
-                }
+                <CreateGroup handleInputChange={handleInputChange} />
+                <AddGroupMembers
+                    groupName={groupName}
+                    operation='add'
+                />
+                <GlobalSearch />
             </>
         </>
     )
