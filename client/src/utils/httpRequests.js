@@ -87,7 +87,6 @@ export const loginUser = async (inputData) => {
 }
 
 export const searchUser = async (search, token) => {
-    //console.log('searching user...');
     if (!search) {
         return INVALID_DATA;
     }
@@ -101,7 +100,6 @@ export const searchUser = async (search, token) => {
 }
 
 export const searchUserByName = async (search, token) => {
-    //console.log('searching user...');
     if (!search) {
         return INVALID_DATA;
     }

@@ -76,7 +76,6 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
         }
         else if (existingUserIds && operation === 'add') {
             if (selectedUsers.length === 1) {
-                console.log('adding user');
                 if (groupAdmin._id !== user._id) {
                     toast('only admins can add new users');
                     handleAddGroupMembersUI();
@@ -96,7 +95,6 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
         }
         else if (operation === 'remove') {
             if (selectedUsers.length === 1) {
-                console.log('removing user');
                 if (groupAdmin._id !== user._id) {
                     toast('only admins can add new users');
                     handleAddGroupMembersUI();

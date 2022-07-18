@@ -3,9 +3,7 @@ const Chat = require('../models/chatModel');
 const User = require("../models/userModel");
 
 async function accessChats(req, res, next) {
-    //console.log(req.body);
     const { userId } = req.body;
-    //console.log(userId);
     if (!userId) {
         next({
             status: 400,
@@ -26,7 +24,6 @@ async function accessChats(req, res, next) {
         path: 'latestMessage.sender',
         select: 'name pic email mobileNumber'
     });
-    console.log(isChat);
     if (isChat.length > 0) {
         res.status(200).json({
             data: isChat[0],
@@ -52,7 +49,6 @@ async function accessChats(req, res, next) {
             });
         }
         catch (error) {
-            console.log(error);
             next({
                 status: 500,
                 message: SERVER_ERR
@@ -64,8 +60,6 @@ async function accessChats(req, res, next) {
 
 async function fetchChats(req, res, next) {
     try {
-        // console.log('fetch chats');
-        //console.log(req.user);
         const chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
             .populate('users', '-password')
             .populate('groupAdmin', '-password')
@@ -75,7 +69,6 @@ async function fetchChats(req, res, next) {
             path: 'latestMessage.sender',
             select: 'name pic email mobileNumber'
         });
-        //console.log(resultData);
         res.status(200).json({
             message: 'fetched chats successfully',
             data: resultData
@@ -83,7 +76,6 @@ async function fetchChats(req, res, next) {
         return;
     }
     catch (error) {
-        console.log(error);
         next({
             message: SERVER_ERR,
             status: 500
@@ -187,7 +179,6 @@ async function addToGroup(req, res, next) {
     }
     try {
         const doesChatExist = await Chat.findById(chatId).find({ users: { $elemMatch: { $eq: userId } } });
-        console.log(doesChatExist);
         if (doesChatExist.length > 0) {
             next({
                 status: 400,
@@ -209,7 +200,6 @@ async function addToGroup(req, res, next) {
         return;
     }
     catch (error) {
-        console.log(error);
         next({
             message: SERVER_ERR,
             status: 500
@@ -235,7 +225,6 @@ async function removeFromGroup(req, res, next) {
         })
             .populate('users', '-password')
             .populate('groupAdmin', '-password')
-        //console.log(deletion);
         res.status(200).json({
             message: 'user removed from group',
             data: deletion

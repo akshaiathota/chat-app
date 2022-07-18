@@ -47,7 +47,6 @@ function Signup() {
         event.preventDefault();
         const { type, pic } = profilePic;
         if (pic != null && type !== null && type !== 'image/png' && type !== 'image/jpeg' && type !== 'image/jpg') {
-            console.log('please check your file format and try again');
             return;
         }
         const inputData = {

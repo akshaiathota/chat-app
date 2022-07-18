@@ -24,20 +24,23 @@ export default function socketMiddleware() {
                     console.log('connected to socket');
                 });
                 socket.on('added to group', (newChat) => {
-                    console.log(newChat);
                     store.dispatch({ type: chatActionTypes.ADD_NEW_CHAT, payload: newChat });
                 });
                 socket.on('message received', (msg) => {
+                    console.log(msg);
                     const chats = store.getState().chats;
                     const selectedChat = store.getState().selectedChat;
                     const otherChats = chats.filter((ct) => ct._id !== msg.chat._id);
-                    if (msg && msg.chat._id === selectedChat._id) {
+                    if (msg && selectedChat && msg.chat._id === selectedChat._id) {
                         const payload = {
                             otherChats,
                             newChat: msg.chat
                         }
                         store.dispatch({ type: chatActionTypes.UPDATE_CHAT, payload: payload });
                         store.dispatch({ type: messageActionTypes.ADD_NEW_MESSAGE, payload: msg });
+                    }
+                    else {
+                        store.dispatch({ type: chatActionTypes.NEW_CHAT, payload: msg });
                     }
                 });
                 break;
@@ -47,11 +50,13 @@ export default function socketMiddleware() {
             case messageActionTypes.MESSAGE_SENT_SUCCESSFULLY:
                 socket.emit('new message', action.payload);
                 const element = document.getElementById('message-txt-area');
-                console.log(element);
                 element.value = '';
                 break;
             case messageActionTypes.MESSAGES_FETCHED_SUCCESSFULLY:
                 socket.emit('join chat', action.payload);
+                break;
+            case chatActionTypes.CREATED_GROUP_SUCCESSFULLY:
+                socket.emit('add to group', action.payload);
                 break;
             default:
                 break;

@@ -104,7 +104,6 @@ const registerUser = async (req, res, next) => {
 //login
 async function loginUser(req, res, next) {
     try {
-        console.log(req.body);
         const { email, password } = req.body;
         const user = await userExists({ email: email });
         if (!user) {
@@ -143,7 +142,6 @@ async function loginUser(req, res, next) {
 }
 
 async function findUser(req, res) {
-    console.log(req.query.search);
     const searchString = req.query.search;
     const users = await User.findOne({ mobileNumber: searchString }).find({ _id: { $ne: req.user._id } });
     res.status(201).json({

@@ -2,7 +2,6 @@ import React from 'react';
 import './MessageItem.css';
 
 function MessageItem({ message, senderName, leftOrRight, ref, isLoggedUser }) {
-    //console.log(leftOrRight);
     return (
         <div className={`message-item ${leftOrRight}`} ref={ref}>
             <div className='mi-msg-details'>

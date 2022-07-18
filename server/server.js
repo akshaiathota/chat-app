@@ -46,7 +46,6 @@ app.use('*', (req, res, next) => {
 
 //function for handling global errors
 app.use((error, req, res, next) => {
-    //console.log(error);
     const status = error.status || 500;
     const message = error.message || SERVER_ERR;
     const data = error.data || null;
@@ -74,21 +73,24 @@ io.on('connection', function (socket) {
     });
 
     socket.on('new message', (newMessageReceived) => {
-        console.log(newMessageReceived);
         var chat = newMessageReceived.chat;
-        console.log(chat.users);
         if (!chat.users) {
             console.log('no users');
             return;
         }
-        socket.to(chat._id).emit('message received', newMessageReceived);
+        chat.users.forEach((user) => {
+            if (user._id !== newMessageReceived.sender._id) {
+                io.to(user._id).emit('message received', newMessageReceived);
+                console.log(user._id);
+            }
+        });
+
     })
 
     socket.on('add to group', (chatContent) => {
         if (!chatContent || !chatContent.users) {
             return;
         }
-        console.log(chatContent.users);
         chatContent.users.forEach((usr) => {
             if (usr._id !== chatContent.groupAdmin._id) {
                 io.to(usr._id).emit('added to group', chatContent);
@@ -104,7 +106,6 @@ io.on('connection', function (socket) {
 async function main() {
     try {
         await connectDB();
-        //console.log(PORT_NUMBER + " " + ORIGIN);
         server.listen(PORT_NUMBER, () => {
             console.log(`server listening on port ${PORT_NUMBER}...`);
         })

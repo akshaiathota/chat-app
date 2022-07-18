@@ -18,7 +18,6 @@ async function sendMessage(req, res, next) {
         content: message,
         chat: chatId
     };
-    console.log(newMessage);
     try {
         let response = await Message.create(newMessage);
         await Chat.findByIdAndUpdate(chatId, {

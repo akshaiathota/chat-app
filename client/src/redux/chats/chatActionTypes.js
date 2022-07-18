@@ -8,6 +8,8 @@ const chatActionTypes = {
     'RENAME_GROUP': 'RENAME_GROUP',
     'ADD_USER': 'ADD_USER',
     'REMOVE_USER': 'REMOVE_USER',
+    'CREATED_GROUP_SUCCESSFULLY': 'CREATED_GROUP_SUCCESSFULLY',
+    'NEW_CHAT': 'NEW_CHAT'
 }
 
 export default chatActionTypes;

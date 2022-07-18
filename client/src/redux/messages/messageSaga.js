@@ -13,15 +13,15 @@ function* send({ payload: { text, chatId, token } }) {
         yield put({ type: messageActionTypes.ADD_NEW_MESSAGE, payload: data });
         yield put({ type: messageActionTypes.MESSAGE_SENT_SUCCESSFULLY, payload: data });
         const chats = yield select(getChats);
-        const otherChats = chats.filter((ct) => ct._id !== data._id);
+        const otherChats = chats.filter((ct) => ct._id !== data.chat._id);
         const payload = {
             otherChats,
-            newChat: data
+            newChat: data.chat
         };
+        console.log(payload);
         yield put({ type: chatActionTypes.UPDATE_CHAT, payload: payload });
     }
     else {
-        console.log(response);
     }
 }
 
@@ -33,7 +33,6 @@ function* getMessages({ payload: { chatId, token } }) {
         yield put({ type: messageActionTypes.MESSAGES_FETCHED_SUCCESSFULLY, payload: selectedChat._id });
     }
     else {
-        console.log(response);
     }
 }
 

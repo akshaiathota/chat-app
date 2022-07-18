@@ -11,7 +11,6 @@ function* getChat({ payload: { id, token } }) {
         const { data } = response;
         const chats = yield select(getChats);
         const doesChatExists = chats.find((chat) => chat._id === data._id);
-        console.log(doesChatExists);
         if (!doesChatExists) {
             yield put({ type: chatActionTypes.ADD_NEW_CHAT, payload: data });
         }
@@ -20,7 +19,6 @@ function* getChat({ payload: { id, token } }) {
 
 function* getAllChats({ payload: { token } }) {
     const response = yield fetchChats(token);
-    console.log(response);
     if (response.status === 'ok') {
         const { data } = response;
         yield put({ type: chatActionTypes.SET_CHATS, payload: data });
@@ -29,11 +27,11 @@ function* getAllChats({ payload: { token } }) {
 
 function* createNewUserGroupChat({ payload: { name, users, token } }) {
     const response = yield createGroupChat(name, users, token);
-    console.log(response);
     if (response.status === 'ok') {
         const { data } = response;
         yield put({ type: chatActionTypes.ADD_NEW_CHAT, payload: data });
         yield put({ type: 'ADD_MEMBERS_TOGGLE' });
+        yield put({ type: chatActionTypes.CREATED_GROUP_SUCCESSFULLY, payload: data });
     }
 }
 
@@ -85,6 +83,23 @@ function* removeUserFromGroup({ payload: { userId, chatId, token } }) {
     }
 }
 
+function* handleNewChat({ payload }) {
+    const chats = yield select(getChats);
+    const doesChatExists = chats.find((ct) => ct._id === payload.chat._id);
+    console.log(payload.chat);
+    if (doesChatExists) {
+        yield put({ type: chatActionTypes.ADD_NEW_CHAT, payload: payload.chat });
+    }
+    else {
+        const otherChats = chats.filter((ct) => ct._id !== payload.chat._id);
+        const newPayload = {
+            otherChats,
+            newChat: payload.chat
+        };
+        yield put({ type: chatActionTypes.UPDATE_CHAT, payload: newPayload });
+    }
+}
+
 function* accessUserChat() {
     yield takeLatest(chatActionTypes.ACCESS_CHAT, getChat);
 }
@@ -109,6 +124,10 @@ function* removeUserById() {
     yield takeLatest(chatActionTypes.REMOVE_USER, removeUserFromGroup);
 }
 
+function* newChatReceived() {
+    yield takeLatest(chatActionTypes.NEW_CHAT, handleNewChat);
+}
+
 export default function* chatSaga() {
     yield all([
         call(accessUserChat),
@@ -116,6 +135,7 @@ export default function* chatSaga() {
         call(createUserGroupChat),
         call(renameUserGroup),
         call(addNewUser),
-        call(removeUserById)
+        call(removeUserById),
+        call(newChatReceived)
     ]);
 }
