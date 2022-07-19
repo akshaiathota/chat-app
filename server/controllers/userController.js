@@ -160,7 +160,6 @@ async function findUserByName(req, res) {
             ],
         }
         : {};
-
     const users = await User.find(conditions).find({ _id: { $ne: req.user._id } });
     res.status(201).json({
         data: users,

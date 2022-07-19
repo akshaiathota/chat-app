@@ -46,6 +46,7 @@ app.use('*', (req, res, next) => {
 
 //function for handling global errors
 app.use((error, req, res, next) => {
+    console.log(error);
     const status = error.status || 500;
     const message = error.message || SERVER_ERR;
     const data = error.data || null;

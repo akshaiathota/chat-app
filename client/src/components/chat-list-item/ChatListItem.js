@@ -67,13 +67,20 @@ function ChatListItem({ chat }) {
                                     }
                                 </div>
                                 {
-                                    chat.count > 0 ?
+                                    chat.unread[0].user._id === user._id ? (chat.unread[1].messages.length > 0 ?
                                         <div className='cli-chat-new-msg' >
                                             <div>
-                                                {chat.count}
+                                                {chat.unread[0].messages.length}
                                             </div>
                                         </div>
-                                        : <></>
+                                        : <></>)
+                                        : chat.unread[0].messages.length > 0 ?
+                                            <div className='cli-chat-new-msg' >
+                                                <div>
+                                                    {chat.unread[0].messages.length}
+                                                </div>
+                                            </div>
+                                            : <></>
                                 }
                             </div>
                         </div>

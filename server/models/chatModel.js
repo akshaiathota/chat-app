@@ -13,8 +13,17 @@ const chatModel = mongoose.Schema(
         users: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
-        }]
-        ,
+        }],
+        unread: [{
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            messages: [{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Message'
+            }]
+        }],
         latestMessage: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Message',
