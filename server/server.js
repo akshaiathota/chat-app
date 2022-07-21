@@ -55,16 +55,38 @@ app.use((error, req, res, next) => {
         message,
         data
     });
-})
+});
+
+let users = {};
+let subscribers = {};
 
 io.on('connection', function (socket) {
     console.log('A user connected');
-
+    let userId = socket.handshake.query.userId;
     socket.on('setup', (userData) => {
         if (userData) {
             socket.join(userData._id);
             console.log(userData._id);
-            socket.emit('connected');
+            if (!users[userId]) {
+                users[userId] = [];
+            }
+            users[userId].push(socket.id);
+            if (subscribers[userId]) {
+                let newSubscribers = [];
+                subscribers[userId].forEach((id) => {
+                    if (users[id]) {
+                        newSubscribers.push(id);
+                        const payload = {
+                            id,
+                            status: false
+                        }
+                        users[id].forEach((socketId) => {
+                            io.to(socketId).emit('user status', payload);
+                        })
+                    }
+                });
+                subscribers[userId] = newSubscribers;
+            }
         }
     });
 
@@ -86,7 +108,7 @@ io.on('connection', function (socket) {
             }
         });
 
-    })
+    });
 
     socket.on('add to group', (chatContent) => {
         if (!chatContent || !chatContent.users) {
@@ -99,8 +121,43 @@ io.on('connection', function (socket) {
         })
     });
 
+    socket.on('get user status', (reqId) => {
+        if (!subscribers[reqId]) {
+            subscribers[reqId] = [];
+        }
+        subscribers[reqId].push(userId);
+        if (users[reqId].length == 0) {
+            socket.emit('user status', false);
+        }
+        else {
+            socket.emit('user status', true);
+        }
+    });
+
     socket.on('disconnect', function () {
-        console.log('A user disconnected');
+        if (subscribers[userId]) {
+            let newSubscribers = [];
+            subscribers[userId].forEach((id) => {
+                if (users[id]) {
+                    newSubscribers.push(id);
+                    const payload = {
+                        id,
+                        status: false
+                    }
+                    users[id].forEach(socketId => {
+                        io.to(socketId).emit('user status', payload);
+                    });
+                }
+            });
+        }
+        let socketsLeft = users[userId].filter((socketId) => socketId !== socket.id);
+        if (!socketsLeft || socketsLeft.length == 0) {
+            delete users[userId];
+        }
+        else {
+            users[userId] = socketsLeft;
+        }
+        socket.disconnect();
     });
 });
 

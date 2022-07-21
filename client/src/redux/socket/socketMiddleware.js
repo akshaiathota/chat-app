@@ -4,6 +4,7 @@ import messageActionTypes from '../messages/messageActionTypes';
 import socketActionTypes from './socketActionTypes';
 import userActionTypes from '../user/userActionTypes';
 import selectedChatActionTypes from '../selectedChat/selectedChatActionTypes';
+import userStatusActionTypes from '../usersStatus/usersStatusActionTypes';
 
 export default function socketMiddleware() {
     let socket = null;
@@ -14,7 +15,12 @@ export default function socketMiddleware() {
                 if (socket && socket.active) {
                     break;
                 }
+                const user = store.getState().user;
+                const queryParams = {
+                    userId: user._id
+                };
                 socket = io.connect('http://localhost:5000', {
+                    query: queryParams,
                     reconnection: true,
                     reconnectionDelay: 1000,
                     reconnectionDelayMax: 5000,
@@ -46,6 +52,12 @@ export default function socketMiddleware() {
                         store.dispatch({ type: chatActionTypes.NEW_CHAT, payload: msg });
                     }
                 });
+
+                socket.on('user status', (payload) => {
+                    console.log(payload);
+                    store.dispatch({ type: userStatusActionTypes.SET_USER_STATUS, payload: payload });
+                });
+
                 break;
             case userActionTypes.SIGN_OUT:
                 socket.disconnect();
@@ -61,6 +73,14 @@ export default function socketMiddleware() {
             case chatActionTypes.CREATED_GROUP_SUCCESSFULLY:
                 socket.emit('add to group', action.payload);
                 break;
+            case userStatusActionTypes.FIND_USER_STATUS:
+                socket.emit('get user status', (status) => {
+                    const payload = {
+                        id: action.payload.id,
+                        status: status
+                    };
+                    store.dispatch({ type: userStatusActionTypes.SET_USER_STATUS, payload: payload });
+                });
             default:
                 break;
         }

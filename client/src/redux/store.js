@@ -9,6 +9,7 @@ import navMenuReducer from './UI state/NavigationMenuSlice';
 import globalSearchReducer from './UI state/globalSearchSlice';
 import addMembersReducer from './UI state/addMembersSlice';
 import createGroupReducer from './UI state/createGroupSlice';
+import usersStatusReducer from './usersStatus/usersStatusSlice';
 import logger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './rootSaga';
@@ -25,7 +26,8 @@ const combinedReducers = combineReducers({
     navMenu: navMenuReducer,
     globalSearch: globalSearchReducer,
     addMembers: addMembersReducer,
-    createGroup: createGroupReducer
+    createGroup: createGroupReducer,
+    usersStatus: usersStatusReducer
 });
 
 const rootReducer = (state, action) => {

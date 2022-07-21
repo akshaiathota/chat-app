@@ -9,6 +9,9 @@ import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
 function ChatWindow() {
   const selectedChat = useSelector(getSelectedChat);
   const user = useSelector(getLoggedUser);
+  const [status, setStatus] = useState("");
+  const usersStatus = useSelector((state) => state.usersStatus);
+
   function getOtherUser(users) {
     if (!user || !users) {
       return null;
@@ -33,6 +36,9 @@ function ChatWindow() {
                 <h4>{
                   selectedChat.isGroupChat ? selectedChat.chatName : getOtherUser(selectedChat.users).name
                 }</h4>
+                {
+
+                }
               </div>
               {
                 selectedChat.isGroupChat ? <ChatMenu chat={selectedChat} />
