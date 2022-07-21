@@ -3,6 +3,7 @@ import chatActionTypes from '../chats/chatActionTypes';
 import messageActionTypes from '../messages/messageActionTypes';
 import socketActionTypes from './socketActionTypes';
 import userActionTypes from '../user/userActionTypes';
+import selectedChatActionTypes from '../selectedChat/selectedChatActionTypes';
 
 export default function socketMiddleware() {
     let socket = null;
@@ -37,6 +38,8 @@ export default function socketMiddleware() {
                             newChat: msg.chat
                         }
                         store.dispatch({ type: chatActionTypes.UPDATE_CHAT, payload: payload });
+                        store.dispatch({ type: selectedChatActionTypes.UPDATE_SELECTED_CHAT, payload: msg.chat });
+                        store.dispatch({ type: selectedChatActionTypes.CHECK_MESSAGE, payload: msg.chat });
                         store.dispatch({ type: messageActionTypes.ADD_NEW_MESSAGE, payload: msg });
                     }
                     else {

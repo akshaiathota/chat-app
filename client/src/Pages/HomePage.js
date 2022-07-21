@@ -13,7 +13,7 @@ function HomePage() {
     useEffect(() => {
         if (user)
             dispatch({ type: socketActionTypes.SET_UP, payload: user });
-    }, [user]);
+    }, [user, dispatch]);
 
 
 

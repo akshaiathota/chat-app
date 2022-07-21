@@ -1,7 +1,8 @@
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
-import { getAllMessages, sendMessage } from "../../utils/httpRequests";
+import { getAllMessages, markUnreadMessages, sendMessage } from "../../utils/httpRequests";
 import chatActionTypes from "../chats/chatActionTypes";
 import getChats from "../chats/chatSelector";
+import selectedChatActionTypes from "../selectedChat/selectedChatActionTypes";
 import getSelectedChat from "../selectedChat/selectedChatSelector";
 import messageActionTypes from "./messageActionTypes";
 
@@ -36,6 +37,19 @@ function* getMessages({ payload: { chatId, token } }) {
     }
 }
 
+function* markMessagesSeen({ payload: { messageIds, chatId, token } }) {
+    console.log(token);
+    const response = yield markUnreadMessages(messageIds, chatId, token);
+    console.log(response);
+    if (response.status === 'ok') {
+        yield put({ type: selectedChatActionTypes.SELECT_CHAT, payload: response.data });
+        const payload = {
+            chat: response.data
+        }
+        yield put({ type: chatActionTypes.NEW_CHAT, payload: payload });
+    }
+}
+
 function* getAllUserMessages() {
     yield takeLatest(messageActionTypes.GET_ALL_MESSAGES, getMessages);
 }
@@ -44,9 +58,14 @@ function* sendNewMessage() {
     yield takeLatest(messageActionTypes.SEND_MESSAGE, send);
 }
 
+function* markSeen() {
+    yield takeLatest(messageActionTypes.MARK_MESSAGES_SEEN, markMessagesSeen);
+}
+
 export default function* messageSaga() {
     yield all([
         call(sendNewMessage),
-        call(getAllUserMessages)
+        call(getAllUserMessages),
+        call(markSeen)
     ])
 }

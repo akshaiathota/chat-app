@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import './ChatListItem.css';
 import DP from '../../assets/default dp.jpg';
 import { useDispatch, useSelector } from "react-redux";
@@ -7,8 +7,9 @@ import getSelectedChat from "../../redux/selectedChat/selectedChatSelector";
 import selectedChatActionTypes from "../../redux/selectedChat/selectedChatActionTypes";
 
 function ChatListItem({ chat }) {
-    const selectedChat = useSelector(getSelectedChat);
     const dispatch = useDispatch();
+    const [count, setCount] = useState(0);
+    const selectedChat = useSelector(getSelectedChat);
     const user = useSelector(getLoggedUser);
     const { users } = chat;
     let url = null;
@@ -40,6 +41,20 @@ function ChatListItem({ chat }) {
 
     }, [user, selectedChat]);
 
+    useEffect(() => {
+        if (chat) {
+            let currentCount = 0;
+            chat.unread.forEach((obj) => {
+                if (obj.user._id === user._id) {
+                    currentCount = obj.messages.length;
+                }
+            });
+            if (currentCount !== count) {
+                setCount(currentCount);
+            }
+        }
+    }, [count, chat]);
+
     return (
         <>
             {
@@ -67,20 +82,13 @@ function ChatListItem({ chat }) {
                                     }
                                 </div>
                                 {
-                                    chat.unread[0].user._id === user._id ? (chat.unread[1].messages.length > 0 ?
+                                    count > 0 ?
                                         <div className='cli-chat-new-msg' >
                                             <div>
-                                                {chat.unread[0].messages.length}
+                                                {count}
                                             </div>
                                         </div>
-                                        : <></>)
-                                        : chat.unread[0].messages.length > 0 ?
-                                            <div className='cli-chat-new-msg' >
-                                                <div>
-                                                    {chat.unread[0].messages.length}
-                                                </div>
-                                            </div>
-                                            : <></>
+                                        : <></>
                                 }
                             </div>
                         </div>

@@ -86,8 +86,7 @@ function* removeUserFromGroup({ payload: { userId, chatId, token } }) {
 function* handleNewChat({ payload }) {
     const chats = yield select(getChats);
     const doesChatExists = chats.find((ct) => ct._id === payload.chat._id);
-    console.log(payload.chat);
-    if (doesChatExists) {
+    if (!doesChatExists) {
         yield put({ type: chatActionTypes.ADD_NEW_CHAT, payload: payload.chat });
     }
     else {

@@ -239,7 +239,26 @@ export const getAllMessages = async (chatId, token) => {
     const headers = {
         authorization: `Bearer ${token}`
     }
-    const data = {}
+    const data = {};
+    const response = await serverRequest(url, method, data, headers);
+    return response;
+}
+
+export const markUnreadMessages = async (messageIds, chatId, token) => {
+    if (!messageIds || messageIds.length < 0) {
+        return {
+            status: 'ok',
+            message: 'no message to mark as seen'
+        };
+    }
+    const method = 'POST';
+    const url = BASE_URI + `message/${chatId}`;
+    const headers = {
+        authorization: `Bearer ${token}`
+    };
+    const data = {
+        messageIds
+    };
     const response = await serverRequest(url, method, data, headers);
     return response;
 }

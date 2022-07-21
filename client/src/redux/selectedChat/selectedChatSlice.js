@@ -5,7 +5,7 @@ export const selectedChatSlice = createSlice({
     name: 'selectedChat',
     initialState: null,
     extraReducers: {
-        [selectedChatActionTypes.SELECT_CHAT]: (state, action) => {
+        [selectedChatActionTypes.UPDATE_SELECTED_CHAT]: (state, action) => {
             return action.payload;
         }
     }

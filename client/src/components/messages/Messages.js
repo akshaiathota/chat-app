@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import messageActionTypes from '../../redux/messages/messageActionTypes';
 import getUserChat from '../../redux/messages/messageSelector';
@@ -13,6 +13,7 @@ function Messages() {
     const messages = useSelector(getUserChat);
     const inputRef = useRef();
     const dispatch = useDispatch();
+    const [prevChatId, setPrevChatId] = useState("");
 
     function scrollToBottom() {
         let target = document.getElementsByClassName('m-ref-block');
@@ -34,22 +35,20 @@ function Messages() {
         }
     }
 
-    function fetchMessages() {
-        const payload = {
-            chatId: selectedChat._id,
-            token: user.token
-        };
-        dispatch({ type: messageActionTypes.GET_ALL_MESSAGES, payload: payload });
-    }
-
     useEffect(() => {
-
-    }, [user]);
-
-    useEffect(() => {
-        fetchMessages();
-        scrollToBottom();
-    }, [selectedChat]);
+        function fetchMessages() {
+            const payload = {
+                chatId: selectedChat._id,
+                token: user.token
+            };
+            dispatch({ type: messageActionTypes.GET_ALL_MESSAGES, payload: payload });
+        }
+        if (selectedChat && selectedChat._id !== prevChatId) {
+            setPrevChatId(selectedChat._id);
+            fetchMessages();
+            scrollToBottom();
+        }
+    }, [selectedChat, prevChatId, user, dispatch]);
 
     useEffect(() => {
         scrollToBottom();
