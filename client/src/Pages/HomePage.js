@@ -15,8 +15,6 @@ function HomePage() {
             dispatch({ type: socketActionTypes.SET_UP, payload: user });
     }, [user, dispatch]);
 
-
-
     return (
         <>
             <div className='home-page'>

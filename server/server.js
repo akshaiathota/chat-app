@@ -57,8 +57,8 @@ app.use((error, req, res, next) => {
     });
 });
 
-let users = {};
-let subscribers = {};
+var users = {};
+var subscribers = {};
 
 io.on('connection', function (socket) {
     console.log('A user connected');
@@ -66,20 +66,20 @@ io.on('connection', function (socket) {
     socket.on('setup', (userData) => {
         if (userData) {
             socket.join(userData._id);
-            console.log(userData._id);
+            console.log('userId: ' + userData._id);
             if (!users[userId]) {
                 users[userId] = [];
             }
             users[userId].push(socket.id);
-            if (subscribers[userId]) {
+            if (subscribers[userId] && subscribers[userId].length > 0) {
                 let newSubscribers = [];
+                const payload = {
+                    id: userId,
+                    status: true
+                }
                 subscribers[userId].forEach((id) => {
                     if (users[id]) {
                         newSubscribers.push(id);
-                        const payload = {
-                            id,
-                            status: false
-                        }
                         users[id].forEach((socketId) => {
                             io.to(socketId).emit('user status', payload);
                         })
@@ -104,7 +104,7 @@ io.on('connection', function (socket) {
         chat.users.forEach((user) => {
             if (user._id !== newMessageReceived.sender._id) {
                 io.to(user._id).emit('message received', newMessageReceived);
-                console.log(user._id);
+                console.log('new message to ' + user._id);
             }
         });
 
@@ -126,31 +126,39 @@ io.on('connection', function (socket) {
             subscribers[reqId] = [];
         }
         subscribers[reqId].push(userId);
-        if (users[reqId].length == 0) {
-            socket.emit('user status', false);
+        if (!users[reqId] || users[reqId].length === 0) {
+            const payload = {
+                id: reqId,
+                status: false
+            };
+            socket.emit('user status', payload);
         }
         else {
-            socket.emit('user status', true);
+            const payload = {
+                id: reqId,
+                status: true
+            };
+            socket.emit('user status', payload);
         }
     });
 
     socket.on('disconnect', function () {
         if (subscribers[userId]) {
             let newSubscribers = [];
+            const payload = {
+                id: userId,
+                status: false
+            }
             subscribers[userId].forEach((id) => {
-                if (users[id]) {
+                if (users[id] && users[id].length > 0) {
                     newSubscribers.push(id);
-                    const payload = {
-                        id,
-                        status: false
-                    }
                     users[id].forEach(socketId => {
                         io.to(socketId).emit('user status', payload);
                     });
                 }
             });
         }
-        let socketsLeft = users[userId].filter((socketId) => socketId !== socket.id);
+        let socketsLeft = users[userId] ? users[userId].filter((socketId) => socketId !== socket.id) : [];
         if (!socketsLeft || socketsLeft.length == 0) {
             delete users[userId];
         }

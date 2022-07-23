@@ -1,30 +1,16 @@
 import React, { useEffect } from 'react';
 import './ChatWindow.css';
-import ChatMenu from '../chat menu/ChatMenu';
 import Messages from '../messages/Messages';
 import { useSelector } from 'react-redux';
-import { getLoggedUser } from '../../redux/user/userSelectors';
 import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
+import ChatWindowUserStatus from '../chat window header/ChatWindowUserStatus';
 
 function ChatWindow() {
   const selectedChat = useSelector(getSelectedChat);
-  const user = useSelector(getLoggedUser);
-  const [status, setStatus] = useState("");
-  const usersStatus = useSelector((state) => state.usersStatus);
-
-  function getOtherUser(users) {
-    if (!user || !users) {
-      return null;
-    }
-    if (users.length === 1) {
-      return;
-    }
-    return users[0]._id === user._id ? users[1] : users[0];
-  }
 
   useEffect(() => {
 
-  }, [user, selectedChat]);
+  }, [selectedChat]);
 
   return (
     <>
@@ -32,18 +18,7 @@ function ChatWindow() {
         selectedChat ?
           <div className={`chat-window`} >
             <div className='cw-header'>
-              <div >
-                <h4>{
-                  selectedChat.isGroupChat ? selectedChat.chatName : getOtherUser(selectedChat.users).name
-                }</h4>
-                {
-
-                }
-              </div>
-              {
-                selectedChat.isGroupChat ? <ChatMenu chat={selectedChat} />
-                  : <></>
-              }
+              <ChatWindowUserStatus />
             </div>
             <div className='cw-chat'>
               {

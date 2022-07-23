@@ -21,7 +21,22 @@
 }
 
 .cw-header h4 {
-    margin: 18px 0px 5px;
+    margin: 24px 0px 0px 0px;
+    padding-left: 10px;
+    font-size: 20px;
+    text-transform: capitalize;
+    cursor: default;
+}
+
+.cw-header h5 {
+    margin: 5px 0px 0px 0px;
+    padding-left: 10px;
+    font-size: 12px;
+    cursor: default;
+}
+
+.cw-header .cw-user-offline h4 {
+    margin: 10px 0px 0px 0px;
     padding-left: 10px;
     font-size: 18px;
     text-transform: capitalize;
@@ -47,4 +62,11 @@
 
 .cw-no-user h4 {
     margin-top: 46vh;
+}
+
+@media screen and (max-width:628px) {
+    .screen-small-cw {
+        width: 100vw;
+        height: 100vh;
+    }
 }

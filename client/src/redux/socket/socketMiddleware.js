@@ -54,6 +54,7 @@ export default function socketMiddleware() {
                 });
 
                 socket.on('user status', (payload) => {
+                    console.log('received payload');
                     console.log(payload);
                     store.dispatch({ type: userStatusActionTypes.SET_USER_STATUS, payload: payload });
                 });
@@ -74,13 +75,7 @@ export default function socketMiddleware() {
                 socket.emit('add to group', action.payload);
                 break;
             case userStatusActionTypes.FIND_USER_STATUS:
-                socket.emit('get user status', (status) => {
-                    const payload = {
-                        id: action.payload.id,
-                        status: status
-                    };
-                    store.dispatch({ type: userStatusActionTypes.SET_USER_STATUS, payload: payload });
-                });
+                socket.emit('get user status', action.payload.id);
             default:
                 break;
         }
