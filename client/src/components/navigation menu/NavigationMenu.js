@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './NavigationMenu.css';
 import { ImCross } from 'react-icons/im';
 import MenuItem from '../menu-item/MenuItem';
@@ -10,66 +10,53 @@ import { FcSearch } from 'react-icons/fc';
 import CreateGroup from '../create group /CreateGroup';
 import AddGroupMembers from '../add group members/AddGroupMembers';
 import GlobalSearch from '../global search/GlobalSearch';
-import { ChatState } from '../../utils/ChatProvider';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
+import userActionTypes from '../../redux/user/userActionTypes';
 
 function NavigationMenu() {
-    const { user } = ChatState();
-    const [menuState, setMenuState] = useState(false);
+    const user = useSelector(getLoggedUser);
+    const menuState = useSelector((state) => state.navMenu);
     const navigate = useNavigate();
-    const [showCreateGroupUI, setShowCreateGroupUI] = useState(false);
-    const [showAddMembersUI, setShowAddMembersUI] = useState(false);
-    const [showGlobalSearchUI, setShowGlobalSearchUI] = useState(false);
     const [groupName, setGroupName] = useState("");
+    const dispatch = useDispatch();
+
 
     function handleInputChange(value) {
         setGroupName(value);
     }
 
     function handleLogOut() {
-        localStorage.clear();
+        dispatch({ type: userActionTypes.SIGN_OUT });
         navigate('/');
     }
 
     function MenuBar() {
-        setMenuState((prevValue) => {
-            return !prevValue;
-        });
+        dispatch({ type: 'NAV_MENU_TOGGLE' });
     }
 
     function handleGroupUI() {
-        console.log(showCreateGroupUI);
-        setShowCreateGroupUI(!showCreateGroupUI);
-        if (menuState)
-            MenuBar();
-    }
-
-    function handleNext(event) {
-        event.preventDefault();
-        handleGroupUI();
-        setShowAddMembersUI(!showAddMembersUI);
-    }
-
-    function handleAddGroupMembersUI() {
-        setShowAddMembersUI((prev) => {
-            return !prev;
-        });
-        if (menuState)
-            MenuBar();
-    }
-
-    function handleGlobalSearchUI() {
-        setShowGlobalSearchUI((prev) => {
-            return !prev;
-        });
+        dispatch({ type: 'CREATE_GROUP_TOGGLE' });
         if (menuState) {
             MenuBar();
         }
     }
 
+    function handleGlobalSearchUI() {
+        dispatch({ type: 'GLOBAL_SEARCH_TOGGLE' });
+        if (menuState) {
+            MenuBar();
+        }
+    }
+
+    useEffect(() => {
+
+    }, [user, menuState]);
+
     return (
         <>
             {
-                menuState ?
+                menuState && user ?
                     <>
                         <div className='navigation-menu'>
                             <div className='nm-exit' >
@@ -86,36 +73,28 @@ function NavigationMenu() {
                             </div>
                             <div className='nm-children'>
                                 <MenuItem text={'New Group'} onClick={handleGroupUI}>
-                                    <TiGroup style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
+                                    <TiGroup style={{ margin: '0px 25px 0px' }} size='25px' />
                                 </MenuItem>
                                 <MenuItem text={'Global Search'} onClick={handleGlobalSearchUI}>
-                                    <FcSearch style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
+                                    <FcSearch style={{ margin: '0px 25px 0px' }} size='25px' />
                                 </MenuItem>
                                 <MenuItem text={'Log Out'} onClick={handleLogOut}>
-                                    <BiLogOut style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
+                                    <BiLogOut style={{ margin: '0px 25px 0px' }} size='25px' />
                                 </MenuItem>
                             </div>
                         </div >
                     </>
                     : <>
-                        <GiHamburgerMenu size={30} style={{ color: 'white', cursor: 'pointer', position: 'absolute', top: '20px', left: '20px' }} onClick={MenuBar} />
+                        <GiHamburgerMenu size='30px' style={{ color: 'white', cursor: 'pointer', position: 'absolute', top: '19px', left: '15px' }} onClick={MenuBar} id='hambuger-cl' />
                     </>
             }
             <>
-                {
-                    showCreateGroupUI ?
-                        <CreateGroup handleGroupUI={handleGroupUI} handleNext={handleNext} handleInputChange={handleInputChange} />
-                        : (showAddMembersUI ?
-                            <AddGroupMembers handleAddGroupMembersUI={handleAddGroupMembersUI} groupName={groupName} operation={'add'} />
-                            : <></>)
-                }
-            </>
-            <>
-                {
-                    showGlobalSearchUI ?
-                        <GlobalSearch handleClose={handleGlobalSearchUI} />
-                        : <></>
-                }
+                <CreateGroup handleInputChange={handleInputChange} />
+                <AddGroupMembers
+                    groupName={groupName}
+                    operation='add'
+                />
+                <GlobalSearch />
             </>
         </>
     )

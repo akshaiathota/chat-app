@@ -2,37 +2,62 @@ import React, { useEffect, useState } from 'react';
 import '../Layout.css';
 import ChatList from '../components/chat-list/ChatList';
 import ChatWindow from '../components/chat window/ChatWindow';
-import { ChatState } from '../utils/ChatProvider';
-import socketIo from 'socket.io-client';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLoggedUser } from '../redux/user/userSelectors';
+import socketActionTypes from '../redux/socket/socketActionTypes';
+import getSelectedChat from '../redux/selectedChat/selectedChatSelector';
 
 function HomePage() {
-    const { user } = ChatState();
-    const ENDPOINT = 'http://localhost:5000';
-    const [socket, setSocket] = useState(null);
+    const user = useSelector(getLoggedUser);
+    const dispatch = useDispatch();
+    const selectedChat = useSelector(getSelectedChat);
     const [smallScreen, setSmallScreen] = useState(false);
 
     useEffect(() => {
-        //console.log('in home useeffect');
-        const newSocket = socketIo.connect(ENDPOINT, {
-            reconnection: true,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 5000,
-            reconnectionAttempts: Infinity
-        });
-        newSocket.emit('setup', user);
-        setSocket(newSocket);
-        return () => {
-            newSocket.disconnect();
-        }
-    }, []);
+        if (user)
+            dispatch({ type: socketActionTypes.SET_UP, payload: user });
+    }, [user, dispatch]);
 
+    useEffect(() => {
+
+    }, [selectedChat]);
+
+    useEffect(() => {
+        if (window.innerWidth <= '628' && !selectedChat) {
+            resizeListener()
+        }
+        const resizeListener = function () {
+            if (window.innerWidth <= '628') {
+                if (!smallScreen) {
+                    setSmallScreen(true);
+                }
+            }
+            else {
+                if (smallScreen) {
+                    setSmallScreen(false);
+                }
+            }
+        }
+        window.addEventListener('resize', resizeListener);
+        return () => {
+            window.removeEventListener('resize', resizeListener);
+        }
+    }, [smallScreen]);
 
 
     return (
         <>
             <div className='home-page'>
-                <ChatList />
-                <ChatWindow socket={socket} />
+                {
+                    !smallScreen ?
+                        <>
+                            <ChatList />
+                            <ChatWindow />
+                        </>
+                        : selectedChat ?
+                            <ChatWindow className={'screen-small-cw'} /> :
+                            <ChatList className={'screen-small-cl'} />
+                }
             </div>
         </>
     );

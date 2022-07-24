@@ -87,7 +87,6 @@ export const loginUser = async (inputData) => {
 }
 
 export const searchUser = async (search, token) => {
-    //console.log('searching user...');
     if (!search) {
         return INVALID_DATA;
     }
@@ -101,7 +100,6 @@ export const searchUser = async (search, token) => {
 }
 
 export const searchUserByName = async (search, token) => {
-    //console.log('searching user...');
     if (!search) {
         return INVALID_DATA;
     }
@@ -115,7 +113,6 @@ export const searchUserByName = async (search, token) => {
 }
 
 export const accessChat = async (userId, token) => {
-    //console.log('accessing chat...');
     if (!userId) {
         return INVALID_DATA;
     }
@@ -242,7 +239,26 @@ export const getAllMessages = async (chatId, token) => {
     const headers = {
         authorization: `Bearer ${token}`
     }
-    const data = {}
+    const data = {};
+    const response = await serverRequest(url, method, data, headers);
+    return response;
+}
+
+export const markUnreadMessages = async (messageIds, chatId, token) => {
+    if (!messageIds || messageIds.length < 0) {
+        return {
+            status: 'ok',
+            message: 'no message to mark as seen'
+        };
+    }
+    const method = 'POST';
+    const url = BASE_URI + `message/${chatId}`;
+    const headers = {
+        authorization: `Bearer ${token}`
+    };
+    const data = {
+        messageIds
+    };
     const response = await serverRequest(url, method, data, headers);
     return response;
 }

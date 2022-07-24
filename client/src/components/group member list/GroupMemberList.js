@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ImCross } from 'react-icons/im';
-import { ChatState } from '../../utils/ChatProvider';
 import MenuItem from '../menu-item/MenuItem';
 import './GroupMemberList.css';
 import DP from '../../assets/default dp.jpg';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLoggedUser } from '../../redux/user/userSelectors';
+import selectedChatActionTypes from '../../redux/selectedChat/selectedChatActionTypes';
+import getChats from '../../redux/chats/chatSelector';
 
 function GroupMemberList({ users, handleUI }) {
-    console.log(users);
-    const { user, chats, setSelectedChat } = ChatState();
+    const chats = useSelector(getChats);
+    const user = useSelector(getLoggedUser);
+    const dispatch = useDispatch();
 
     function handleChatSelect(usr) {
         if (usr._id === user._id) {
@@ -15,14 +19,17 @@ function GroupMemberList({ users, handleUI }) {
             return;
         }
         const chat = chats.find((ct) => !ct.isGroupChat && (ct.users ? ct.users[0]._id === usr._id || ct.users[1]._id === usr._id : false));
-        console.log(chat);
-        setSelectedChat(chat);
+        dispatch({ type: selectedChatActionTypes.SELECT_CHAT, payload: chat });
         handleUI();
     }
 
+    useEffect(() => {
+
+    }, [user, chats]);
+
     return (
         <div className='gml-container'>
-            <ImCross style={{ width: '15px', cursor: 'pointer', position: 'absolute', top: '14px', right: '14px', color: 'white' }} onClick={handleUI} />
+            <ImCross style={{ cursor: 'pointer', position: 'absolute', top: '14px', right: '14px', color: 'white' }} onClick={handleUI} size='12px' />
             <div className='gml-title'>
                 <h4>Group Members</h4>
             </div>

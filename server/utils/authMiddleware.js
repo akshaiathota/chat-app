@@ -4,7 +4,6 @@ const { JWT_SECRET } = require('../config/config');
 const { NOT_AUTHORIZED } = require('../utils/error');
 
 const verifyAuth = async (req, res, next) => {
-    console.log('verfying auth');
     let token = null;
     const { authorization } = req.headers;
     if (authorization && authorization.startsWith('Bearer')) {

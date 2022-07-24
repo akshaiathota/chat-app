@@ -1,78 +1,56 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ChatState } from '../../utils/ChatProvider';
-import { getAllMessages, sendMessage } from '../../utils/httpRequests';
+import { useDispatch, useSelector } from 'react-redux';
+import messageActionTypes from '../../redux/messages/messageActionTypes';
+import getUserChat from '../../redux/messages/messageSelector';
+import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 import MessageItem from '../message item/MessageItem';
 import './Messages.css';
 
-function Messages({ socket }) {
-    const { user, selectedChat } = ChatState();
-    const [messages, setMessages] = useState([]);
+function Messages() {
+    const selectedChat = useSelector(getSelectedChat);
+    const user = useSelector(getLoggedUser);
+    const messages = useSelector(getUserChat);
     const inputRef = useRef();
+    const dispatch = useDispatch();
+    const [prevChatId, setPrevChatId] = useState("");
 
-    function scrollToBottom() {
-        let target = document.getElementsByClassName('m-ref-block');
-        target[0].scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-        })
-    }
-
-    async function handleKeyDown(event) {
+    function handleKeyDown(event) {
         if (event.key === 'Enter' && inputRef.current.value) {
             event.preventDefault();
-            const response = await sendMessage(inputRef.current.value, selectedChat._id, user.token);
-            if (response && response.data) {
-                inputRef.current.value = '';
-                await socket.emit('new message', response.data);
-                setMessages([...messages, response.data]);
-            }
-            console.log(response);
-        }
-    }
-
-    async function fetchMessages() {
-        const response = await getAllMessages(selectedChat._id, user.token);
-        if (response && response.data) {
-            setMessages(response.data);
-            socket.emit('join chat', selectedChat._id)
+            const payload = {
+                text: inputRef.current.value,
+                chatId: selectedChat._id,
+                token: user.token
+            };
+            dispatch({ type: messageActionTypes.SEND_MESSAGE, payload: payload });
         }
     }
 
     useEffect(() => {
-        fetchMessages();
-        scrollToBottom();
-    }, [selectedChat]);
+        function fetchMessages() {
+            const payload = {
+                chatId: selectedChat._id,
+                token: user.token
+            };
+            dispatch({ type: messageActionTypes.GET_ALL_MESSAGES, payload: payload });
+        }
+        if (selectedChat && selectedChat._id !== prevChatId) {
+            setPrevChatId(selectedChat._id);
+            fetchMessages();
+        }
+    }, [selectedChat, prevChatId, user, dispatch]);
 
     useEffect(() => {
-        scrollToBottom();
     }, [messages]);
-
-
-    useEffect(() => {
-        const listener = (msg) => {
-            if (msg && msg.chat._id === selectedChat._id) {
-                setMessages((prev) => {
-                    return [...prev, msg];
-                });
-            }
-            else {
-                console.log('in else');
-                return;
-            }
-        }
-        socket.on('message received', listener);
-        return () => {
-            socket.removeListener('message received', listener);
-        }
-    }, [selectedChat]);
 
     return (
         <div className='messages'>
             <div className='m-message-holder'>
                 {
-                    messages ? messages.map((message, idx) =>
+                    messages ? messages.slice(0).reverse().map((message) =>
                         <MessageItem
-                            key={idx}
+                            key={message._id}
                             url={message.sender.pic}
                             message={message.content}
                             senderName={message.sender.name}
@@ -87,7 +65,7 @@ function Messages({ socket }) {
             </div>
             <form onKeyDown={handleKeyDown}>
                 <div className='m-input-field'>
-                    <textarea ref={inputRef} />
+                    <textarea ref={inputRef} id='message-txt-area' />
                 </div>
             </form>
 

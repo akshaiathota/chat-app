@@ -1,7 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { ChatState } from '../../utils/ChatProvider';
-import { renameGroup } from '../../utils/httpRequests';
+import { useDispatch, useSelector } from 'react-redux';
+import chatActionTypes from '../../redux/chats/chatActionTypes';
+import getChats from '../../redux/chats/chatSelector';
+import { getLoggedUser } from '../../redux/user/userSelectors';
 import AddGroupMembers from '../add group members/AddGroupMembers';
 import CreateGroup from '../create group /CreateGroup';
 import GroupMemberList from '../group member list/GroupMemberList';
@@ -15,8 +17,14 @@ function ChatMenu(chat) {
     const [groupMembersUI, setGroupMembersUI] = useState(false);
     const [renameGroupUI, setRenameGroupUI] = useState(false);
     const [newGroupName, setNewGroupName] = useState(false);
-    const { chats, setChats, user, setSelectedChat } = ChatState();
+    const chats = useSelector(getChats);
+    const user = useSelector(getLoggedUser);
     const ids = chat.chat.users.map((usr) => usr._id);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+
+    }, [chats]);
 
     function handleAddUserUI() {
         if (dropDownMenu) {
@@ -52,18 +60,22 @@ function ChatMenu(chat) {
 
     async function handleOnSubmitRename(event) {
         event.preventDefault();
-        const response = await renameGroup(newGroupName, chat.chat._id, user.token);
-        console.log(response);
-        const remainingChats = chats.filter((ct) => ct._id !== chat.chat._id);
-        setChats([response.data, ...remainingChats]);
-        console.log(remainingChats);
-        setSelectedChat(response.data);
+        const payload = {
+            name: newGroupName,
+            chatId: chat.chat._id,
+            token: user.token
+        };
+        dispatch({ type: chatActionTypes.RENAME_GROUP, payload: payload });
         handleRenameGroupUI();
     }
 
     function handleDropDown() {
         setDropDownMenu(!dropDownMenu);
     }
+
+    useEffect(() => {
+
+    }, [user]);
 
     return (
         <>

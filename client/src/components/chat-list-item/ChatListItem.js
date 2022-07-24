@@ -1,16 +1,32 @@
-import React from "react";
-import { ChatState } from "../../utils/ChatProvider";
+import React, { useEffect, useState } from "react";
 import './ChatListItem.css';
 import DP from '../../assets/default dp.jpg';
+import { useDispatch, useSelector } from "react-redux";
+import { getLoggedUser } from "../../redux/user/userSelectors";
+import getSelectedChat from "../../redux/selectedChat/selectedChatSelector";
+import selectedChatActionTypes from "../../redux/selectedChat/selectedChatActionTypes";
 
 function ChatListItem({ chat }) {
-    const { user, setSelectedChat, selectedChat } = ChatState();
+    const dispatch = useDispatch();
+    const [count, setCount] = useState(0);
+    const selectedChat = useSelector(getSelectedChat);
+    const user = useSelector(getLoggedUser);
     const { users } = chat;
-    const url = getOtherUser().pic;
-    // const time = new Date(chat.latestMessage.updatedAt);
-    // const lastMsgTime = time.getHours() + ":" + time.getMinutes();
+    let url = null;
+    const otherUser = getOtherUser();
+    if (otherUser) {
+        url = otherUser.pic;
+    }
+    let time = null, lastMsgTime = null;
+    if (chat && chat.latestMessage) {
+        time = new Date(chat.latestMessage.updatedAt);
+        const hours = time.getHours();
+        const minutes = time.getMinutes();
+        lastMsgTime = (hours.toString().length == 1 ? '0' + hours : hours) + ':' + (minutes.toString().length == 1 ? '0' + minutes : minutes);
+    }
+
     function handleSelectedChat() {
-        setSelectedChat(chat);
+        dispatch({ type: selectedChatActionTypes.SELECT_CHAT, payload: chat });
     }
 
     function getOtherUser() {
@@ -23,13 +39,31 @@ function ChatListItem({ chat }) {
         return users[0]._id === user._id ? users[1] : users[0];
     }
 
+    useEffect(() => {
+
+    }, [user, selectedChat]);
+
+    useEffect(() => {
+        if (chat) {
+            let currentCount = 0;
+            chat.unread.forEach((obj) => {
+                if (obj.user._id === user._id) {
+                    currentCount = obj.messages.length;
+                }
+            });
+            if (currentCount !== count) {
+                setCount(currentCount);
+            }
+        }
+    }, [count, chat]);
+
     return (
         <>
             {
-                user && users ?
-                    <div className={`${chat === selectedChat ? 'cli-selected-chat' : ''} chat-list-item`} onClick={() => handleSelectedChat()}>
+                user && users && chat ?
+                    <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'cli-selected-chat' : ''} chat-list-item`} onClick={() => handleSelectedChat()}>
                         <div className='cli-image-container'>
-                            <img src={url === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
+                            <img src={url && url === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
                                 DP : url} />
                         </div>
                         <div className='cli-chat-details'>
@@ -39,26 +73,29 @@ function ChatListItem({ chat }) {
                                         !chat.isGroupChat ? getOtherUser().name : chat.chatName
                                     }
                                 </div>
-                                <div className={`${chat === selectedChat ? 'color-black' : ''} cli-chat-last-msg`} >
-                                    {chat.latestMessage ? chat.latestMessage.content : <></>}
+                                <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-last-msg`} >
+                                    {chat.latestMessage ? (chat.latestMessage.sender._id === user._id) ? 'You: ' + chat.latestMessage.content : chat.latestMessage.content : <></>}
                                 </div>
                             </div>
                             <div>
-                                <div className={`${chat === selectedChat ? 'color-black' : ''} cli-chat-time`}>
-                                    {/* {
-                                        lastMsgTime
-                                    } */}
-                                    4:00PM
+                                <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-time`}>
+                                    {
+                                        lastMsgTime ? lastMsgTime : <></>
+                                    }
                                 </div>
-                                <div className='cli-chat-new-msg' >
-                                    <div>
-                                        1
-                                    </div>
-                                </div>
+                                {
+                                    count > 0 ?
+                                        <div className='cli-chat-new-msg' >
+                                            <div>
+                                                {count}
+                                            </div>
+                                        </div>
+                                        : <></>
+                                }
                             </div>
                         </div>
                     </div>
-                    : ""
+                    : <></>
             }
         </>
     );

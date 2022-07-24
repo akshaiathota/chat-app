@@ -39,10 +39,8 @@ const registerUser = async (req, res, next) => {
         return;
     }
     let url = null;
-    if (pic) {
-        console.log('in pic if');
+    if (pic.pic) {
         const imageformat = pic ? pic.type : null;
-        console.log(pic);
         if (imageformat !== 'image/png' && imageformat !== 'image/jpeg' && imageformat !== 'image/jpg') {
             next({
                 status: 400,
@@ -144,7 +142,6 @@ async function loginUser(req, res, next) {
 }
 
 async function findUser(req, res) {
-    console.log(req.query.search);
     const searchString = req.query.search;
     const users = await User.findOne({ mobileNumber: searchString }).find({ _id: { $ne: req.user._id } });
     res.status(201).json({
@@ -163,7 +160,6 @@ async function findUserByName(req, res) {
             ],
         }
         : {};
-
     const users = await User.find(conditions).find({ _id: { $ne: req.user._id } });
     res.status(201).json({
         data: users,

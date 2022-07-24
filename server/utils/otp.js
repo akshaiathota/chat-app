@@ -17,7 +17,6 @@ async function sendMessage({ message, contactNumber }, next) {
             message,
             numbers: [contactNumber],
         });
-        console.log(res);
     }
     catch (error) {
         next(error);

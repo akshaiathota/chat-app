@@ -3,9 +3,7 @@ const Chat = require('../models/chatModel');
 const User = require("../models/userModel");
 
 async function accessChats(req, res, next) {
-    //console.log(req.body);
     const { userId } = req.body;
-    //console.log(userId);
     if (!userId) {
         next({
             status: 400,
@@ -21,12 +19,14 @@ async function accessChats(req, res, next) {
         ]
     }).populate('users', '-password')
         .populate('latestMessage');
-
+    isChat = await User.populate(isChat, {
+        path: 'unread.user',
+        select: 'name email'
+    });
     isChat = await User.populate(isChat, {
         path: 'latestMessage.sender',
         select: 'name pic email mobileNumber'
     });
-    console.log(isChat);
     if (isChat.length > 0) {
         res.status(200).json({
             data: isChat[0],
@@ -39,20 +39,28 @@ async function accessChats(req, res, next) {
             chatName: 'sender',
             isGroupChat: false,
             users: [req.user._id, userId],
+            unread: [{
+                user: req.user._id,
+            }, {
+                user: userId
+            }]
         };
         try {
             const newChat = await Chat.create(chatData);
-            const chat = await Chat.findOne({ _id: newChat._id }).populate(
+            let chat = await Chat.findOne({ _id: newChat._id }).populate(
                 'users',
                 '-password'
             );
+            chat = await User.populate(chat, {
+                path: 'unread.user',
+                select: 'name email'
+            });
             res.status(200).json({
                 data: chat,
                 message: 'chat access successful'
             });
         }
         catch (error) {
-            console.log(error);
             next({
                 status: 500,
                 message: SERVER_ERR
@@ -64,26 +72,26 @@ async function accessChats(req, res, next) {
 
 async function fetchChats(req, res, next) {
     try {
-        // console.log('fetch chats');
-        //console.log(req.user);
-        const chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+        let chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
             .populate('users', '-password')
             .populate('groupAdmin', '-password')
             .populate('latestMessage')
             .sort({ updatedAt: -1 });
-        const resultData = await User.populate(chats, {
+        chats = await User.populate(chats, {
+            path: 'unread.user',
+            select: 'name email'
+        });
+        chats = await User.populate(chats, {
             path: 'latestMessage.sender',
             select: 'name pic email mobileNumber'
         });
-        //console.log(resultData);
         res.status(200).json({
             message: 'fetched chats successfully',
-            data: resultData
+            data: chats
         });
         return;
     }
     catch (error) {
-        console.log(error);
         next({
             message: SERVER_ERR,
             status: 500
@@ -110,16 +118,27 @@ async function createGroupChat(req, res, next) {
         return;
     }
     inputUsers.push(req.user);
+    let unread = [];
+    inputUsers.forEach((usr) => {
+        unread.push({
+            user: usr._id
+        });
+    });
     try {
         const groupChat = await Chat.create({
             chatName: name,
             users: inputUsers,
             isGroupChat: true,
-            groupAdmin: req.user
+            groupAdmin: req.user,
+            unread: unread
         });
-        const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
+        let fullGroupChat = await Chat.findOne({ _id: groupChat._id })
             .populate('users', '-password')
             .populate('groupAdmin', '-password');
+        fullGroupChat = await User.populate(fullGroupChat, {
+            path: 'unread.user',
+            select: 'name email'
+        });
         res.status(200).json({
             message: 'group chat fetched successfully',
             data: fullGroupChat
@@ -145,13 +164,17 @@ async function renameGroup(req, res, next) {
         return;
     }
     try {
-        const chat = await Chat.findByIdAndUpdate(chatId, {
+        let chat = await Chat.findByIdAndUpdate(chatId, {
             chatName: chatName
         }, {
             new: true
         })
             .populate('users', '-password')
-            .populate('groupAdmin', '-password');
+            .populate('groupAdmin', '-password')
+        chat = await User.populate(chat, {
+            path: 'unread.user',
+            select: 'name email'
+        });
         if (!chat) {
             next({
                 message: 'chat not found',
@@ -187,7 +210,6 @@ async function addToGroup(req, res, next) {
     }
     try {
         const doesChatExist = await Chat.findById(chatId).find({ users: { $elemMatch: { $eq: userId } } });
-        console.log(doesChatExist);
         if (doesChatExist.length > 0) {
             next({
                 status: 400,
@@ -195,13 +217,23 @@ async function addToGroup(req, res, next) {
             });
             return;
         }
-        const updation = await Chat.findByIdAndUpdate(chatId, {
+        let updation = await Chat.findByIdAndUpdate(chatId, {
             $push: { users: userId }
         }, {
             new: true
-        })
-            .populate('users', '-password')
-            .populate('groupAdmin', '-password')
+        });
+        const newUsr = {
+            user: userId
+        }
+        updation = await Chat.findByIdAndUpdate(chatId, {
+            $push: { user: newUsr }
+        }).populate('users', '-password')
+            .populate('groupAdmin', '-password');
+        updation = await User.populate(chatId, {
+            path: 'unread.user',
+            select: 'name email'
+        });
+        console.log(updation);
         res.status(200).json({
             message: 'user added to group',
             data: updation
@@ -209,7 +241,6 @@ async function addToGroup(req, res, next) {
         return;
     }
     catch (error) {
-        console.log(error);
         next({
             message: SERVER_ERR,
             status: 500
@@ -228,14 +259,22 @@ async function removeFromGroup(req, res, next) {
         return;
     }
     try {
-        const deletion = await Chat.findByIdAndUpdate(chatId, {
+        let deletion = await Chat.findByIdAndUpdate(chatId, {
             $pull: { users: userId }
         }, {
             new: true
-        })
-            .populate('users', '-password')
-            .populate('groupAdmin', '-password')
-        //console.log(deletion);
+        });
+        const newUsr = {
+            user: userId
+        }
+        deletion = await Chat.findByIdAndUpdate(chatId, {
+            $pull: { user: newUsr }
+        }).populate('users', '-password')
+            .populate('groupAdmin', '-password');
+        deletion = await User.populate(chatId, {
+            path: 'unread.user',
+            select: 'name email'
+        });
         res.status(200).json({
             message: 'user removed from group',
             data: deletion

@@ -6,7 +6,7 @@
 
 .authentication {
     width: 500px;
-    height: 70vh;
+    min-height: 70vh;
     display: flex;
     flex-direction: column;
     position: absolute;

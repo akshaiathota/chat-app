@@ -46,7 +46,7 @@ app.use('*', (req, res, next) => {
 
 //function for handling global errors
 app.use((error, req, res, next) => {
-    //console.log(error);
+    console.log(error);
     const status = error.status || 500;
     const message = error.message || SERVER_ERR;
     const data = error.data || null;
@@ -55,16 +55,38 @@ app.use((error, req, res, next) => {
         message,
         data
     });
-})
+});
+
+var users = {};
+var subscribers = {};
 
 io.on('connection', function (socket) {
     console.log('A user connected');
-
+    let userId = socket.handshake.query.userId;
     socket.on('setup', (userData) => {
         if (userData) {
             socket.join(userData._id);
-            console.log(userData._id);
-            socket.emit('connected');
+            console.log('userId: ' + userData._id);
+            if (!users[userId]) {
+                users[userId] = [];
+            }
+            users[userId].push(socket.id);
+            if (subscribers[userId] && subscribers[userId].length > 0) {
+                let newSubscribers = [];
+                const payload = {
+                    id: userId,
+                    status: true
+                }
+                subscribers[userId].forEach((id) => {
+                    if (users[id]) {
+                        newSubscribers.push(id);
+                        users[id].forEach((socketId) => {
+                            io.to(socketId).emit('user status', payload);
+                        })
+                    }
+                });
+                subscribers[userId] = newSubscribers;
+            }
         }
     });
 
@@ -74,25 +96,82 @@ io.on('connection', function (socket) {
     });
 
     socket.on('new message', (newMessageReceived) => {
-        console.log(newMessageReceived);
         var chat = newMessageReceived.chat;
-        console.log(chat.users);
         if (!chat.users) {
             console.log('no users');
             return;
         }
-        socket.to(chat._id).emit('message received', newMessageReceived);
-    })
+        chat.users.forEach((user) => {
+            if (user._id !== newMessageReceived.sender._id) {
+                io.to(user._id).emit('message received', newMessageReceived);
+                console.log('new message to ' + user._id);
+            }
+        });
+
+    });
+
+    socket.on('add to group', (chatContent) => {
+        if (!chatContent || !chatContent.users) {
+            return;
+        }
+        chatContent.users.forEach((usr) => {
+            if (usr._id !== chatContent.groupAdmin._id) {
+                io.to(usr._id).emit('added to group', chatContent);
+            }
+        })
+    });
+
+    socket.on('get user status', (reqId) => {
+        if (!subscribers[reqId]) {
+            subscribers[reqId] = [];
+        }
+        subscribers[reqId].push(userId);
+        if (!users[reqId] || users[reqId].length === 0) {
+            const payload = {
+                id: reqId,
+                status: false
+            };
+            socket.emit('user status', payload);
+        }
+        else {
+            const payload = {
+                id: reqId,
+                status: true
+            };
+            socket.emit('user status', payload);
+        }
+    });
 
     socket.on('disconnect', function () {
-        console.log('A user disconnected');
+        if (subscribers[userId]) {
+            let newSubscribers = [];
+            const payload = {
+                id: userId,
+                status: false
+            }
+            subscribers[userId].forEach((id) => {
+                if (users[id] && users[id].length > 0) {
+                    newSubscribers.push(id);
+                    users[id].forEach(socketId => {
+                        io.to(socketId).emit('user status', payload);
+                    });
+                }
+            });
+        }
+        let socketsLeft = users[userId] ? users[userId].filter((socketId) => socketId !== socket.id) : [];
+        if (!socketsLeft || socketsLeft.length == 0) {
+            delete users[userId];
+        }
+        else {
+            users[userId] = socketsLeft;
+        }
+        socket.disconnect();
     });
 });
 
 async function main() {
     try {
         await connectDB();
-        //console.log(PORT_NUMBER + " " + ORIGIN);
         server.listen(PORT_NUMBER, () => {
             console.log(`server listening on port ${PORT_NUMBER}...`);
         })
