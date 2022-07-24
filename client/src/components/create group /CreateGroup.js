@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './CreateGroup.css';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -40,7 +40,8 @@ function CreateGroup({ handleInputChange, placeholder, operation }) {
                                 :
                                 <></>
                         }
-                        <input type='text'
+                        <input
+                            type='text'
                             placeholder={placeholder ? placeholder : 'Group Name'}
                             onChange={handleChange}
                             required />

@@ -73,19 +73,19 @@ function NavigationMenu() {
                             </div>
                             <div className='nm-children'>
                                 <MenuItem text={'New Group'} onClick={handleGroupUI}>
-                                    <TiGroup style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
+                                    <TiGroup style={{ margin: '0px 25px 0px' }} size='25px' />
                                 </MenuItem>
                                 <MenuItem text={'Global Search'} onClick={handleGlobalSearchUI}>
-                                    <FcSearch style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
+                                    <FcSearch style={{ margin: '0px 25px 0px' }} size='25px' />
                                 </MenuItem>
                                 <MenuItem text={'Log Out'} onClick={handleLogOut}>
-                                    <BiLogOut style={{ width: '25px', height: '25px', margin: '0px 25px 0px' }} />
+                                    <BiLogOut style={{ margin: '0px 25px 0px' }} size='25px' />
                                 </MenuItem>
                             </div>
                         </div >
                     </>
                     : <>
-                        <GiHamburgerMenu size={30} style={{ color: 'white', cursor: 'pointer', position: 'absolute', top: '20px', left: '20px' }} onClick={MenuBar} />
+                        <GiHamburgerMenu size='30px' style={{ color: 'white', cursor: 'pointer', position: 'absolute', top: '19px', left: '15px' }} onClick={MenuBar} id='hambuger-cl' />
                     </>
             }
             <>

@@ -62,7 +62,7 @@ const GlobalSearch = () => {
                     <>
                         <ToastContainer />
                         <div className='global-search'>
-                            <ImCross style={{ width: '15px', cursor: 'pointer', position: 'absolute', top: '14px', right: '14px', color: 'white' }} onClick={handleGlobalSearchUI} />
+                            <ImCross style={{ cursor: 'pointer', position: 'absolute', top: '14px', right: '14px', color: 'white' }} size='12px' onClick={handleGlobalSearchUI} />
                             <div className='gs-inputs'>
                                 <input type='text' placeholder='Enter name' ref={search} />
                                 <input type='button' value='Go' onClick={fetchSearchedUser} />

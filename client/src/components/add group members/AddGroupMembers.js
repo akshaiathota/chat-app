@@ -149,7 +149,7 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
                         }
                     </div>
                     <div className='am-search-bar'>
-                        <FcSearch style={{ width: '20px', paddingRight: '8px' }} />
+                        <FcSearch style={{ paddingRight: '8px' }} size='28px' />
                         <input type='text' placeholder='Search' onChange={handleInputChange} />
                     </div>
                     <div className='am-added-list'>
@@ -167,7 +167,7 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
                                         />
                                     </div>
                                     {result.name}
-                                    <ImCross style={{ cursor: 'pointer', width: '10px', padding: '5px', color: 'white' }} onClick={() => handleRemoveUser(result)} />
+                                    <ImCross style={{ cursor: 'pointer', padding: '5px', color: 'white' }} onClick={() => handleRemoveUser(result)} size='10px' />
                                 </MenuItem>
                             )
                                 : <></>

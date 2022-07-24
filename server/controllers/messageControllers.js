@@ -56,6 +56,10 @@ async function sendMessage(req, res, next) {
         response = await Chat.populate(response, {
             path: 'chat.latestMessage',
         });
+        response = await User.populate(response, {
+            path: 'chat.latestMessage.sender',
+            select: 'name email'
+        });
         res.status(200).json({
             message: 'message sent',
             data: response

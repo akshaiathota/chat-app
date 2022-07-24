@@ -21,7 +21,7 @@
 }
 
 .cw-header h4 {
-    margin: 24px 0px 0px 0px;
+    margin: 20px 0px 0px 0px;
     padding-left: 10px;
     font-size: 20px;
     text-transform: capitalize;
@@ -41,6 +41,14 @@
     font-size: 18px;
     text-transform: capitalize;
     cursor: default;
+}
+
+.cwus-back-button-visible .cw-header h4 {
+    margin-left: 30px;
+}
+
+.cwus-back-button-visible .cw-header h5 {
+    margin-left: 30px;
 }
 
 .cw-chat {

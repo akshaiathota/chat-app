@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { useDispatch, useSelector } from 'react-redux';
 import userActionTypes from '../../redux/user/userActionTypes';
 import { getLoggedUser } from '../../redux/user/userSelectors';
@@ -42,7 +41,6 @@ function Login() {
                         <input type='password' placeholder='Enter your password' ref={password} required />
                     </div>
                     <input className='l-button' type='submit' value='Login' />
-                    <input className='l-button' type='button' value='Get Guest User Credentials' />
                 </div>
             </form>
         </>

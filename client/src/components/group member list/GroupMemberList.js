@@ -29,7 +29,7 @@ function GroupMemberList({ users, handleUI }) {
 
     return (
         <div className='gml-container'>
-            <ImCross style={{ width: '15px', cursor: 'pointer', position: 'absolute', top: '14px', right: '14px', color: 'white' }} onClick={handleUI} />
+            <ImCross style={{ cursor: 'pointer', position: 'absolute', top: '14px', right: '14px', color: 'white' }} onClick={handleUI} size='12px' />
             <div className='gml-title'>
                 <h4>Group Members</h4>
             </div>

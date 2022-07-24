@@ -20,7 +20,9 @@ function ChatListItem({ chat }) {
     let time = null, lastMsgTime = null;
     if (chat && chat.latestMessage) {
         time = new Date(chat.latestMessage.updatedAt);
-        lastMsgTime = time.getHours() + ":" + time.getMinutes();
+        const hours = time.getHours();
+        const minutes = time.getMinutes();
+        lastMsgTime = (hours.toString().length == 1 ? '0' + hours : hours) + ':' + (minutes.toString().length == 1 ? '0' + minutes : minutes);
     }
 
     function handleSelectedChat() {
@@ -72,7 +74,7 @@ function ChatListItem({ chat }) {
                                     }
                                 </div>
                                 <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-last-msg`} >
-                                    {chat.latestMessage ? chat.latestMessage.content : <></>}
+                                    {chat.latestMessage ? (chat.latestMessage.sender._id === user._id) ? 'You: ' + chat.latestMessage.content : chat.latestMessage.content : <></>}
                                 </div>
                             </div>
                             <div>

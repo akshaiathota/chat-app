@@ -15,14 +15,6 @@ function Messages() {
     const dispatch = useDispatch();
     const [prevChatId, setPrevChatId] = useState("");
 
-    function scrollToBottom() {
-        let target = document.getElementsByClassName('m-ref-block');
-        target[0].scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-        })
-    }
-
     function handleKeyDown(event) {
         if (event.key === 'Enter' && inputRef.current.value) {
             event.preventDefault();
@@ -46,21 +38,19 @@ function Messages() {
         if (selectedChat && selectedChat._id !== prevChatId) {
             setPrevChatId(selectedChat._id);
             fetchMessages();
-            scrollToBottom();
         }
     }, [selectedChat, prevChatId, user, dispatch]);
 
     useEffect(() => {
-        scrollToBottom();
     }, [messages]);
 
     return (
         <div className='messages'>
             <div className='m-message-holder'>
                 {
-                    messages ? messages.map((message, idx) =>
+                    messages ? messages.slice(0).reverse().map((message) =>
                         <MessageItem
-                            key={idx}
+                            key={message._id}
                             url={message.sender.pic}
                             message={message.content}
                             senderName={message.sender.name}

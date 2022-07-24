@@ -1,7 +1,7 @@
 .message-item {
-    width: fit-content;
     max-width: 60%;
-    height: fit-content;
+    width: fit-content;
+    min-height: 60px;
     display: flex;
     background-color: #6ab2f2;
     align-items: center;
@@ -17,31 +17,42 @@
 }
 
 .mi-msg-details {
-    padding: 10px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 .mi-msg-details h6 {
-    text-align: end;
-    width: 100%;
     font-size: 15px;
-    height: 20px;
+    max-height: 20px;
     margin: 0px;
+    padding: 5px 5px 0px 5px;
     text-transform: capitalize;
     font-weight: 500;
-    color: black
+    color: black;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border: none;
+    outline: none;
 }
 
 .mi-message-holder {
-    height: 80%;
-    width: fit-content;
+    min-height: 40px;
     overflow: hidden;
     color: white;
     font-size: 15px;
+    padding: 5px 5px 0px 5px;
+    margin: 0px;
+    text-align: end;
 }
 
 .right {
     align-self: flex-end;
     margin-right: 50px;
+}
+
+.right h6 {
+    text-align: end;
 }
 
 .left h6 {

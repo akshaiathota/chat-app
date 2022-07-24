@@ -1,24 +1,37 @@
 import React, { useEffect } from 'react';
 import './ChatWindow.css';
 import Messages from '../messages/Messages';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import getSelectedChat from '../../redux/selectedChat/selectedChatSelector';
-import ChatWindowUserStatus from '../chat window header/ChatWindowUserStatus';
+import ChatWindowUserStatus from '../chat window user status/ChatWindowUserStatus';
+import { IoMdArrowRoundBack } from 'react-icons/io';
+import selectedChatActionTypes from '../../redux/selectedChat/selectedChatActionTypes';
 
-function ChatWindow() {
+function ChatWindow({ className }) {
   const selectedChat = useSelector(getSelectedChat);
+  const dispatch = useDispatch();
 
   useEffect(() => {
 
   }, [selectedChat]);
 
+  function handleGoBack() {
+    dispatch({ type: selectedChatActionTypes.UPDATE_SELECTED_CHAT, payload: null });
+  }
+
   return (
     <>
       {
         selectedChat ?
-          <div className={`chat-window`} >
+          <div className={`chat-window ${className} ${className ? 'cwus-back-button-visible' : ''}`} id='chat-window' >
             <div className='cw-header'>
-              <ChatWindowUserStatus />
+              <ChatWindowUserStatus >
+                {
+                  className ?
+                    <IoMdArrowRoundBack style={{ position: 'absolute', top: '18px', cursor: 'pointer' }} size='25px' onClick={handleGoBack} />
+                    : <></>
+                }
+              </ChatWindowUserStatus>
             </div>
             <div className='cw-chat'>
               {
