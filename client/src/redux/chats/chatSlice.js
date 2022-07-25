@@ -7,7 +7,7 @@ const chatSlice = createSlice({
     extraReducers: {
         [chatActionTypes.ADD_NEW_CHAT]: (state, action) => {
             const payload = action.payload;
-            return [...state, payload];
+            return [payload, ...state];
         },
         [chatActionTypes.UPDATE_CHAT]: (state, action) => {
             const { otherChats, newChat } = action.payload;

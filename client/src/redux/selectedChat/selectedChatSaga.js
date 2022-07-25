@@ -8,20 +8,18 @@ import getSelectedChat from './selectedChatSelector';
 function* checkMessageForMarking({ payload }) {
     const user = yield select(getLoggedUser);
     if (payload && payload.unread) {
-        //console.log(payload.unread[0].user._id + " " + user._id);
-        const messages = payload.unread[0].user._id === user._id ? payload.unread[0].messages : payload.unread[1].messages;
-        console.log(payload.unread[0].messages);
-        console.log(payload.unread[1].messages);
-        console.log(messages);
-        if (messages.length <= 0) {
-            return;
+        for (let obj of payload.unread) {
+            console.log(obj);
+            const messages = obj.messages;
+            if (messages.length != 0 && obj.user._id === user._id) {
+                const data = {
+                    messageIds: messages,
+                    chatId: payload._id,
+                    token: user.token
+                }
+                yield put({ type: messageActionTypes.MARK_MESSAGES_SEEN, payload: data });
+            }
         }
-        const data = {
-            messageIds: messages,
-            chatId: payload._id,
-            token: user.token
-        }
-        yield put({ type: messageActionTypes.MARK_MESSAGES_SEEN, payload: data });
     }
 }
 
@@ -41,7 +39,6 @@ function* updateSelectedChat({ payload }) {
     const user = yield select(getLoggedUser);
     const usersStatus = yield select(state => state.usersStatus);
     const otherUser = getOtherUser(selectedChat.users, user);
-    console.log(otherUser._id);
     if (usersStatus[otherUser._id] === undefined) {
         const payload = {
             id: otherUser._id

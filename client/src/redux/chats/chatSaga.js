@@ -26,7 +26,9 @@ function* getAllChats({ payload: { token } }) {
 }
 
 function* createNewUserGroupChat({ payload: { name, users, token } }) {
+    console.log('creating chat');
     const response = yield createGroupChat(name, users, token);
+    console.log(response);
     if (response.status === 'ok') {
         const { data } = response;
         yield put({ type: chatActionTypes.ADD_NEW_CHAT, payload: data });

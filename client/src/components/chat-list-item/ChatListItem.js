@@ -66,34 +66,36 @@ function ChatListItem({ chat }) {
                             <img src={url && url === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
                                 DP : url} />
                         </div>
-                        <div className='cli-chat-details'>
-                            <div >
-                                <div className='cli-chat-name'>
+                        <table className='cli-chat-details'>
+                            <tr >
+                                <td style={{ width: '80%' }} className='cli-chat-name'>
                                     {
                                         !chat.isGroupChat ? getOtherUser().name : chat.chatName
                                     }
-                                </div>
-                                <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-last-msg`} >
-                                    {chat.latestMessage ? (chat.latestMessage.sender._id === user._id) ? 'You: ' + chat.latestMessage.content : chat.latestMessage.content : <></>}
-                                </div>
-                            </div>
-                            <div>
-                                <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-time`}>
+                                </td>
+                                <td style={{ width: '20%' }} className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-time`}>
                                     {
                                         lastMsgTime ? lastMsgTime : <></>
                                     }
-                                </div>
-                                {
-                                    count > 0 ?
-                                        <div className='cli-chat-new-msg' >
-                                            <div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={{ width: '80%' }} className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-last-msg`} >
+                                    <div style={{ height: '25px', lineHeight: '25px' }}>
+                                        {chat.latestMessage ? (chat.latestMessage.sender._id === user._id) ? 'You: ' + chat.latestMessage.content : chat.latestMessage.content : <></>}
+                                    </div>
+                                </td>
+                                <td style={{ width: '20%' }} >
+                                    {
+                                        count > 0 ?
+                                            <div className='cli-chat-new-msg' >
                                                 {count}
                                             </div>
-                                        </div>
-                                        : <></>
-                                }
-                            </div>
-                        </div>
+                                            : <></>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     : <></>
             }

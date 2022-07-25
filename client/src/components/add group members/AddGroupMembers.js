@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './AddGroupMembers.css';
 import { FcSearch } from 'react-icons/fc';
-import { searchUserByName } from '../../utils/httpRequests';
 import MenuItem from '../menu-item/MenuItem';
 import { ImCross } from 'react-icons/im';
 import { toast, ToastContainer } from 'react-toastify';
@@ -9,14 +8,15 @@ import DP from '../../assets/default dp.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLoggedUser } from '../../redux/user/userSelectors';
 import chatActionTypes from '../../redux/chats/chatActionTypes';
+import groupOperationsActionTypes from '../../redux/group operations/GroupOperationsActionTypes';
 
 function AddGroupMembers({ groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
     const user = useSelector(getLoggedUser);
     const addMembers = useSelector((state) => state.addMembers);
     const menuState = useSelector((state) => state.navMenu);
-    const [selectedUsers, setSelectedUsers] = useState([]);
     const [search, setSearch] = useState("");
-    const [searchResult, setSearchResult] = useState([]);
+    const searchResult = useSelector(state => state.groupOperations.searchResult);
+    const selectedUsers = useSelector(state => state.groupOperations.selectedUsers);
     const dispatch = useDispatch();
 
     function handleInputChange(event) {
@@ -25,39 +25,22 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
 
     function handleAddGroupMembersUI() {
         dispatch({ type: 'ADD_MEMBERS_TOGGLE' });
+        dispatch({ type: groupOperationsActionTypes.CLEAR_GROUP_OPERATIONS_DATA });
         if (menuState)
             dispatch({ type: 'NAV_MENU_TOGGLE' });
     }
 
-    async function findUsersWithName() {
-        const response = await searchUserByName(search, user.token);
-        if (existingUserIds) {
-            const allUsers = response.data;
-            const existIdsSet = new Set(existingUserIds);
-            const resultList = allUsers.filter((usr) => !existIdsSet.has(usr._id));
-            setSearchResult(resultList);
-            return;
-        }
-        setSearchResult(response.data);
+    function findUsersWithName() {
+        const payload = {
+            token: user.token,
+            search
+        };
+        dispatch({ type: groupOperationsActionTypes.SEARCH_USER_WITH_NAME, payload: payload });
     }
 
     function handleSelectUser(user) {
-        if (!selectedUsers || selectedUsers.length === 0) {
-            setSelectedUsers(() => {
-                return [user];
-            });
-        }
-        else {
-            const userAlreadyExists = selectedUsers.find((usr) => usr._id === user._id);
-            if (userAlreadyExists) {
-                return;
-            }
-            setSelectedUsers((prev) => {
-                return [...prev, user]
-            });
-        }
-        const newChatList = searchResult.filter((usr) => usr._id !== user._id);
-        setSearchResult(newChatList);
+        console.log(user);
+        dispatch({ type: groupOperationsActionTypes.ADD_SELECTED_USER, payload: user });
     }
 
     async function handleOnSubmit(event) {
@@ -111,32 +94,29 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
                 toast('only 1 user can added at a time');
                 return;
             }
+            dispatch({ type: groupOperationsActionTypes.CLEAR_GROUP_OPERATIONS_DATA });
         }
     }
 
     function handleRemoveUser(user) {
-        const newUsers = selectedUsers.filter((usr) => usr._id !== user._id);
-        setSelectedUsers(newUsers);
-        setSearchResult((prev) => {
-            return [...prev, user];
-        });
+        dispatch({ type: groupOperationsActionTypes.REMOVE_SELECTED_USER, payload: user });
     }
 
     useEffect(() => {
         if (search && operation !== 'remove') {
+            dispatch({ type: groupOperationsActionTypes.SET_EXISTING_IDS, payload: existingUserIds });
             findUsersWithName();
         }
         else if (search && operation === 'remove') {
-            setSearchResult(existingUsers);
+            dispatch({ type: groupOperationsActionTypes.SET_SEARCH_RESULT, payload: existingUsers });
         }
         else {
-            setSearchResult([]);
+            dispatch({ type: groupOperationsActionTypes.SET_SEARCH_RESULT, payload: [] });
         }
     }, [search]);
 
     useEffect(() => {
-
-    }, [user, addMembers]);
+    }, [user, addMembers, searchResult, selectedUsers]);
 
     return (
         addMembers ?
@@ -145,7 +125,7 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
                 <div className='add-members'>
                     <div className='am-header'>
                         {
-                            heading ? heading : (<>Add Members <span>1/20000</span></>)
+                            heading ? heading : (<>Add Members</>)
                         }
                     </div>
                     <div className='am-search-bar'>
@@ -154,7 +134,7 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
                     </div>
                     <div className='am-added-list'>
                         {
-                            selectedUsers.length > 0 ? selectedUsers.map((result) =>
+                            selectedUsers && selectedUsers.length > 0 ? selectedUsers.map((result) =>
                                 <MenuItem key={result._id}
                                     user={result}
                                     style={{ height: '35px', width: 'max-content', margin: '0px 3px', borderRadius: '8px', fontSize: '12px', padding: '3px', cursor: 'default' }}
