@@ -12,7 +12,7 @@ function MenuItem({ children, text, user, onClick, style }) {
     return (
         <div className='menu-item' onClick={handleClick} style={style}>
             {children}
-            {text ? text : ""}
+            {text ? text.charAt(0).toUpperCase() + text.slice(1) : ""}
         </div>
     )
 }

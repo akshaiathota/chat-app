@@ -28,12 +28,14 @@
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-    line-height: 20px;
+    line-height: 25px;
     background-color: #0a121b;
     color: white;
     border: 1px solid white;
     border-radius: 15px;
-    margin-top: 10px;
+    font-family: sans-serif, 'Times New Roman', Times, serif;
+    font-size: 16px;
+    letter-spacing: 1px;
 }
 
 .m-input-field textarea:focus,

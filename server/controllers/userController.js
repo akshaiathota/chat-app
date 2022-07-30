@@ -153,12 +153,8 @@ async function findUser(req, res) {
 
 async function findUserByName(req, res) {
     const conditions = req.query.search
-        ? {
-            $or: [
-                { name: { $regex: req.query.search, $options: "i" } },
-                { email: { $regex: req.query.search, $options: "i" } },
-            ],
-        }
+        ?
+        { name: { $regex: req.query.search, $options: "i" } }
         : {};
     const users = await User.find(conditions).find({ _id: { $ne: req.user._id } });
     res.status(201).json({
