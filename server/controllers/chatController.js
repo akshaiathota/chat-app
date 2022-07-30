@@ -121,7 +121,8 @@ async function createGroupChat(req, res, next) {
     let unread = [];
     inputUsers.forEach((usr) => {
         unread.push({
-            user: usr._id
+            user: usr._id,
+            messages: []
         });
     });
     try {
@@ -171,6 +172,11 @@ async function renameGroup(req, res, next) {
         })
             .populate('users', '-password')
             .populate('groupAdmin', '-password')
+            .populate('latestMessage');
+        chat = await User.populate(chat, {
+            path: 'latestMessage.sender',
+            select: 'name email pic mobileNumber'
+        });
         chat = await User.populate(chat, {
             path: 'unread.user',
             select: 'name email'
@@ -217,26 +223,30 @@ async function addToGroup(req, res, next) {
             });
             return;
         }
-        let updation = await Chat.findByIdAndUpdate(chatId, {
-            $push: { users: userId }
-        }, {
-            new: true
-        });
-        const newUsr = {
-            user: userId
-        }
-        updation = await Chat.findByIdAndUpdate(chatId, {
-            $push: { user: newUsr }
-        }).populate('users', '-password')
-            .populate('groupAdmin', '-password');
-        updation = await User.populate(chatId, {
+        let chat = await Chat.findById(chatId);
+        chat.users = [...chat.users, userId];
+        const newObj = {
+            user: userId,
+            messages: []
+        };
+        chat.unread = [...chat.unread, newObj];
+        await chat.save();
+        chat = await Chat.findById(chatId).
+            populate('users', '-password')
+            .populate('groupAdmin', '-password')
+            .populate('latestMessage')
+            .sort({ updatedAt: -1 });
+        chat = await User.populate(chat, {
             path: 'unread.user',
             select: 'name email'
         });
-        console.log(updation);
+        chat = await User.populate(chat, {
+            path: 'latestMessage.sender',
+            select: 'name pic email mobileNumber'
+        });
         res.status(200).json({
             message: 'user added to group',
-            data: updation
+            data: chat
         });
         return;
     }
@@ -259,25 +269,34 @@ async function removeFromGroup(req, res, next) {
         return;
     }
     try {
-        let deletion = await Chat.findByIdAndUpdate(chatId, {
-            $pull: { users: userId }
-        }, {
-            new: true
-        });
-        const newUsr = {
-            user: userId
-        }
-        deletion = await Chat.findByIdAndUpdate(chatId, {
-            $pull: { user: newUsr }
-        }).populate('users', '-password')
-            .populate('groupAdmin', '-password');
-        deletion = await User.populate(chatId, {
+        let chat = await Chat.findById(chatId);
+        chat.users = chat && chat.users ? chat.users.filter((usr) => usr.toString() !== userId) : [];
+        const newObj = {
+            user: userId,
+            messages: []
+        };
+        console.log(chat.unread);
+        chat.unread = chat && chat.unread ? chat.unread.filter((obj) => {
+            obj.user.toString() !== userId
+        })
+            : [];
+        await chat.save();
+        chat = await Chat.findById(chatId).
+            populate('users', '-password')
+            .populate('groupAdmin', '-password')
+            .populate('latestMessage')
+            .sort({ updatedAt: -1 });
+        chat = await User.populate(chat, {
             path: 'unread.user',
             select: 'name email'
         });
+        chat = await User.populate(chat, {
+            path: 'latestMessage.sender',
+            select: 'name pic email mobileNumber'
+        });
         res.status(200).json({
             message: 'user removed from group',
-            data: deletion
+            data: chat
         });
         return;
     }

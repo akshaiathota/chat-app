@@ -65,7 +65,7 @@ function Messages() {
             </div>
             <form onKeyDown={handleKeyDown}>
                 <div className='m-input-field'>
-                    <textarea ref={inputRef} id='message-txt-area' />
+                    <textarea placeholder='Enter Your Message....' ref={inputRef} id='message-txt-area' />
                 </div>
             </form>
 

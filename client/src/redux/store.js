@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import storage from 'redux-persist/lib/storage/session';
 import userReducer from './user/userSlice';
 import selectedChat from './selectedChat/selectedChatSlice';
 import chatReducer from './chats/chatSlice';
@@ -8,6 +8,7 @@ import messageReducer from './messages/messageSlice';
 import navMenuReducer from './UI state/NavigationMenuSlice';
 import globalSearchReducer from './UI state/globalSearchSlice';
 import addMembersReducer from './UI state/addMembersSlice';
+import removeMembersReducer from './UI state/removeMembersSlice';
 import createGroupReducer from './UI state/createGroupSlice';
 import usersStatusReducer from './usersStatus/usersStatusSlice';
 import groupOperationsReducer from './group operations/GroupOperationsSlice';
@@ -16,6 +17,8 @@ import createSagaMiddleware from 'redux-saga';
 import rootSaga from './rootSaga';
 import socketMiddleware from './socket/socketMiddleware';
 import userActionTypes from './user/userActionTypes';
+import renameGroupReducer from './UI state/renameGroupSlice';
+import addMembersNewGroupReducer from './UI state/addMembersNewGroupSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -27,9 +30,12 @@ const combinedReducers = combineReducers({
     navMenu: navMenuReducer,
     globalSearch: globalSearchReducer,
     addMembers: addMembersReducer,
+    removeMembers: removeMembersReducer,
+    addMembersNewGroup: addMembersNewGroupReducer,
+    renameGroup: renameGroupReducer,
     createGroup: createGroupReducer,
     usersStatus: usersStatusReducer,
-    groupOperations: groupOperationsReducer
+    groupOperations: groupOperationsReducer,
 });
 
 const rootReducer = (state, action) => {

@@ -12,7 +12,7 @@ function ChatList({ className }) {
       <div className={`chat-list ${className}`} id='chat-list'>
         <ToastContainer />
         <div className='cl-title'>
-          <h5>D.A.D</h5>
+          <h5>TalkTo</h5>
         </div>
         <ChatHolder />
       </div>

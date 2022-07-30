@@ -12,7 +12,9 @@ import groupOperationsActionTypes from '../../redux/group operations/GroupOperat
 
 function AddGroupMembers({ groupName, heading, operation, existingUserIds, groupId, existingUsers, groupAdmin }) {
     const user = useSelector(getLoggedUser);
+    const addMembersToNewGroup = useSelector(state => state.addMembersNewGroup);
     const addMembers = useSelector((state) => state.addMembers);
+    const removeMembers = useSelector((state) => state.removeMembers);
     const menuState = useSelector((state) => state.navMenu);
     const [search, setSearch] = useState("");
     const searchResult = useSelector(state => state.groupOperations.searchResult);
@@ -23,8 +25,18 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
         setSearch(event.target.value);
     }
 
-    function handleAddGroupMembersUI() {
-        dispatch({ type: 'ADD_MEMBERS_TOGGLE' });
+    function handleCloseUI() {
+        if (addMembers)
+            dispatch({ type: 'ADD_MEMBERS_TOGGLE' });
+        if (removeMembers)
+            dispatch({ type: 'REMOVE_MEMBERS_TOGGLE' });
+        if (addMembersToNewGroup) {
+            dispatch({ type: 'ADD_MEMBERS_NEW_GROUP_TOGGLE' });
+        }
+    }
+
+    function handleUI() {
+        handleCloseUI();
         dispatch({ type: groupOperationsActionTypes.CLEAR_GROUP_OPERATIONS_DATA });
         if (menuState)
             dispatch({ type: 'NAV_MENU_TOGGLE' });
@@ -39,7 +51,6 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
     }
 
     function handleSelectUser(user) {
-        console.log(user);
         dispatch({ type: groupOperationsActionTypes.ADD_SELECTED_USER, payload: user });
     }
 
@@ -60,8 +71,8 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
         else if (existingUserIds && operation === 'add') {
             if (selectedUsers.length === 1) {
                 if (groupAdmin._id !== user._id) {
-                    toast('only admins can add new users');
-                    handleAddGroupMembersUI();
+                    toast('only admins can add/remove new users');
+                    handleCloseUI();
                     return;
                 }
                 const payload = {
@@ -79,8 +90,8 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
         else if (operation === 'remove') {
             if (selectedUsers.length === 1) {
                 if (groupAdmin._id !== user._id) {
-                    toast('only admins can add new users');
-                    handleAddGroupMembersUI();
+                    toast('only admins can add/remove new users');
+                    handleCloseUI();
                     return;
                 }
                 const payload = {
@@ -96,6 +107,7 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
             }
             dispatch({ type: groupOperationsActionTypes.CLEAR_GROUP_OPERATIONS_DATA });
         }
+        dispatch({ type: groupOperationsActionTypes.CLEAR_GROUP_OPERATIONS_DATA });
     }
 
     function handleRemoveUser(user) {
@@ -116,16 +128,16 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
     }, [search]);
 
     useEffect(() => {
-    }, [user, addMembers, searchResult, selectedUsers]);
+    }, [user, addMembers, searchResult, selectedUsers, removeMembers, addMembersToNewGroup]);
 
     return (
-        addMembers ?
+        addMembers || removeMembers || addMembersToNewGroup ?
             <form onSubmit={handleOnSubmit}>
                 <ToastContainer />
                 <div className='add-members'>
                     <div className='am-header'>
                         {
-                            heading ? heading : (<>Add Members</>)
+                            heading ? heading : (<>{addMembers || addMembersToNewGroup ? 'Add Members' : removeMembers ? 'Remove Members' : ''}</>)
                         }
                     </div>
                     <div className='am-search-bar'>
@@ -170,7 +182,7 @@ function AddGroupMembers({ groupName, heading, operation, existingUserIds, group
                         }
                     </div>
                     <div className='am-buttons'>
-                        <input type='button' value='Cancel' onClick={handleAddGroupMembersUI} />
+                        <input type='button' value='Cancel' onClick={handleUI} />
                         <input type='submit' value={operation ? operation : 'Create'} />
                     </div>
                 </div>

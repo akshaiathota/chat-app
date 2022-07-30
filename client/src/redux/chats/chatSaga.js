@@ -32,7 +32,7 @@ function* createNewUserGroupChat({ payload: { name, users, token } }) {
     if (response.status === 'ok') {
         const { data } = response;
         yield put({ type: chatActionTypes.ADD_NEW_CHAT, payload: data });
-        yield put({ type: 'ADD_MEMBERS_TOGGLE' });
+        yield put({ type: 'ADD_MEMBERS_NEW_GROUP_TOGGLE' });
         yield put({ type: chatActionTypes.CREATED_GROUP_SUCCESSFULLY, payload: data });
     }
 }
@@ -49,7 +49,7 @@ function* renameExistingChat({ payload: { name, chatId, token } }) {
         };
         yield put({ type: chatActionTypes.UPDATE_CHAT, payload: payload });
         yield put({ type: selectedChatActionTypes.SELECT_CHAT, payload: data });
-        yield put({ type: 'ADD_MEMBERS_TOGGLE' });
+        yield put({ type: 'RENAME_GROUP_TOGGLE' });
     }
 }
 
@@ -81,7 +81,7 @@ function* removeUserFromGroup({ payload: { userId, chatId, token } }) {
         };
         yield put({ type: chatActionTypes.UPDATE_CHAT, payload: payload });
         yield put({ type: selectedChatActionTypes.SELECT_CHAT, payload: data });
-        yield put({ type: 'ADD_MEMBERS_TOGGLE' });
+        yield put({ type: 'REMOVE_MEMBERS_TOGGLE' });
     }
 }
 

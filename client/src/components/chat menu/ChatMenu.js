@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
-import chatActionTypes from '../../redux/chats/chatActionTypes';
 import getChats from '../../redux/chats/chatSelector';
 import { getLoggedUser } from '../../redux/user/userSelectors';
 import AddGroupMembers from '../add group members/AddGroupMembers';
@@ -10,16 +9,16 @@ import GroupMemberList from '../group member list/GroupMemberList';
 import MenuItem from '../menu-item/MenuItem';
 import './ChatMenu.css';
 
-function ChatMenu(chat) {
+function ChatMenu() {
     const [dropDownMenu, setDropDownMenu] = useState(false);
-    const [addUserUI, setAddUserUI] = useState(false);
-    const [removeUserUI, setRemoveUserUI] = useState(false);
     const [groupMembersUI, setGroupMembersUI] = useState(false);
-    const [renameGroupUI, setRenameGroupUI] = useState(false);
-    const [newGroupName, setNewGroupName] = useState(false);
+    const renameGroupUI = useSelector(state => state.renameGroup);
+    const addUserUI = useSelector(state => state.addMembers);
+    const removeUserUI = useSelector(state => state.removeMembers);
     const chats = useSelector(getChats);
     const user = useSelector(getLoggedUser);
-    const ids = chat.chat.users.map((usr) => usr._id);
+    const ids = useSelector(state => state.selectedChat.users).map((usr) => usr._id);
+    const chat = useSelector((state) => state.selectedChat);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -30,21 +29,21 @@ function ChatMenu(chat) {
         if (dropDownMenu) {
             handleDropDown();
         }
-        setAddUserUI(!addUserUI);
+        dispatch({ type: 'ADD_MEMBERS_TOGGLE' });
     }
 
     function handleRemoveUserUI() {
         if (dropDownMenu) {
             handleDropDown();
         }
-        setRemoveUserUI(!removeUserUI);
+        dispatch({ type: 'REMOVE_MEMBERS_TOGGLE' });
     }
 
     function handleRenameGroupUI() {
         if (dropDownMenu) {
             handleDropDown();
         }
-        setRenameGroupUI(!renameGroupUI);
+        dispatch({ type: 'RENAME_GROUP_TOGGLE' });
     }
 
     function handleGroupMembersUI() {
@@ -54,28 +53,13 @@ function ChatMenu(chat) {
         setGroupMembersUI(!groupMembersUI);
     }
 
-    function handleNameChange(value) {
-        setNewGroupName(value);
-    }
-
-    async function handleOnSubmitRename(event) {
-        event.preventDefault();
-        const payload = {
-            name: newGroupName,
-            chatId: chat.chat._id,
-            token: user.token
-        };
-        dispatch({ type: chatActionTypes.RENAME_GROUP, payload: payload });
-        handleRenameGroupUI();
-    }
-
     function handleDropDown() {
         setDropDownMenu(!dropDownMenu);
     }
 
     useEffect(() => {
 
-    }, [user]);
+    }, [user, addUserUI, removeUserUI, renameGroupUI]);
 
     return (
         <>
@@ -112,34 +96,29 @@ function ChatMenu(chat) {
             {
                 addUserUI ?
                     <AddGroupMembers
-                        handleAddGroupMembersUI={handleAddUserUI}
                         operation='add'
                         existingUserIds={ids}
-                        groupId={chat.chat._id}
-                        existingUsers={chat.chat.users}
-                        groupAdmin={chat.chat.groupAdmin}
+                        groupId={chat._id}
+                        existingUsers={chat.users}
+                        groupAdmin={chat.groupAdmin}
                     />
                     : <></>
             }
             {
                 removeUserUI ?
                     <AddGroupMembers
-                        handleAddGroupMembersUI={handleRemoveUserUI}
                         operation='remove'
                         existingUserIds={ids}
-                        groupId={chat.chat._id}
-                        existingUsers={chat.chat.users}
-                        groupAdmin={chat.chat.groupAdmin}
+                        groupId={chat._id}
+                        existingUsers={chat.users}
+                        groupAdmin={chat.groupAdmin}
                     />
                     : <></>
             }
             {
                 renameGroupUI ?
                     <CreateGroup
-                        handleGroupUI={handleRenameGroupUI}
-                        handleNext={handleOnSubmitRename}
-                        handleInputChange={handleNameChange}
-                        placeholder={'New Name'}
+                        placeholder={'New Group Name'}
                         operation={'Rename'}
                     />
                     : <></>
@@ -147,7 +126,7 @@ function ChatMenu(chat) {
             {
                 groupMembersUI ?
                     <GroupMemberList
-                        users={chat.chat.users}
+                        users={chat.users}
                         handleUI={handleGroupMembersUI}
                     />
                     : <></>

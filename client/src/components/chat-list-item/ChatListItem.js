@@ -22,7 +22,7 @@ function ChatListItem({ chat }) {
         time = new Date(chat.latestMessage.updatedAt);
         const hours = time.getHours();
         const minutes = time.getMinutes();
-        lastMsgTime = (hours.toString().length == 1 ? '0' + hours : hours) + ':' + (minutes.toString().length == 1 ? '0' + minutes : minutes);
+        lastMsgTime = (hours.toString().length === 1 ? '0' + hours : hours) + ':' + (minutes.toString().length === 1 ? '0' + minutes : minutes);
     }
 
     function handleSelectedChat() {
@@ -55,7 +55,7 @@ function ChatListItem({ chat }) {
                 setCount(currentCount);
             }
         }
-    }, [count, chat]);
+    }, [count, chat, user]);
 
     return (
         <>
@@ -64,37 +64,40 @@ function ChatListItem({ chat }) {
                     <div className={`${chat && selectedChat && chat._id === selectedChat._id ? 'cli-selected-chat' : ''} chat-list-item`} onClick={() => handleSelectedChat()}>
                         <div className='cli-image-container'>
                             <img src={url && url === 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg' ?
-                                DP : url} />
+                                DP : url} alt='Profile' />
                         </div>
                         <table className='cli-chat-details'>
-                            <tr >
-                                <td style={{ width: '80%' }} className='cli-chat-name'>
-                                    {
-                                        !chat.isGroupChat ? getOtherUser().name : chat.chatName
-                                    }
-                                </td>
-                                <td style={{ width: '20%' }} className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-time`}>
-                                    {
-                                        lastMsgTime ? lastMsgTime : <></>
-                                    }
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style={{ width: '80%' }} className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-last-msg`} >
-                                    <div style={{ height: '25px', lineHeight: '25px' }}>
-                                        {chat.latestMessage ? (chat.latestMessage.sender._id === user._id) ? 'You: ' + chat.latestMessage.content : chat.latestMessage.content : <></>}
-                                    </div>
-                                </td>
-                                <td style={{ width: '20%' }} >
-                                    {
-                                        count > 0 ?
-                                            <div className='cli-chat-new-msg' >
-                                                {count}
-                                            </div>
-                                            : <></>
-                                    }
-                                </td>
-                            </tr>
+                            <tbody>
+
+                                <tr >
+                                    <td style={{ width: '80%' }} className='cli-chat-name'>
+                                        {
+                                            !chat.isGroupChat ? getOtherUser().name : chat.chatName
+                                        }
+                                    </td>
+                                    <td style={{ width: '20%' }} className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-time`}>
+                                        {
+                                            lastMsgTime ? lastMsgTime : <></>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style={{ width: '80%' }} className={`${chat && selectedChat && chat._id === selectedChat._id ? 'color-black' : ''} cli-chat-last-msg`} >
+                                        <div style={{ height: '25px', lineHeight: '25px' }}>
+                                            {chat.latestMessage ? (chat.latestMessage.sender._id === user._id) ? 'You: ' + chat.latestMessage.content : chat.latestMessage.sender.name.charAt(0).toUpperCase() + chat.latestMessage.sender.name.slice(1) + ': ' + chat.latestMessage.content : <></>}
+                                        </div>
+                                    </td>
+                                    <td style={{ width: '20%' }} >
+                                        {
+                                            count > 0 ?
+                                                <div className='cli-chat-new-msg' >
+                                                    {count}
+                                                </div>
+                                                : <></>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     : <></>
