@@ -9,7 +9,7 @@
     "build":"npm run build-server && npm run build-client",
     "server": "npm run start --prefix server",
     "client": "npm start --prefix client",
-    "start": "npm run server & npm run client",
+    "start": "npm run server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
