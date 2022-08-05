@@ -30,6 +30,11 @@ function Authentication() {
     return (
         <div className='login-signup-page'>
             <div className={(toggleInput ? 'height-small' : 'height-large') + ' authentication'}>
+                <div className='a-admin-cred'>
+                    For testing use:
+                    <br></br>
+                    Email: guest1@gmail.com , Password: 1234
+                </div>
                 <div className='a-title'>
                     <h1>Just An Other Chat Application</h1>
                 </div>

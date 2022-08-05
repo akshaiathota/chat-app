@@ -24,6 +24,12 @@
     background-color: #17212B;
 }
 
+.a-admin-cred {
+    text-align: center;
+    color: red;
+    line-height: 1.5;
+}
+
 .a-title h1 {
     font-size: 30px;
     color: black;
