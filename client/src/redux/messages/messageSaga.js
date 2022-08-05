@@ -19,7 +19,6 @@ function* send({ payload: { text, chatId, token } }) {
             otherChats,
             newChat: data.chat
         };
-        console.log(payload);
         yield put({ type: chatActionTypes.UPDATE_CHAT, payload: payload });
     }
     else {
@@ -38,9 +37,7 @@ function* getMessages({ payload: { chatId, token } }) {
 }
 
 function* markMessagesSeen({ payload: { messageIds, chatId, token } }) {
-    console.log(token);
     const response = yield markUnreadMessages(messageIds, chatId, token);
-    console.log(response);
     if (response.status === 'ok') {
         yield put({ type: selectedChatActionTypes.SELECT_CHAT, payload: response.data });
         const payload = {

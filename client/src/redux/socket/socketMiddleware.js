@@ -27,14 +27,10 @@ export default function socketMiddleware() {
                     reconnectionAttempts: Infinity
                 });
                 socket.emit('setup', action.payload);
-                socket.on('connected', () => {
-                    console.log('connected to socket');
-                });
                 socket.on('added to group', (newChat) => {
                     store.dispatch({ type: chatActionTypes.ADD_NEW_CHAT, payload: newChat });
                 });
                 socket.on('message received', (msg) => {
-                    console.log(msg);
                     const chats = store.getState().chats;
                     const selectedChat = store.getState().selectedChat;
                     const otherChats = chats.filter((ct) => ct._id !== msg.chat._id);
@@ -54,8 +50,6 @@ export default function socketMiddleware() {
                 });
 
                 socket.on('user status', (payload) => {
-                    console.log('received payload');
-                    console.log(payload);
                     store.dispatch({ type: userStatusActionTypes.SET_USER_STATUS, payload: payload });
                 });
 
