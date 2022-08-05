@@ -275,7 +275,6 @@ async function removeFromGroup(req, res, next) {
             user: userId,
             messages: []
         };
-        console.log(chat.unread);
         chat.unread = chat && chat.unread ? chat.unread.filter((obj) => {
             obj.user.toString() !== userId
         })

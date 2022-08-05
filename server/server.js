@@ -61,12 +61,10 @@ var users = {};
 var subscribers = {};
 
 io.on('connection', function (socket) {
-    console.log('A user connected');
     let userId = socket.handshake.query.userId;
     socket.on('setup', (userData) => {
         if (userData) {
             socket.join(userData._id);
-            console.log('userId: ' + userData._id);
             if (!users[userId]) {
                 users[userId] = [];
             }
@@ -92,19 +90,16 @@ io.on('connection', function (socket) {
 
     socket.on('join chat', (room) => {
         socket.join(room);
-        console.log('User joined room: ' + room);
     });
 
     socket.on('new message', (newMessageReceived) => {
         var chat = newMessageReceived.chat;
         if (!chat.users) {
-            console.log('no users');
             return;
         }
         chat.users.forEach((user) => {
             if (user._id !== newMessageReceived.sender._id) {
                 io.to(user._id).emit('message received', newMessageReceived);
-                console.log('new message to ' + user._id);
             }
         });
 

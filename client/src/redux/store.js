@@ -54,7 +54,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-    middleware: [logger, sagaMiddleware, socketMiddleware()],
+    middleware: [sagaMiddleware, socketMiddleware()],
     reducer: persistedReducer
 });
 
