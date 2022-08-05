@@ -1,10 +1,12 @@
 {
-  "name": "TalkTo",
+  "name": "Talk To",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build":"cd client/ && npm install && npm run build",
+    "build-client":"cd client/ && npm install && npm run build",
+    "build-server":"cd server/ && npm install",
+    "build":"npm run build-server && npm run build-client",
     "server": "npm run start --prefix server",
     "client": "npm start --prefix client",
     "start": "npm run server & npm run client",
