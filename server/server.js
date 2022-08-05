@@ -5,6 +5,7 @@ const chatRouter = require('./routes/chatRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const { PORT_NUMBER, ORIGIN } = require('./config/config');
 const { API_ENDPOINT_NOT_FOUND, SERVER_ERR } = require('./utils/error');
+const path = require('path');
 
 const cors = require('cors');
 const morgan = require('morgan');
@@ -26,15 +27,24 @@ app.use(cors({
     origin: ORIGIN
 }));
 
-app.get('/', (req, res) => {
-    res.send('API IS RUNNING');
-});
-
 
 //middleware routes
-app.use('/user', userRouter);
-app.use('/chat', chatRouter);
-app.use('/message', messageRouter);
+app.use('/api/user', userRouter);
+app.use('/api/chat', chatRouter);
+app.use('/api/message', messageRouter);
+
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+    app.use(express.static(path.join(__dirname, "..", "client", "build")));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+    });
+}
+else {
+    app.get('/', (req, res) => {
+        res.send('API IS RUNNING');
+    });
+}
+
 
 app.use('*', (req, res, next) => {
     const error = {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URI = 'http://localhost:5000/';
+const BASE_URI = '/api/';
 const INVALID_DATA = {
     status: 'error',
     message: 'missing or invalid data'
