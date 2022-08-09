@@ -36,7 +36,9 @@ function Authentication() {
                     Email: guest1@gmail.com , Password: 1234
                 </div>
                 <div className='a-title'>
-                    <h1>Just An Other Chat Application</h1>
+                    <h1>
+                        TalkTo
+                    </h1>
                 </div>
                 <div className='a-body'>
                     <div className='a-headers'>
