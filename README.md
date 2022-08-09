@@ -8,6 +8,7 @@
 - [Installation](#installation)
 - [Tech-stack](#tech-stack)
 - [Website](#website)
+- [Testing Accounts](#testing-accounts)
 - [License](#license)
 - [Links](#links)
 
@@ -48,6 +49,12 @@ Builds the app for production to the `build` folder.\
    
    ![image](https://drive.google.com/uc?export=view&id=1eNvAGjtkdh2oOVeVix8ECzX83sHegNij)
 
+## Testing Accounts
+
+1. Email: guest1@gmail.com, Password: 1234
+2. Email: guest2@gmail.com, Password: 1234
+3. Email: guest3@gmail.com, Password: 1234
+4. Email: guest4@gmail.com, Password: 1234
 
 ## License
 
