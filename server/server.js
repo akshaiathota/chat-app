@@ -33,19 +33,19 @@ app.use('/api/user', userRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/message', messageRouter);
 
-// if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
     
-// }
-// else {
-//     app.get('/', (req, res) => {
-//         res.send('API IS RUNNING');
-//     });
-// }
-
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+});
+
+}
+else {
+    app.get('/', (req, res) => {
+        res.send('API IS RUNNING');
     });
+}
 
 app.use('*', (req, res, next) => {
     const error = {
