@@ -19,7 +19,7 @@ export default function socketMiddleware() {
                 const queryParams = {
                     userId: user._id
                 };
-                socket = io.connect('https://talk-to-app.herokuapp.com/', {
+                socket = io.connect('http://localhost:5000', {
                     query: queryParams,
                     reconnection: true,
                     reconnectionDelay: 1000,

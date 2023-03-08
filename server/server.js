@@ -33,18 +33,19 @@ app.use('/api/user', userRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/message', messageRouter);
 
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
-    app.use(express.static(path.join(__dirname, "..", "client", "build")));
+// if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+    
+// }
+// else {
+//     app.get('/', (req, res) => {
+//         res.send('API IS RUNNING');
+//     });
+// }
+
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
     });
-}
-else {
-    app.get('/', (req, res) => {
-        res.send('API IS RUNNING');
-    });
-}
-
 
 app.use('*', (req, res, next) => {
     const error = {
@@ -72,7 +73,9 @@ var subscribers = {};
 
 io.on('connection', function (socket) {
     let userId = socket.handshake.query.userId;
+    console.log(userId);
     socket.on('setup', (userData) => {
+        console.log(userData);
         if (userData) {
             socket.join(userData._id);
             if (!users[userId]) {
@@ -104,6 +107,7 @@ io.on('connection', function (socket) {
 
     socket.on('new message', (newMessageReceived) => {
         var chat = newMessageReceived.chat;
+        console.log(newMessageReceived);
         if (!chat.users) {
             return;
         }

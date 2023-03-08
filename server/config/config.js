@@ -1,7 +1,7 @@
-const dotenv = require('dotenv');
-dotenv.config();
+const dotenv = require('dotenv').config();
+console.log(process.env);
 
-const PORT_NUMBER = process.env.PORT;
+const PORT_NUMBER = process.env.PORT_NUMBER;
 const MONGODB_URI = process.env.MONGODB_URI;
 const JWT_SECRET = process.env.JWT_SECRET;
 const ORIGIN = process.env.ORIGIN;
