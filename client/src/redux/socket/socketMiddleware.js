@@ -19,7 +19,7 @@ export default function socketMiddleware() {
                 const queryParams = {
                     userId: user._id
                 };
-                socket = io.connect('http://localhost:5000', {
+                socket = io.connect('https://talkto.onrender.com', {
                     query: queryParams,
                     reconnection: true,
                     reconnectionDelay: 1000,
