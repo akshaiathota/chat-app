@@ -21,7 +21,7 @@ const io = require('socket.io')(server, {
 
 
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true }))
 app.use(morgan('combined'));
 app.use(cors());
 
