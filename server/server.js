@@ -22,7 +22,7 @@ const io = require('socket.io')(server, {
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }))
-app.use(morgan('combined'));
+// app.use(morgan('combined'));
 app.use(cors());
 
 
@@ -69,9 +69,9 @@ var subscribers = {};
 
 io.on('connection', function (socket) {
     let userId = socket.handshake.query.userId;
-    console.log(userId);
+    // console.log(userId);
     socket.on('setup', (userData) => {
-        console.log(userData);
+        // console.log(userData);
         if (userData) {
             socket.join(userData._id);
             if (!users[userId]) {
