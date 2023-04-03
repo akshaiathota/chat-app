@@ -2,6 +2,7 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import HomePage from './Pages/HomePage';
 import Authentication from './Pages/Authentication/Authentication';
+import { useEffect } from 'react';
 
 function App() {
   return (

@@ -1,5 +1,4 @@
 const dotenv = require('dotenv').config();
-console.log(process.env);
 
 const PORT_NUMBER = process.env.PORT_NUMBER;
 const MONGODB_URI = process.env.MONGODB_URI;

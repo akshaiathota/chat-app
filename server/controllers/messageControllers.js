@@ -40,8 +40,7 @@ async function sendMessage(req, res, next) {
                 newUnread.push(newObj);
             }
         });
-        chat.unread = newUnread;
-        await chat.save();
+        await Chat.updateOne({_id:chatId},{unread:newUnread,latestMessage:response});
 
         response = await response.populate('sender', 'name pic');
         response = await response.populate('chat');

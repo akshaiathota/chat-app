@@ -15,7 +15,7 @@ var server = require('http').Server(app);
 const io = require('socket.io')(server, {
     pingTimeOut: 5000,
     cors: {
-        origin: ORIGIN
+        origin: '*'
     }
 });
 
@@ -23,9 +23,7 @@ const io = require('socket.io')(server, {
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb' }));
 app.use(morgan('combined'));
-app.use(cors({
-    origin: ORIGIN
-}));
+app.use(cors());
 
 
 //middleware routes
@@ -34,12 +32,10 @@ app.use('/api/chat', chatRouter);
 app.use('/api/message', messageRouter);
 
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
-    
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
-
 }
 else {
     app.get('/', (req, res) => {
@@ -107,7 +103,8 @@ io.on('connection', function (socket) {
 
     socket.on('new message', (newMessageReceived) => {
         var chat = newMessageReceived.chat;
-        console.log(newMessageReceived);
+        // console.log(newMessageReceived);
+        // console.log('.............');
         if (!chat.users) {
             return;
         }
@@ -116,7 +113,7 @@ io.on('connection', function (socket) {
                 io.to(user._id).emit('message received', newMessageReceived);
             }
         });
-
+        // socket.to(newMessageReceived.chat._id).emit('message received',newMessageReceived);
     });
 
     socket.on('add to group', (chatContent) => {
